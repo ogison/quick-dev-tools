@@ -136,7 +136,7 @@ export default function URLEncoderTool() {
             <div className="text-xs text-blue-800 space-y-1">
               <div>Space → %20</div>
               <div>! → %21</div>
-              <div>" → %22</div>
+              <div>&quot; → %22</div>
               <div># → %23</div>
               <div>% → %25</div>
               <div>& → %26</div>
