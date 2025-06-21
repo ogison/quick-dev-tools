@@ -12,6 +12,8 @@ import QrGenerator from '@/components/QrGenerator';
 import PasswordGenerator from '@/components/PasswordGenerator';
 import TimestampConverter from '@/components/TimestampConverter';
 import LoremIpsum from '@/components/LoremIpsum';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 export default function Home() {
   const [currentView, setCurrentView] = useState('home');
@@ -108,89 +110,92 @@ export default function Home() {
   ];
 
   const renderHomePage = () => (
-    <div className="bg-gradient-to-br from-blue-50 to-indigo-100">
-      <main className="max-w-7xl mx-auto px-4 py-12">
+    <div className="min-h-screen bg-background">
+      <main className="container mx-auto px-4 py-12">
         <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold text-gray-900 mb-6">
+          <h2 className="text-5xl font-bold mb-6">
             Everything you need for development
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             A comprehensive collection of developer tools to boost your productivity. 
             From JSON formatting to hash generation, all in one place.
           </p>
         </div>
 
         <div className="mb-12">
-          <h3 className="text-2xl font-semibold text-gray-900 mb-6">Browse by Category</h3>
+          <h3 className="text-2xl font-semibold mb-6">Browse by Category</h3>
           <div className="flex flex-wrap gap-3">
             {[...new Set(tools.map(tool => tool.category))].map(category => (
-              <span 
+              <Button 
                 key={category}
-                className="px-4 py-2 bg-white rounded-full text-gray-700 border border-gray-200 shadow-sm"
+                variant="outline"
+                className="rounded-full"
               >
                 {category}
-              </span>
+              </Button>
             ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {tools.map((tool) => (
-            <div
+            <Card
               key={tool.id}
-              className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-100 cursor-pointer group"
+              className="cursor-pointer hover:shadow-lg transition-all duration-300"
               onClick={() => handleViewChange(tool.id)}
             >
-              <div className="flex items-start justify-between mb-4">
-                <div className="text-4xl group-hover:scale-110 transition-transform duration-300">
-                  {tool.icon}
+              <CardHeader>
+                <div className="flex items-start justify-between mb-2">
+                  <div className="text-4xl">
+                    {tool.icon}
+                  </div>
+                  <span className="text-sm font-semibold text-primary bg-primary/10 px-2 py-1 rounded">
+                    #{tool.number}
+                  </span>
                 </div>
-                <span className="text-sm font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded">
-                  #{tool.number}
-                </span>
-              </div>
-              
-              <h3 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                {tool.name}
-              </h3>
-              
-              <p className="text-gray-600 mb-4 text-sm leading-relaxed">
-                {tool.description}
-              </p>
-              
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                  {tool.category}
-                </span>
-                <div className="text-blue-600 group-hover:translate-x-1 transition-transform duration-300">
-                  →
+                <CardTitle>{tool.name}</CardTitle>
+                <CardDescription>{tool.description}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-muted-foreground bg-muted px-2 py-1 rounded">
+                    {tool.category}
+                  </span>
+                  <div className="text-primary">
+                    →
+                  </div>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
-        <div className="mt-16 bg-white rounded-2xl shadow-lg p-8">
-          <h3 className="text-2xl font-semibold text-gray-900 mb-4">Quick Access</h3>
-          <p className="text-gray-600 mb-6">Most popular tools for daily development tasks</p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {tools.slice(0, 4).map((tool) => (
-              <button
-                key={tool.id}
-                onClick={() => handleViewChange(tool.id)}
-                className="p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 text-left"
-              >
-                <div className="text-2xl mb-2">{tool.icon}</div>
-                <div className="text-sm font-medium text-gray-900">{tool.name}</div>
-              </button>
-            ))}
-          </div>
-        </div>
+        <Card className="mt-16">
+          <CardHeader>
+            <CardTitle>Quick Access</CardTitle>
+            <CardDescription>Most popular tools for daily development tasks</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {tools.slice(0, 4).map((tool) => (
+                <Button
+                  key={tool.id}
+                  variant="outline"
+                  className="h-auto flex flex-col items-center justify-center p-4"
+                  onClick={() => handleViewChange(tool.id)}
+                >
+                  <div className="text-2xl mb-2">{tool.icon}</div>
+                  <div className="text-sm font-medium">{tool.name}</div>
+                </Button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </main>
 
-      <footer className="bg-white border-t mt-20">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="text-center text-gray-600">
+      <footer className="border-t mt-20">
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center text-muted-foreground">
             <p>&copy; 2024 Developer Tools. Built with Next.js and Tailwind CSS.</p>
           </div>
         </div>
@@ -215,35 +220,33 @@ export default function Home() {
   };
 
   const renderToolsPage = () => (
-    <div className="bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4">        
+    <div className="min-h-screen bg-background py-8">
+      <div className="container mx-auto px-4">        
         <div className="mb-6">
           <div className="flex flex-wrap gap-2">
             {tools.map((tool) => (
-              <button
+              <Button
                 key={tool.id}
                 onClick={() => setActiveTab(tool.id)}
-                className={`px-4 py-2 rounded-lg font-medium ${
-                  activeTab === tool.id
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white text-gray-700 hover:bg-gray-100'
-                }`}
+                variant={activeTab === tool.id ? 'default' : 'outline'}
               >
                 {tool.number}. {tool.name}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          {renderToolComponent()}
-        </div>
+        <Card>
+          <CardContent className="p-6">
+            {renderToolComponent()}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Header currentView={currentView} onViewChange={handleViewChange} />
       {currentView === 'home' ? renderHomePage() : renderToolsPage()}
     </div>
