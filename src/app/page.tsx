@@ -1,30 +1,9 @@
-'use client';
-
-import { useState } from 'react';
 import Header from '@/components/Header';
-import JsonFormatter from '@/components/JsonFormatter';
-import Base64Encoder from '@/components/Base64Encoder';
-import UrlEncoder from '@/components/UrlEncoder';
-import HashGenerator from '@/components/HashGenerator';
-import RegexTester from '@/components/RegexTester';
-import ColorPalette from '@/components/ColorPalette';
-import QrGenerator from '@/components/QrGenerator';
-import PasswordGenerator from '@/components/PasswordGenerator';
-import TimestampConverter from '@/components/TimestampConverter';
-import LoremIpsum from '@/components/LoremIpsum';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export default function Home() {
-  const [currentView, setCurrentView] = useState('home');
-  const [activeTab, setActiveTab] = useState('json');
-
-  const handleViewChange = (view: string) => {
-    setCurrentView(view);
-    if (view !== 'home') {
-      setActiveTab(view);
-    }
-  };
 
   const tools = [
     { 
@@ -34,7 +13,8 @@ export default function Home() {
       description: 'JSONデータの整形・検証・最小化をシンタックスハイライト付きで',
       icon: '{}',
       category: 'データ処理',
-      badge: '人気'
+      badge: '人気',
+      href: '/tools/json'
     },
     { 
       id: 'base64', 
@@ -43,7 +23,8 @@ export default function Home() {
       description: 'テキストをBase64に変換、またはBase64文字列をテキストに変換',
       icon: '🔤',
       category: 'エンコーディング',
-      badge: '実用'
+      badge: '実用',
+      href: '/tools/base64'
     },
     { 
       id: 'url', 
@@ -52,7 +33,8 @@ export default function Home() {
       description: 'URLの安全なエンコード・デコードを行います',
       icon: '🌐',
       category: 'エンコーディング',
-      badge: '実用'
+      badge: '実用',
+      href: '/tools/url-encoder'
     },
     { 
       id: 'hash', 
@@ -61,7 +43,8 @@ export default function Home() {
       description: 'MD5、SHA-1、SHA-256、SHA-512のハッシュ値を生成',
       icon: '#',
       category: '暗号化',
-      badge: 'セキュリティ'
+      badge: 'セキュリティ',
+      href: '/tools/hash-generator'
     },
     { 
       id: 'regex', 
@@ -70,7 +53,8 @@ export default function Home() {
       description: '正規表現をテストし、リアルタイムでマッチ結果を確認',
       icon: '.*',
       category: 'テキスト処理',
-      badge: '開発'
+      badge: '開発',
+      href: '/tools/regex'
     },
     { 
       id: 'color', 
@@ -79,7 +63,8 @@ export default function Home() {
       description: '調和の取れた美しいカラーパレットを自動生成',
       icon: '🎨',
       category: 'デザイン',
-      badge: 'クリエイティブ'
+      badge: 'クリエイティブ',
+      href: '/tools/color'
     },
     { 
       id: 'qr', 
@@ -88,7 +73,8 @@ export default function Home() {
       description: 'テキストやURLから簡単にQRコードを生成',
       icon: '▦',
       category: 'ユーティリティ',
-      badge: '便利'
+      badge: '便利',
+      href: '/tools/qr'
     },
     { 
       id: 'password', 
@@ -97,7 +83,8 @@ export default function Home() {
       description: 'カスタム条件で安全なパスワードを生成',
       icon: '🔐',
       category: 'セキュリティ',
-      badge: 'セキュリティ'
+      badge: 'セキュリティ',
+      href: '/tools/password'
     },
     { 
       id: 'timestamp', 
@@ -106,7 +93,8 @@ export default function Home() {
       description: 'Unixタイムスタンプと日時の相互変換',
       icon: '⏰',
       category: 'ユーティリティ',
-      badge: '実用'
+      badge: '実用',
+      href: '/tools/timestamp'
     },
     { 
       id: 'lorem', 
@@ -115,7 +103,8 @@ export default function Home() {
       description: 'デザインや開発用のプレースホルダーテキストを生成',
       icon: '📝',
       category: 'コンテンツ',
-      badge: 'デザイン'
+      badge: 'デザイン',
+      href: '/tools/lorem'
     }
   ];
 
@@ -133,13 +122,14 @@ export default function Home() {
               開発効率を最大化する、プロフェッショナルな無料ツールコレクション
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                className="bg-white text-blue-600 hover:bg-blue-50 font-semibold px-8 py-4 text-lg"
-                onClick={() => handleViewChange('json')}
-              >
-                無料で始める
-              </Button>
+              <Link href="/tools/json">
+                <Button 
+                  size="lg" 
+                  className="bg-white text-blue-600 hover:bg-blue-50 font-semibold px-8 py-4 text-lg"
+                >
+                  無料で始める
+                </Button>
+              </Link>
               <Button 
                 size="lg" 
                 variant="outline" 
@@ -221,11 +211,10 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {tools.map((tool) => (
-              <Card
-                key={tool.id}
-                className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0 shadow-lg"
-                onClick={() => handleViewChange(tool.id)}
-              >
+              <Link key={tool.id} href={tool.href}>
+                <Card
+                  className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0 shadow-lg"
+                >
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between mb-3">
                     <div className="text-4xl group-hover:scale-110 transition-transform duration-300">
@@ -257,7 +246,8 @@ export default function Home() {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+                </Card>
+              </Link>
             ))}
           </div>
         </section>
@@ -274,16 +264,16 @@ export default function Home() {
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {tools.slice(0, 4).map((tool) => (
-                  <Button
-                    key={tool.id}
-                    variant="outline"
-                    className="h-auto flex flex-col items-center justify-center p-6 hover:bg-white hover:shadow-md transition-all bg-white/50"
-                    onClick={() => handleViewChange(tool.id)}
-                  >
-                    <div className="text-3xl mb-3">{tool.icon}</div>
-                    <div className="text-sm font-semibold">{tool.name}</div>
-                    <div className="text-xs text-muted-foreground mt-1">{tool.badge}</div>
-                  </Button>
+                  <Link key={tool.id} href={tool.href}>
+                    <Button
+                      variant="outline"
+                      className="h-auto flex flex-col items-center justify-center p-6 hover:bg-white hover:shadow-md transition-all bg-white/50 w-full"
+                    >
+                      <div className="text-3xl mb-3">{tool.icon}</div>
+                      <div className="text-sm font-semibold">{tool.name}</div>
+                      <div className="text-xs text-muted-foreground mt-1">{tool.badge}</div>
+                    </Button>
+                  </Link>
                 ))}
               </div>
             </CardContent>
@@ -336,52 +326,10 @@ export default function Home() {
     </div>
   );
 
-  const renderToolComponent = () => {
-    switch (activeTab) {
-      case 'json': return <JsonFormatter />;
-      case 'base64': return <Base64Encoder />;
-      case 'url': return <UrlEncoder />;
-      case 'hash': return <HashGenerator />;
-      case 'regex': return <RegexTester />;
-      case 'color': return <ColorPalette />;
-      case 'qr': return <QrGenerator />;
-      case 'password': return <PasswordGenerator />;
-      case 'timestamp': return <TimestampConverter />;
-      case 'lorem': return <LoremIpsum />;
-      default: return <JsonFormatter />;
-    }
-  };
-
-  const renderToolsPage = () => (
-    <div className="min-h-screen bg-background py-8">
-      <div className="container mx-auto px-4">        
-        <div className="mb-6">
-          <div className="flex flex-wrap gap-2">
-            {tools.map((tool) => (
-              <Button
-                key={tool.id}
-                onClick={() => setActiveTab(tool.id)}
-                variant={activeTab === tool.id ? 'default' : 'outline'}
-              >
-                {tool.number}. {tool.name}
-              </Button>
-            ))}
-          </div>
-        </div>
-
-        <Card>
-          <CardContent className="p-6">
-            {renderToolComponent()}
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
-
   return (
     <div className="min-h-screen bg-background">
-      <Header currentView={currentView} onViewChange={handleViewChange} />
-      {currentView === 'home' ? renderHomePage() : renderToolsPage()}
+      <Header />
+      {renderHomePage()}
     </div>
   );
 }
