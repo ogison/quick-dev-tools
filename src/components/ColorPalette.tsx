@@ -64,7 +64,11 @@ export default function ColorPalette() {
                 <div
                   className="w-full h-20 rounded-lg border border-gray-300 cursor-pointer"
                   style={{ backgroundColor: color }}
-                  onClick={() => navigator.clipboard.writeText(color)}
+                  onClick={() => {
+                    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+                      navigator.clipboard.writeText(color).catch(err => console.error('Copy failed:', err));
+                    }
+                  }}
                 ></div>
                 <p className="text-xs font-mono mt-1">{color}</p>
               </div>

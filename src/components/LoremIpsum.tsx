@@ -110,7 +110,11 @@ export default function LoremIpsum() {
             <div className="flex justify-between items-center mb-2">
               <label className="text-sm font-medium text-gray-700">Generated Text</label>
               <button
-                onClick={() => navigator.clipboard.writeText(loremText)}
+                onClick={() => {
+                  if (typeof navigator !== 'undefined' && navigator.clipboard) {
+                    navigator.clipboard.writeText(loremText).catch(err => console.error('Copy failed:', err));
+                  }
+                }}
                 className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700"
               >
                 Copy

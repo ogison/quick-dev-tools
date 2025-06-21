@@ -10,16 +10,30 @@ export default function Base64Encoder() {
 
   const handleBase64Convert = () => {
     try {
+      // Check if browser APIs are available
+      if (typeof window === 'undefined') {
+        setBase64Error('Base64 conversion not available in this environment');
+        return;
+      }
+
       if (base64Mode === 'encode') {
+        if (typeof btoa === 'undefined') {
+          setBase64Error('Base64 encoding not supported in this environment');
+          return;
+        }
         const encoded = btoa(unescape(encodeURIComponent(base64Input)));
         setBase64Output(encoded);
       } else {
+        if (typeof atob === 'undefined') {
+          setBase64Error('Base64 decoding not supported in this environment');
+          return;
+        }
         const decoded = decodeURIComponent(escape(atob(base64Input)));
         setBase64Output(decoded);
       }
       setBase64Error('');
-    } catch {
-      setBase64Error(`Invalid ${base64Mode === 'encode' ? 'text' : 'Base64'} format`);
+    } catch (err) {
+      setBase64Error(`Invalid ${base64Mode === 'encode' ? 'text' : 'Base64'} format: ${err instanceof Error ? err.message : 'Unknown error'}`);
       setBase64Output('');
     }
   };
@@ -94,7 +108,11 @@ export default function Base64Encoder() {
           {base64Mode === 'encode' ? 'Encode' : 'Decode'}
         </button>
         <button
-          onClick={() => navigator.clipboard.writeText(base64Output)}
+          onClick={() => {
+            if (typeof navigator !== 'undefined' && navigator.clipboard) {
+              navigator.clipboard.writeText(base64Output).catch(err => console.error('Copy failed:', err));
+            }
+          }}
           disabled={!base64Output}
           className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >

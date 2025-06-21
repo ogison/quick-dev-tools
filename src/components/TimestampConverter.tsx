@@ -1,10 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function TimestampConverter() {
   const [timestamp, setTimestamp] = useState('');
   const [timestampResult, setTimestampResult] = useState('');
+  const [currentTime, setCurrentTime] = useState<{timestamp: number, date: string} | null>(null);
+
+  useEffect(() => {
+    setCurrentTime({
+      timestamp: Math.floor(Date.now() / 1000),
+      date: new Date().toISOString()
+    });
+  }, []);
 
   const convertTimestamp = () => {
     if (!timestamp.trim()) {
@@ -89,10 +97,12 @@ export default function TimestampConverter() {
             />
           </div>
         )}
-        <div className="text-sm text-gray-600">
-          <p>Current timestamp: {Math.floor(Date.now() / 1000)}</p>
-          <p>Current date: {new Date().toISOString()}</p>
-        </div>
+        {currentTime && (
+          <div className="text-sm text-gray-600">
+            <p>Current timestamp: {currentTime.timestamp}</p>
+            <p>Current date: {currentTime.date}</p>
+          </div>
+        )}
       </div>
     </div>
   );

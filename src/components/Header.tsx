@@ -24,17 +24,17 @@ export default function Header({ currentView = 'home', onViewChange }: HeaderPro
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigationItems = [
-    { id: 'home', name: 'Home', description: 'All Developer Tools' },
-    { id: 'json', name: 'JSON', description: 'JSON Formatter' },
-    { id: 'base64', name: 'Base64', description: 'Base64 Encoder/Decoder' },
-    { id: 'url', name: 'URL', description: 'URL Encoder/Decoder' },
-    { id: 'hash', name: 'Hash', description: 'Hash Generator' },
-    { id: 'regex', name: 'Regex', description: 'Regular Expression Tester' },
-    { id: 'color', name: 'Colors', description: 'Color Palette Generator' },
-    { id: 'qr', name: 'QR Code', description: 'QR Code Generator' },
-    { id: 'password', name: 'Password', description: 'Password Generator' },
-    { id: 'timestamp', name: 'Timestamp', description: 'Timestamp Converter' },
-    { id: 'lorem', name: 'Lorem', description: 'Lorem Ipsum Generator' },
+    { id: 'home', name: 'ホーム', description: 'すべての開発者ツール' },
+    { id: 'json', name: 'JSON', description: 'JSON整形ツール' },
+    { id: 'base64', name: 'Base64', description: 'Base64エンコーダー' },
+    { id: 'url', name: 'URL', description: 'URLエンコーダー' },
+    { id: 'hash', name: 'ハッシュ', description: 'ハッシュ生成器' },
+    { id: 'regex', name: '正規表現', description: '正規表現テスター' },
+    { id: 'color', name: 'カラー', description: 'カラーパレット生成' },
+    { id: 'qr', name: 'QRコード', description: 'QRコード生成器' },
+    { id: 'password', name: 'パスワード', description: 'パスワード生成器' },
+    { id: 'timestamp', name: 'タイムスタンプ', description: 'タイムスタンプ変換' },
+    { id: 'lorem', name: 'ダミーテキスト', description: 'ダミーテキスト生成' },
   ];
 
   const handleNavigation = (viewId: string) => {
@@ -62,8 +62,8 @@ export default function Header({ currentView = 'home', onViewChange }: HeaderPro
                 <Settings className="w-5 h-5 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-xl font-bold">DevTools</h1>
-                <p className="text-xs text-muted-foreground hidden sm:block">Developer Utilities</p>
+                <h1 className="text-xl font-bold">開発ツール</h1>
+                <p className="text-xs text-muted-foreground hidden sm:block">開発者向けユーティリティ</p>
               </div>
             </button>
           </div>
@@ -89,7 +89,7 @@ export default function Header({ currentView = 'home', onViewChange }: HeaderPro
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm">
-                      More
+                      その他
                       <ChevronDown className="ml-1 h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>

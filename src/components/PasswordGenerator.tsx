@@ -106,7 +106,11 @@ export default function PasswordGenerator() {
                 className="flex-1 p-3 border border-gray-300 rounded-md font-mono text-sm bg-white"
               />
               <button
-                onClick={() => navigator.clipboard.writeText(generatedPassword)}
+                onClick={() => {
+                  if (typeof navigator !== 'undefined' && navigator.clipboard) {
+                    navigator.clipboard.writeText(generatedPassword).catch(err => console.error('Copy failed:', err));
+                  }
+                }}
                 className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
               >
                 Copy

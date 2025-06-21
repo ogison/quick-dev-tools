@@ -19,6 +19,12 @@ export default function HashGenerator() {
         return;
       }
 
+      // Check if browser APIs are available
+      if (typeof window === 'undefined' || !window.crypto || !window.crypto.subtle) {
+        setHashError('Crypto APIs not available in this environment');
+        return;
+      }
+
       const encoder = new TextEncoder();
       const data = encoder.encode(hashInput);
 
@@ -50,7 +56,7 @@ export default function HashGenerator() {
       });
       setHashError('');
     } catch (err) {
-      setHashError('Error generating hashes');
+      setHashError('Error generating hashes: ' + (err instanceof Error ? err.message : 'Unknown error'));
       console.error(err);
     }
   };
@@ -99,7 +105,14 @@ export default function HashGenerator() {
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-lg font-semibold text-gray-800">{hashType.toUpperCase()}</h3>
               <button
-                onClick={() => navigator.clipboard.writeText(hashResults[hashType as keyof typeof hashResults])}
+                onClick={() => {
+                  const text = hashResults[hashType as keyof typeof hashResults];
+                  if (typeof navigator !== 'undefined' && navigator.clipboard) {
+                    navigator.clipboard.writeText(text).catch(err => {
+                      console.error('Failed to copy:', err);
+                    });
+                  }
+                }}
                 disabled={!hashResults[hashType as keyof typeof hashResults]}
                 className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
