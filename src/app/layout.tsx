@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: '開発者ツール集 | プロフェッショナルな無料開発ツール',
+    default: 'Tooly 開発者ツール集 | プロフェッショナルな無料開発ツール',
     template: '%s | 開発者ツール集',
   },
   description:

@@ -91,7 +91,7 @@ export default function Header() {
                 <Settings className="text-primary-foreground h-5 w-5" />
               </div>
               <div>
-                <h1 className="text-xl font-bold">開発ツール</h1>
+                <h2 className="font-bold">Tooly</h2>
                 <p className="text-muted-foreground hidden text-xs sm:block">
                   開発者向けユーティリティ
                 </p>
