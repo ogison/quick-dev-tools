@@ -1,4 +1,16 @@
 import QrGenerator from '@/features/tools/qr/components/QrGenerator';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'QRコードジェネレーター',
+  description: 'テキストやURLからQRコードを生成するオンラインツール。サイズ、色、エラー訂正レベルのカスタマイズが可能。PNG、SVG形式でダウンロード可能。',
+  keywords: ['QRコード', 'QRコード生成', 'QRコード作成', '二次元コード', 'QRジェネレーター', 'QRコードメーカー'],
+  openGraph: {
+    title: 'QRコードジェネレーター | 開発者ツール集',
+    description: 'テキストやURLからQRコードを生成するオンラインツール。カスタマイズ可能。',
+    type: 'website',
+  },
+};
 
 export default function QrPage() {
   return (

@@ -4,7 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Toaster } from "sonner";
-import { ThemeProvider } from "@/components/layout/ThemeProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { DefaultSkipLinks } from "@/components/a11y/SkipLink";
 
 const geistSans = Geist({
@@ -71,7 +71,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
         <ThemeProvider
+          attribute="class"
           defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
           storageKey="engineer-tools-theme"
         >
           <DefaultSkipLinks />

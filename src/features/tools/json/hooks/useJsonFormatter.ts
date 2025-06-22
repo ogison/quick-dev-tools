@@ -22,6 +22,8 @@ export const useJsonFormatter = () => {
     indentSize: 2
   });
   const [isDragging, setIsDragging] = useState(false);
+  const [enableVirtualization, setEnableVirtualization] = useState(false);
+  const [enableSyntaxHighlight, setEnableSyntaxHighlight] = useState(true);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const outputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -37,6 +39,9 @@ export const useJsonFormatter = () => {
   // Real-time validation
   useEffect(() => {
     debouncedValidate(jsonInput);
+    // Enable virtualization for large JSON (> 1MB or > 10000 lines)
+    const shouldVirtualize = jsonInput.length > 1024 * 1024 || jsonInput.split('\n').length > 10000;
+    setEnableVirtualization(shouldVirtualize);
   }, [jsonInput, debouncedValidate]);
 
   // Handle indent type change
@@ -223,12 +228,15 @@ export const useJsonFormatter = () => {
     validationResult,
     options,
     isDragging,
+    enableVirtualization,
+    enableSyntaxHighlight,
     inputRef,
     outputRef,
 
     // Setters
     setJsonInput,
     handleIndentTypeChange,
+    setEnableSyntaxHighlight,
 
     // Actions
     formatJSON,

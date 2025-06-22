@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Menu, ChevronDown, Settings, Search } from 'lucide-react';
-import { ThemeToggle } from '@/components/layout/ThemeToggle';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import SearchModal from '@/components/search/SearchModal';
 import { useSearchShortcuts } from '@/lib/search/search-hooks';
 import type { Tool } from '@/features/tools/types';
