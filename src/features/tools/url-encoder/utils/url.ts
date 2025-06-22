@@ -25,18 +25,18 @@ export function parseURL(url: string): {
   try {
     const urlObj = new URL(url);
     const params: Record<string, string> = {};
-    
+
     urlObj.searchParams.forEach((value, key) => {
       params[key] = value;
     });
-    
+
     return {
       protocol: urlObj.protocol,
       host: urlObj.host,
       pathname: urlObj.pathname,
       search: urlObj.search,
       hash: urlObj.hash,
-      params
+      params,
     };
   } catch {
     return null;

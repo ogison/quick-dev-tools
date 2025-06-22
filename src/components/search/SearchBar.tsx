@@ -1,32 +1,34 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
 import { Search, Command, X } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { useState, useRef, useEffect } from 'react';
+
 import { Button } from '@/components/ui/button';
-import type { SearchBarProps } from './types';
-import { generateSearchSuggestions } from '@/lib/search/search-utils';
+import { Input } from '@/components/ui/input';
 import { TOOLS } from '@/constants/tools';
+import { generateSearchSuggestions } from '@/lib/search/search-utils';
+
+import type { SearchBarProps } from './types';
 
 export default function SearchBar({
   placeholder = 'ツールを検索...',
   onSearch,
   onSelectTool,
   showSuggestions = true,
-  className = ''
+  className = '',
 }: SearchBarProps) {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestionsList, setShowSuggestionsList] = useState(false);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
-  
+
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
   // 検索クエリの更新
   const handleQueryChange = (value: string) => {
     setQuery(value);
-    
+
     if (onSearch) {
       onSearch(value);
     }
@@ -45,23 +47,21 @@ export default function SearchBar({
 
   // キーボード操作
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (!showSuggestionsList || suggestions.length === 0) return;
+    if (!showSuggestionsList || suggestions.length === 0) {
+      return;
+    }
 
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault();
-        setSelectedSuggestionIndex(prev => 
-          prev < suggestions.length - 1 ? prev + 1 : 0
-        );
+        setSelectedSuggestionIndex((prev) => (prev < suggestions.length - 1 ? prev + 1 : 0));
         break;
-      
+
       case 'ArrowUp':
         event.preventDefault();
-        setSelectedSuggestionIndex(prev => 
-          prev > 0 ? prev - 1 : suggestions.length - 1
-        );
+        setSelectedSuggestionIndex((prev) => (prev > 0 ? prev - 1 : suggestions.length - 1));
         break;
-      
+
       case 'Enter':
         event.preventDefault();
         if (selectedSuggestionIndex >= 0) {
@@ -70,7 +70,7 @@ export default function SearchBar({
           setShowSuggestionsList(false);
         }
         break;
-      
+
       case 'Escape':
         setShowSuggestionsList(false);
         setSelectedSuggestionIndex(-1);
@@ -92,11 +92,11 @@ export default function SearchBar({
     setSuggestions([]);
     setShowSuggestionsList(false);
     setSelectedSuggestionIndex(-1);
-    
+
     if (onSearch) {
       onSearch('');
     }
-    
+
     inputRef.current?.focus();
   };
 
@@ -104,7 +104,7 @@ export default function SearchBar({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        suggestionsRef.current && 
+        suggestionsRef.current &&
         !suggestionsRef.current.contains(event.target as Node) &&
         !inputRef.current?.contains(event.target as Node)
       ) {
@@ -126,8 +126,8 @@ export default function SearchBar({
   return (
     <div className={`relative ${className}`}>
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-        
+        <Search className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 transform" />
+
         <Input
           ref={inputRef}
           type="text"
@@ -136,18 +136,16 @@ export default function SearchBar({
           onChange={(e) => handleQueryChange(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={handleFocus}
-          className="pl-10 pr-20 py-6 text-lg bg-white/80 backdrop-blur-sm border-0 shadow-lg focus:shadow-xl transition-shadow"
+          className="border-0 bg-white/80 py-6 pr-20 pl-10 text-lg shadow-lg backdrop-blur-sm transition-shadow focus:shadow-xl"
           role="searchbox"
           aria-label="ツール検索"
           aria-expanded={showSuggestionsList}
           aria-activedescendant={
-            selectedSuggestionIndex >= 0 
-              ? `suggestion-${selectedSuggestionIndex}` 
-              : undefined
+            selectedSuggestionIndex >= 0 ? `suggestion-${selectedSuggestionIndex}` : undefined
           }
         />
 
-        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+        <div className="absolute top-1/2 right-3 flex -translate-y-1/2 transform items-center gap-2">
           {query && (
             <Button
               variant="ghost"
@@ -159,8 +157,8 @@ export default function SearchBar({
               <X className="h-4 w-4" />
             </Button>
           )}
-          
-          <div className="flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+
+          <div className="text-muted-foreground bg-muted flex items-center gap-1 rounded px-2 py-1 text-xs">
             <Command className="h-3 w-3" />
             <span>K</span>
           </div>
@@ -171,17 +169,17 @@ export default function SearchBar({
       {showSuggestionsList && suggestions.length > 0 && (
         <div
           ref={suggestionsRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-64 overflow-y-auto"
+          className="absolute top-full right-0 left-0 z-50 mt-2 max-h-64 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg"
           role="listbox"
           aria-label="検索候補"
         >
           <div className="p-2">
-            <div className="text-xs text-muted-foreground mb-2 px-2">検索候補:</div>
+            <div className="text-muted-foreground mb-2 px-2 text-xs">検索候補:</div>
             {suggestions.map((suggestion, index) => (
               <button
                 key={index}
                 id={`suggestion-${index}`}
-                className={`w-full text-left px-3 py-2 rounded text-sm hover:bg-gray-100 transition-colors ${
+                className={`w-full rounded px-3 py-2 text-left text-sm transition-colors hover:bg-gray-100 ${
                   index === selectedSuggestionIndex ? 'bg-blue-50 text-blue-700' : ''
                 }`}
                 onClick={() => selectSuggestion(suggestion)}
@@ -189,7 +187,7 @@ export default function SearchBar({
                 aria-selected={index === selectedSuggestionIndex}
               >
                 <div className="flex items-center gap-2">
-                  <Search className="h-3 w-3 text-muted-foreground" />
+                  <Search className="text-muted-foreground h-3 w-3" />
                   <span>{suggestion}</span>
                 </div>
               </button>

@@ -13,13 +13,17 @@ export function FocusTrap({ children, disabled = false, restoreFocus = true }: F
   const previouslyFocusedElement = React.useRef<HTMLElement | null>(null);
 
   React.useEffect(() => {
-    if (disabled) return;
+    if (disabled) {
+      return;
+    }
 
     // Store the previously focused element
     previouslyFocusedElement.current = document.activeElement as HTMLElement;
 
     const container = containerRef.current;
-    if (!container) return;
+    if (!container) {
+      return;
+    }
 
     // Focus the first focusable element
     const focusableElements = getFocusableElements(container);
@@ -28,7 +32,9 @@ export function FocusTrap({ children, disabled = false, restoreFocus = true }: F
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Tab') return;
+      if (event.key !== 'Tab') {
+        return;
+      }
 
       const focusableElements = getFocusableElements(container);
       const firstElement = focusableElements[0];
@@ -53,7 +59,7 @@ export function FocusTrap({ children, disabled = false, restoreFocus = true }: F
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      
+
       // Restore focus to previously focused element
       if (restoreFocus && previouslyFocusedElement.current) {
         previouslyFocusedElement.current.focus();

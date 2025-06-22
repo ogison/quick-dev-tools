@@ -1,5 +1,6 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+
 import { TOOLS } from '@/constants/tools';
 import type { Tool } from '@/features/tools/types';
 
@@ -11,7 +12,7 @@ export const useHomePage = () => {
 
   // Get unique categories
   const categories = useMemo(() => {
-    const cats = [...new Set(TOOLS.map(tool => tool.category))];
+    const cats = [...new Set(TOOLS.map((tool) => tool.category))];
     return ['all', ...cats];
   }, []);
 
@@ -21,17 +22,18 @@ export const useHomePage = () => {
 
     // Category filter
     if (selectedCategory !== 'all') {
-      filtered = filtered.filter(tool => tool.category === selectedCategory);
+      filtered = filtered.filter((tool) => tool.category === selectedCategory);
     }
 
     // Search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(tool => 
-        tool.name.toLowerCase().includes(query) ||
-        tool.description.toLowerCase().includes(query) ||
-        tool.category.toLowerCase().includes(query) ||
-        tool.badge.toLowerCase().includes(query)
+      filtered = filtered.filter(
+        (tool) =>
+          tool.name.toLowerCase().includes(query) ||
+          tool.description.toLowerCase().includes(query) ||
+          tool.category.toLowerCase().includes(query) ||
+          tool.badge.toLowerCase().includes(query)
       );
     }
 
@@ -91,13 +93,18 @@ export const useHomePage = () => {
   }, []);
 
   // Navigate to tool
-  const navigateToTool = useCallback((tool: Tool) => {
-    router.push(tool.href);
-  }, [router]);
+  const navigateToTool = useCallback(
+    (tool: Tool) => {
+      router.push(tool.href);
+    },
+    [router]
+  );
 
   // Get category display name
   const getCategoryDisplayName = useCallback((category: string) => {
-    if (category === 'all') return 'すべて';
+    if (category === 'all') {
+      return 'すべて';
+    }
     return category;
   }, []);
 
@@ -106,12 +113,14 @@ export const useHomePage = () => {
 
   // Get search suggestions
   const searchSuggestions = useMemo(() => {
-    if (!searchQuery.trim()) return [];
-    
+    if (!searchQuery.trim()) {
+      return [];
+    }
+
     const query = searchQuery.toLowerCase();
     const suggestions = new Set<string>();
-    
-    TOOLS.forEach(tool => {
+
+    TOOLS.forEach((tool) => {
       if (tool.name.toLowerCase().includes(query)) {
         suggestions.add(tool.name);
       }
@@ -122,7 +131,7 @@ export const useHomePage = () => {
         suggestions.add(tool.badge);
       }
     });
-    
+
     return Array.from(suggestions).slice(0, 5);
   }, [searchQuery]);
 

@@ -11,13 +11,13 @@ interface CopyButtonProps {
   children?: React.ReactNode;
 }
 
-export default function CopyButton({ 
-  text, 
-  size = 'md', 
+export default function CopyButton({
+  text,
+  size = 'md',
   variant = 'default',
   className = '',
   successMessage = 'コピー完了!',
-  children 
+  children,
 }: CopyButtonProps) {
   const [copied, setCopied] = useState(false);
 
@@ -36,19 +36,19 @@ export default function CopyButton({
   const sizeClasses = {
     sm: 'px-2 py-1 text-xs',
     md: 'px-3 py-1 text-sm',
-    lg: 'px-4 py-2 text-sm'
+    lg: 'px-4 py-2 text-sm',
   };
 
   const variantClasses = {
-    default: copied 
-      ? 'bg-green-100 text-green-700 border border-green-300' 
+    default: copied
+      ? 'bg-green-100 text-green-700 border border-green-300'
       : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
     outline: copied
       ? 'bg-green-100 text-green-700 border border-green-300'
       : 'border border-gray-300 text-gray-700 hover:bg-gray-50',
     green: copied
       ? 'bg-green-100 text-green-700 border border-green-300'
-      : 'bg-green-600 text-white hover:bg-green-700'
+      : 'bg-green-600 text-white hover:bg-green-700',
   };
 
   return (

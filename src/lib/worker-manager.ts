@@ -2,7 +2,10 @@
 class WorkerManager {
   private workers: Map<string, Worker> = new Map();
   private messageId = 0;
-  private pendingMessages: Map<number, { resolve: (value: any) => void; reject: (error: Error) => void }> = new Map();
+  private pendingMessages: Map<
+    number,
+    { resolve: (value: any) => void; reject: (error: Error) => void }
+  > = new Map();
 
   private getWorker(workerType: string): Worker {
     if (!this.workers.has(workerType)) {
@@ -17,10 +20,10 @@ class WorkerManager {
   private handleWorkerMessage(event: MessageEvent) {
     const { id, type, result, error } = event.data;
     const pending = this.pendingMessages.get(id);
-    
+
     if (pending) {
       this.pendingMessages.delete(id);
-      
+
       if (type === 'ERROR') {
         pending.reject(new Error(error));
       } else {
@@ -42,13 +45,13 @@ class WorkerManager {
     return new Promise((resolve, reject) => {
       const id = ++this.messageId;
       const worker = this.getWorker(workerType);
-      
+
       this.pendingMessages.set(id, { resolve, reject });
-      
+
       worker.postMessage({
         id,
         type: messageType,
-        data
+        data,
       });
 
       // Timeout after 30 seconds
@@ -99,18 +102,21 @@ export const workerManager = new WorkerManager();
 // Cleanup on page unload and visibility change
 if (typeof window !== 'undefined') {
   const cleanup = () => workerManager.terminateAllWorkers();
-  
+
   window.addEventListener('beforeunload', cleanup);
   window.addEventListener('pagehide', cleanup);
-  
+
   // Cleanup when page becomes hidden for more than 5 minutes
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-      setTimeout(() => {
-        if (document.hidden) {
-          workerManager.cleanup();
-        }
-      }, 5 * 60 * 1000); // 5 minutes
+      setTimeout(
+        () => {
+          if (document.hidden) {
+            workerManager.cleanup();
+          }
+        },
+        5 * 60 * 1000
+      ); // 5 minutes
     }
   });
 }

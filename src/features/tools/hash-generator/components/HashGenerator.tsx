@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
+
 import { workerManager } from '@/lib/worker-manager';
 
 type HashType = 'md5' | 'sha1' | 'sha256' | 'sha512';
@@ -18,17 +19,17 @@ export default function HashGenerator() {
     md5: '',
     sha1: '',
     sha256: '',
-    sha512: ''
+    sha512: '',
   });
   const [hashError, setHashError] = useState('');
-  const [copySuccess, setCopySuccess] = useState<{[key: string]: boolean}>({});
+  const [copySuccess, setCopySuccess] = useState<{ [key: string]: boolean }>({});
   const [isGenerating, setIsGenerating] = useState(false);
   const [useWebWorker, setUseWebWorker] = useState(true);
 
   // Memoized utility functions
   const arrayBufferToHex = useCallback((buffer: ArrayBuffer) => {
     return Array.from(new Uint8Array(buffer))
-      .map(b => b.toString(16).padStart(2, '0'))
+      .map((b) => b.toString(16).padStart(2, '0'))
       .join('');
   }, []);
 
@@ -36,7 +37,7 @@ export default function HashGenerator() {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash;
     }
     return Math.abs(hash).toString(16).padStart(8, '0').substring(0, 32);
@@ -55,7 +56,7 @@ export default function HashGenerator() {
       if (useWebWorker && typeof Worker !== 'undefined') {
         // Use Web Worker for hash generation
         const results = await workerManager.postMessage('hash', 'GENERATE_HASHES', {
-          input: hashInput
+          input: hashInput,
         });
         setHashResults(results);
       } else {
@@ -71,14 +72,14 @@ export default function HashGenerator() {
         const [sha1Hash, sha256Hash, sha512Hash] = await Promise.all([
           crypto.subtle.digest('SHA-1', data),
           crypto.subtle.digest('SHA-256', data),
-          crypto.subtle.digest('SHA-512', data)
+          crypto.subtle.digest('SHA-512', data),
         ]);
 
         setHashResults({
           md5: simpleMD5(hashInput),
           sha1: arrayBufferToHex(sha1Hash),
           sha256: arrayBufferToHex(sha256Hash),
-          sha512: arrayBufferToHex(sha512Hash)
+          sha512: arrayBufferToHex(sha512Hash),
         });
       }
     } catch (err) {
@@ -88,7 +89,9 @@ export default function HashGenerator() {
         setUseWebWorker(false);
         setTimeout(() => generateHashes(), 100);
       } else {
-        setHashError('ハッシュ生成エラー: ' + (err instanceof Error ? err.message : '不明なエラー'));
+        setHashError(
+          'ハッシュ生成エラー: ' + (err instanceof Error ? err.message : '不明なエラー')
+        );
       }
     } finally {
       setIsGenerating(false);
@@ -101,7 +104,7 @@ export default function HashGenerator() {
       md5: '',
       sha1: '',
       sha256: '',
-      sha512: ''
+      sha512: '',
     });
     setHashError('');
     setCopySuccess({});
@@ -111,9 +114,9 @@ export default function HashGenerator() {
     try {
       if (typeof navigator !== 'undefined' && navigator.clipboard) {
         await navigator.clipboard.writeText(text);
-        setCopySuccess(prev => ({ ...prev, [hashType]: true }));
+        setCopySuccess((prev) => ({ ...prev, [hashType]: true }));
         setTimeout(() => {
-          setCopySuccess(prev => ({ ...prev, [hashType]: false }));
+          setCopySuccess((prev) => ({ ...prev, [hashType]: false }));
         }, 2000);
       }
     } catch (err) {
@@ -127,105 +130,110 @@ export default function HashGenerator() {
         return {
           name: 'MD5',
           warning: '⚠️ MD5は暗号学的に安全ではありません。レガシー目的のみ使用してください',
-          isDeprecated: true
+          isDeprecated: true,
         };
       case 'sha1':
         return {
           name: 'SHA-1',
           warning: '⚠️ SHA-1は暗号学的に安全ではありません。SHA-256以上を推奨します',
-          isDeprecated: true
+          isDeprecated: true,
         };
       case 'sha256':
         return {
           name: 'SHA-256',
           warning: '✅ 推奨: 暗号学的に安全なアルゴリズムです',
-          isDeprecated: false
+          isDeprecated: false,
         };
       case 'sha512':
         return {
           name: 'SHA-512',
           warning: '✅ 推奨: 暗号学的に安全なアルゴリズムです',
-          isDeprecated: false
+          isDeprecated: false,
         };
     }
   };
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-2 text-gray-800">ハッシュ生成</h2>
-      <p className="text-gray-600 mb-6">各種ハッシュアルゴリズムを使用してテキストのハッシュ値を生成するツールです</p>
-      
+      <h2 className="mb-2 text-2xl font-semibold text-gray-800">ハッシュ生成</h2>
+      <p className="mb-6 text-gray-600">
+        各種ハッシュアルゴリズムを使用してテキストのハッシュ値を生成するツールです
+      </p>
+
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          入力テキスト
-        </label>
+        <label className="mb-2 block text-sm font-medium text-gray-700">入力テキスト</label>
         <textarea
           value={hashInput}
           onChange={(e) => setHashInput(e.target.value)}
           placeholder="ハッシュ化するテキストを入力してください..."
-          className="w-full h-32 p-3 border border-gray-300 rounded-md font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="h-32 w-full rounded-md border border-gray-300 p-3 font-mono text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      
+
       {hashError && (
-        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+        <div className="mb-4 rounded border border-red-400 bg-red-100 p-3 text-red-700">
           <strong>エラー:</strong> {hashError}
         </div>
       )}
-      
+
       <div className="mb-6 flex flex-wrap gap-3">
-        <button 
-          onClick={generateHashes} 
+        <button
+          onClick={generateHashes}
           disabled={!hashInput.trim()}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400"
         >
           ハッシュ生成
         </button>
-        <button 
-          onClick={clearHash} 
-          className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+        <button
+          onClick={clearHash}
+          className="rounded bg-gray-600 px-4 py-2 text-white hover:bg-gray-700"
         >
           すべてクリア
         </button>
       </div>
-      
+
       <div className="space-y-4">
         {(['md5', 'sha1', 'sha256', 'sha512'] as HashType[]).map((hashType) => {
           const info = getAlgorithmInfo(hashType);
           return (
-            <div key={hashType} className="border border-gray-200 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className={`text-lg font-semibold ${info.isDeprecated ? 'text-orange-600' : 'text-green-600'}`}>
+            <div key={hashType} className="rounded-lg border border-gray-200 p-4">
+              <div className="mb-2 flex items-center justify-between">
+                <h3
+                  className={`text-lg font-semibold ${info.isDeprecated ? 'text-orange-600' : 'text-green-600'}`}
+                >
                   {info.name}
                 </h3>
                 <button
                   onClick={() => copyToClipboard(hashResults[hashType], hashType)}
                   disabled={!hashResults[hashType]}
-                  className={`px-3 py-1 text-sm rounded disabled:bg-gray-400 disabled:cursor-not-allowed ${
-                    copySuccess[hashType] 
-                      ? 'bg-green-100 text-green-700 border border-green-300' 
+                  className={`rounded px-3 py-1 text-sm disabled:cursor-not-allowed disabled:bg-gray-400 ${
+                    copySuccess[hashType]
+                      ? 'border border-green-300 bg-green-100 text-green-700'
                       : 'bg-green-600 text-white hover:bg-green-700'
                   }`}
                 >
                   {copySuccess[hashType] ? 'コピー完了!' : 'コピー'}
                 </button>
               </div>
-              
-              <div className="bg-gray-50 p-3 rounded font-mono text-sm break-all min-h-[2.5rem] flex items-center">
+
+              <div className="flex min-h-[2.5rem] items-center rounded bg-gray-50 p-3 font-mono text-sm break-all">
                 {hashResults[hashType] || 'ハッシュ値がここに表示されます...'}
               </div>
-              
-              <div className={`text-xs mt-2 p-2 rounded ${
-                info.isDeprecated 
-                  ? 'bg-orange-50 text-orange-700 border border-orange-200' 
-                  : 'bg-green-50 text-green-700 border border-green-200'
-              }`}>
+
+              <div
+                className={`mt-2 rounded p-2 text-xs ${
+                  info.isDeprecated
+                    ? 'border border-orange-200 bg-orange-50 text-orange-700'
+                    : 'border border-green-200 bg-green-50 text-green-700'
+                }`}
+              >
                 {info.warning}
               </div>
-              
+
               {hashType === 'md5' && (
-                <p className="text-xs text-gray-500 mt-1">
-                  注意: これは簡易実装のMD5です。本格的な用途では適切な暗号ライブラリを使用してください。
+                <p className="mt-1 text-xs text-gray-500">
+                  注意:
+                  これは簡易実装のMD5です。本格的な用途では適切な暗号ライブラリを使用してください。
                 </p>
               )}
             </div>

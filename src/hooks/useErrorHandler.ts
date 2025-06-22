@@ -28,14 +28,17 @@ export function useErrorHandler() {
     });
   }, []);
 
-  const handleAsync = useCallback(async (fn: () => Promise<void>) => {
-    try {
-      clearError();
-      await fn();
-    } catch (error) {
-      setError(error instanceof Error ? error : new Error(String(error)));
-    }
-  }, [setError, clearError]);
+  const handleAsync = useCallback(
+    async (fn: () => Promise<void>) => {
+      try {
+        clearError();
+        await fn();
+      } catch (error) {
+        setError(error instanceof Error ? error : new Error(String(error)));
+      }
+    },
+    [setError, clearError]
+  );
 
   return {
     error: errorState.error,

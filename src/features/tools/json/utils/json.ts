@@ -21,9 +21,9 @@ export function validateJson(jsonString: string): { valid: boolean; error?: stri
     JSON.parse(jsonString);
     return { valid: true };
   } catch (error) {
-    return { 
-      valid: false, 
-      error: error instanceof Error ? error.message : 'Invalid JSON'
+    return {
+      valid: false,
+      error: error instanceof Error ? error.message : 'Invalid JSON',
     };
   }
 }

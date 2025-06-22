@@ -1,7 +1,13 @@
 'use client';
 
+import {
+  AppSettings,
+  ToolSettings,
+  DEFAULT_APP_SETTINGS,
+  DEFAULT_TOOL_SETTINGS,
+} from '@/lib/settings';
+
 import { useLocalStorage } from './useLocalStorage';
-import { AppSettings, ToolSettings, DEFAULT_APP_SETTINGS, DEFAULT_TOOL_SETTINGS } from '@/lib/settings';
 
 export function useAppSettings() {
   return useLocalStorage<AppSettings>('app-settings', DEFAULT_APP_SETTINGS);

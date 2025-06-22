@@ -1,4 +1,5 @@
 import type { UrlMode, SpaceMode } from '../types';
+
 import { convertUrl } from './url-encoder';
 
 const LARGE_TEXT_THRESHOLD = 1024 * 1024; // 1MB
@@ -20,13 +21,13 @@ export async function processLargeText(
   spaceMode: SpaceMode
 ): Promise<AsyncProcessingResult> {
   const isLarge = isLargeText(input);
-  
+
   if (!isLarge) {
     // 小さなデータは同期処理
     const result = convertUrl(input, mode, spaceMode);
     return {
       ...result,
-      isLargeData: false
+      isLargeData: false,
     };
   }
 
@@ -38,23 +39,20 @@ export async function processLargeText(
         const result = convertUrl(input, mode, spaceMode);
         resolve({
           ...result,
-          isLargeData: true
+          isLargeData: true,
         });
       } catch (error) {
         resolve({
           result: '',
           error: error instanceof Error ? error.message : '処理中にエラーが発生しました',
-          isLargeData: true
+          isLargeData: true,
         });
       }
     }, 0);
   });
 }
 
-export function chunkProcess(
-  text: string,
-  chunkSize: number = 10000
-): string[] {
+export function chunkProcess(text: string, chunkSize: number = 10000): string[] {
   const chunks: string[] = [];
   for (let i = 0; i < text.length; i += chunkSize) {
     chunks.push(text.slice(i, i + chunkSize));
@@ -70,33 +68,33 @@ export async function processInChunks(
 ): Promise<AsyncProcessingResult> {
   const chunks = chunkProcess(input);
   const results: string[] = [];
-  
+
   for (let i = 0; i < chunks.length; i++) {
     const chunk = chunks[i];
     const result = convertUrl(chunk, mode, spaceMode);
-    
+
     if (result.error) {
       return {
         result: '',
         error: result.error,
-        isLargeData: true
+        isLargeData: true,
       };
     }
-    
+
     results.push(result.result);
-    
+
     if (onProgress) {
-      onProgress((i + 1) / chunks.length * 100);
+      onProgress(((i + 1) / chunks.length) * 100);
     }
-    
+
     // UIをブロックしないよう適度に待機
     if (i % 10 === 0) {
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise((resolve) => setTimeout(resolve, 0));
     }
   }
-  
+
   return {
     result: results.join(''),
-    isLargeData: true
+    isLargeData: true,
   };
 }

@@ -1,13 +1,15 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+
+import type { SearchFilters, SearchState } from '@/components/search/types';
 import { TOOLS } from '@/constants/tools';
 import type { Tool } from '@/features/tools/types';
-import type { SearchResult, SearchFilters, SearchState } from '@/components/search/types';
-import { 
-  searchTools, 
-  generateSearchSuggestions, 
-  saveSearchHistory, 
-  getSearchHistory 
+
+import {
+  searchTools,
+  generateSearchSuggestions,
+  saveSearchHistory,
+  getSearchHistory,
 } from './search-utils';
 
 // メイン検索フック
@@ -20,83 +22,92 @@ export function useSearch() {
     filters: {},
     suggestions: [],
     history: [],
-    showResults: false
+    showResults: false,
   });
 
   // 検索履歴の初期化
   useEffect(() => {
     const history = getSearchHistory();
-    setSearchState(prev => ({ ...prev, history }));
+    setSearchState((prev) => ({ ...prev, history }));
   }, []);
 
   // デバウンス付き検索実行
   const executeSearch = useCallback((query: string, filters: SearchFilters = {}) => {
-    setSearchState(prev => ({ ...prev, isLoading: true }));
+    setSearchState((prev) => ({ ...prev, isLoading: true }));
 
     // 実際の検索処理
     setTimeout(() => {
       const results = searchTools(TOOLS, query, filters);
-      
+
       // 検索履歴に保存（空でない検索のみ）
       if (query.trim()) {
         saveSearchHistory(query.trim(), results.length);
       }
 
-      setSearchState(prev => ({
+      setSearchState((prev) => ({
         ...prev,
         query,
         results,
         isLoading: false,
-        showResults: true
+        showResults: true,
       }));
     }, 200); // 200ms のデバウンス
   }, []);
 
   // 検索クエリの更新
-  const updateQuery = useCallback((query: string) => {
-    setSearchState(prev => ({ ...prev, query }));
-    
-    // 候補の更新
-    const suggestions = generateSearchSuggestions(TOOLS, query);
-    setSearchState(prev => ({ ...prev, suggestions }));
+  const updateQuery = useCallback(
+    (query: string) => {
+      setSearchState((prev) => ({ ...prev, query }));
 
-    // 空でない場合は検索実行
-    if (query.trim()) {
-      executeSearch(query, searchState.filters);
-    } else {
-      setSearchState(prev => ({ 
-        ...prev, 
-        results: [], 
-        showResults: false 
-      }));
-    }
-  }, [executeSearch, searchState.filters]);
+      // 候補の更新
+      const suggestions = generateSearchSuggestions(TOOLS, query);
+      setSearchState((prev) => ({ ...prev, suggestions }));
+
+      // 空でない場合は検索実行
+      if (query.trim()) {
+        executeSearch(query, searchState.filters);
+      } else {
+        setSearchState((prev) => ({
+          ...prev,
+          results: [],
+          showResults: false,
+        }));
+      }
+    },
+    [executeSearch, searchState.filters]
+  );
 
   // フィルターの更新
-  const updateFilters = useCallback((filters: SearchFilters) => {
-    setSearchState(prev => ({ ...prev, filters }));
-    
-    if (searchState.query.trim()) {
-      executeSearch(searchState.query, filters);
-    }
-  }, [executeSearch, searchState.query]);
+  const updateFilters = useCallback(
+    (filters: SearchFilters) => {
+      setSearchState((prev) => ({ ...prev, filters }));
+
+      if (searchState.query.trim()) {
+        executeSearch(searchState.query, filters);
+      }
+    },
+    [executeSearch, searchState.query]
+  );
 
   // 検索のクリア
   const clearSearch = useCallback(() => {
-    setSearchState(prev => ({
+    setSearchState((prev) => ({
       ...prev,
       query: '',
       results: [],
       showResults: false,
-      suggestions: []
+      suggestions: [],
     }));
   }, []);
 
   // ツール選択時の処理
-  const selectTool = useCallback((tool: Tool) => {
-    router.push(tool.href);
-    clearSearch();
-  }, [router, clearSearch]);
+  const selectTool = useCallback(
+    (tool: Tool) => {
+      router.push(tool.href);
+      clearSearch();
+    },
+    [router, clearSearch]
+  );
 
   return {
     ...searchState,
@@ -104,7 +115,7 @@ export function useSearch() {
     updateFilters,
     clearSearch,
     selectTool,
-    executeSearch
+    executeSearch,
   };
 }
 
@@ -120,13 +131,13 @@ export function useHomePageSearch() {
 
     // カテゴリフィルター
     if (selectedCategory !== 'all') {
-      tools = tools.filter(tool => tool.category === selectedCategory);
+      tools = tools.filter((tool) => tool.category === selectedCategory);
     }
 
     // 検索クエリフィルター
     if (searchQuery.trim()) {
       const results = searchTools(tools, searchQuery);
-      return results.map(result => result.tool);
+      return results.map((result) => result.tool);
     }
 
     return tools;
@@ -134,7 +145,7 @@ export function useHomePageSearch() {
 
   // カテゴリ一覧
   const categories = useMemo(() => {
-    const uniqueCategories = [...new Set(TOOLS.map(tool => tool.category))];
+    const uniqueCategories = [...new Set(TOOLS.map((tool) => tool.category))];
     return ['all', ...uniqueCategories];
   }, []);
 
@@ -185,7 +196,7 @@ export function useHomePageSearch() {
     clearSearch,
     resetFilters,
     navigateToTool,
-    getCategoryDisplayName
+    getCategoryDisplayName,
   };
 }
 
@@ -218,7 +229,9 @@ export function useSearchShortcuts(onSearchOpen: () => void) {
 // 検索結果ハイライト用フック
 export function useSearchHighlight() {
   const highlightMatches = useCallback((text: string, query: string) => {
-    if (!query.trim()) return text;
+    if (!query.trim()) {
+      return text;
+    }
 
     const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
     return text.replace(regex, '<mark class="bg-yellow-200 px-1 rounded">$1</mark>');

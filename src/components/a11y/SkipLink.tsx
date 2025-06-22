@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+
 import { cn } from '@/lib/utils';
 
 interface SkipLinkProps {
@@ -14,7 +15,7 @@ export function SkipLink({ href, children, className }: SkipLinkProps) {
     <a
       href={href}
       className={cn(
-        'absolute left-4 top-4 z-50 -translate-y-16 rounded bg-background px-4 py-2 text-sm font-medium text-foreground shadow-lg ring-2 ring-ring transition-transform focus:translate-y-0',
+        'bg-background text-foreground ring-ring absolute top-4 left-4 z-50 -translate-y-16 rounded px-4 py-2 text-sm font-medium shadow-lg ring-2 transition-transform focus:translate-y-0',
         className
       )}
       onFocus={(e) => {

@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { highlightErrors, validateEncodedString, validateUrl } from '../utils/error-highlighter';
+
 import type { UrlMode } from '../types';
+import { highlightErrors, validateEncodedString, validateUrl } from '../utils/error-highlighter';
 
 interface ErrorHighlightedInputProps {
   value: string;
@@ -32,11 +33,9 @@ export function ErrorHighlightedInput({
     if (value) {
       const highlighted = highlightErrors(value, mode);
       setHighlightedContent(highlighted);
-      
+
       // エラーチェック
-      const errors = mode === 'encode' 
-        ? validateUrl(value)
-        : validateEncodedString(value);
+      const errors = mode === 'encode' ? validateUrl(value) : validateEncodedString(value);
       setHasErrors(errors.length > 0);
     } else {
       setHighlightedContent('');
@@ -56,11 +55,11 @@ export function ErrorHighlightedInput({
       {/* Background highlighting */}
       <div
         ref={highlightRef}
-        className="absolute inset-0 p-3 font-mono text-sm text-transparent whitespace-pre-wrap break-words overflow-hidden pointer-events-none error-syntax"
+        className="error-syntax pointer-events-none absolute inset-0 overflow-hidden p-3 font-mono text-sm break-words whitespace-pre-wrap text-transparent"
         style={{ zIndex: 1 }}
         dangerouslySetInnerHTML={{ __html: highlightedContent }}
       />
-      
+
       {/* Input textarea */}
       <textarea
         ref={textareaRef}
@@ -68,13 +67,13 @@ export function ErrorHighlightedInput({
         onChange={(e) => onChange(e.target.value)}
         onScroll={handleScroll}
         placeholder={placeholder}
-        className={`relative w-full h-64 p-3 border rounded-md font-mono text-sm bg-transparent resize-none ${
+        className={`relative h-64 w-full resize-none rounded-md border bg-transparent p-3 font-mono text-sm ${
           hasErrors ? 'border-destructive' : 'border-input'
-        } focus:ring-2 focus:ring-ring focus:border-transparent`}
+        } focus:ring-ring focus:border-transparent focus:ring-2`}
         style={{ zIndex: 2 }}
         {...ariaProps}
       />
-      
+
       <style jsx>{`
         .error-syntax :global(.error-highlight) {
           background-color: var(--error-bg, #fecaca);

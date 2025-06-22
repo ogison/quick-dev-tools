@@ -49,9 +49,4 @@ export interface UrlEncoderState {
 }
 
 // URLエンコーダーのアクション
-export type UrlEncoderAction = 
-  | 'convert'
-  | 'clear'
-  | 'swap'
-  | 'copy'
-  | 'load_sample';
+export type UrlEncoderAction = 'convert' | 'clear' | 'swap' | 'copy' | 'load_sample';

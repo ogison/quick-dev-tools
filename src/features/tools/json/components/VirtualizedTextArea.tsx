@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { VariableSizeList as List } from 'react-window';
+
 import { highlightJSON } from '../utils/syntax-highlighter';
 
 interface VirtualizedTextAreaProps {
@@ -82,50 +83,52 @@ export function VirtualizedTextArea({
   }, []);
 
   // Render a single line
-  const renderLine = useCallback(({ index, style }: { index: number; style: React.CSSProperties }) => {
-    const line = lines[index];
-    if (!line) return null;
+  const renderLine = useCallback(
+    ({ index, style }: { index: number; style: React.CSSProperties }) => {
+      const line = lines[index];
+      if (!line) {
+        return null;
+      }
 
-    const lineNumberWidth = lineNumbers ? 50 : 0;
+      const lineNumberWidth = lineNumbers ? 50 : 0;
 
-    return (
-      <div
-        style={style}
-        className="flex font-mono text-sm"
-        onLoad={(e) => {
-          const height = (e.target as HTMLDivElement).getBoundingClientRect().height;
-          if (height !== itemHeights.current[index]) {
-            setItemSize(index, height);
-          }
-        }}
-      >
-        {lineNumbers && (
-          <span 
-            className="inline-block w-[50px] px-2 text-right text-muted-foreground bg-muted/30 select-none"
-            style={{ minWidth: lineNumberWidth }}
-          >
-            {index + 1}
-          </span>
-        )}
-        {syntaxHighlight ? (
-          <pre
-            className="flex-1 px-3 m-0 json-syntax"
-            style={{ minHeight: LINE_HEIGHT }}
-            dangerouslySetInnerHTML={{ 
-              __html: highlightJSON(line.text || ' ') 
-            }}
-          />
-        ) : (
-          <pre
-            className="flex-1 px-3 m-0"
-            style={{ minHeight: LINE_HEIGHT }}
-          >
-            {line.text || ' '}
-          </pre>
-        )}
-      </div>
-    );
-  }, [lines, lineNumbers, syntaxHighlight, setItemSize]);
+      return (
+        <div
+          style={style}
+          className="flex font-mono text-sm"
+          onLoad={(e) => {
+            const height = (e.target as HTMLDivElement).getBoundingClientRect().height;
+            if (height !== itemHeights.current[index]) {
+              setItemSize(index, height);
+            }
+          }}
+        >
+          {lineNumbers && (
+            <span
+              className="text-muted-foreground bg-muted/30 inline-block w-[50px] px-2 text-right select-none"
+              style={{ minWidth: lineNumberWidth }}
+            >
+              {index + 1}
+            </span>
+          )}
+          {syntaxHighlight ? (
+            <pre
+              className="json-syntax m-0 flex-1 px-3"
+              style={{ minHeight: LINE_HEIGHT }}
+              dangerouslySetInnerHTML={{
+                __html: highlightJSON(line.text || ' '),
+              }}
+            />
+          ) : (
+            <pre className="m-0 flex-1 px-3" style={{ minHeight: LINE_HEIGHT }}>
+              {line.text || ' '}
+            </pre>
+          )}
+        </div>
+      );
+    },
+    [lines, lineNumbers, syntaxHighlight, setItemSize]
+  );
 
   // Handle text area behavior for editing
   if (!readOnly && onChange) {
@@ -142,13 +145,9 @@ export function VirtualizedTextArea({
 
   // Virtualized read-only display
   return (
-    <div
-      ref={containerRef}
-      className={`${className} overflow-hidden`}
-      {...ariaProps}
-    >
+    <div ref={containerRef} className={`${className} overflow-hidden`} {...ariaProps}>
       {lines.length === 0 && placeholder && (
-        <div className="p-3 text-muted-foreground">{placeholder}</div>
+        <div className="text-muted-foreground p-3">{placeholder}</div>
       )}
       {lines.length > 0 && (
         <List

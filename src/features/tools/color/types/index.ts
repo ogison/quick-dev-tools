@@ -31,12 +31,12 @@ export interface HsvColor {
 export type Color = HexColor | RgbColor | HslColor | HsvColor;
 
 // パレット生成の配色タイプ
-export type PaletteType = 
-  | 'monochromatic'  // モノクロマティック
-  | 'analogous'      // 類似色
-  | 'complementary'  // 補色
-  | 'triadic'        // 三角配色
-  | 'tetradic'       // 四角配色
+export type PaletteType =
+  | 'monochromatic' // モノクロマティック
+  | 'analogous' // 類似色
+  | 'complementary' // 補色
+  | 'triadic' // 三角配色
+  | 'tetradic' // 四角配色
   | 'splitComplementary'; // 分裂補色
 
 // カラーパレット情報

@@ -29,9 +29,9 @@ export function useCopyToClipboard(): UseCopyToClipboardReturn {
     try {
       if (typeof navigator !== 'undefined' && navigator.clipboard) {
         await navigator.clipboard.writeText(text);
-        setCopyState(prev => ({ ...prev, [key]: true }));
+        setCopyState((prev) => ({ ...prev, [key]: true }));
         setTimeout(() => {
-          setCopyState(prev => ({ ...prev, [key]: false }));
+          setCopyState((prev) => ({ ...prev, [key]: false }));
         }, 2000);
       }
     } catch (err) {
@@ -43,6 +43,6 @@ export function useCopyToClipboard(): UseCopyToClipboardReturn {
     copied,
     copyToClipboard,
     copyState,
-    copyWithKey
+    copyWithKey,
   };
 }

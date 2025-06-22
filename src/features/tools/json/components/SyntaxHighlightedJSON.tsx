@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+
 import { highlightJSON } from '../utils/syntax-highlighter';
 
 interface SyntaxHighlightedJSONProps {
@@ -29,13 +30,9 @@ export function SyntaxHighlightedJSON({
   const lines = json.split('\n');
 
   return (
-    <div
-      ref={containerRef}
-      className={`${className} flex overflow-auto`}
-      {...ariaProps}
-    >
+    <div ref={containerRef} className={`${className} flex overflow-auto`} {...ariaProps}>
       {lineNumbers && (
-        <div className="select-none text-muted-foreground bg-muted/30 text-right">
+        <div className="text-muted-foreground bg-muted/30 text-right select-none">
           {lines.map((_, index) => (
             <div key={index} className="px-2 font-mono text-sm leading-5">
               {index + 1}
@@ -44,7 +41,7 @@ export function SyntaxHighlightedJSON({
         </div>
       )}
       <pre
-        className="flex-1 p-3 m-0 font-mono text-sm json-syntax"
+        className="json-syntax m-0 flex-1 p-3 font-mono text-sm"
         dangerouslySetInnerHTML={{ __html: highlightedContent }}
       />
       <style jsx>{`

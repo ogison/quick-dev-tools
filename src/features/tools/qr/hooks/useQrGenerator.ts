@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { toast } from 'sonner';
+
 import { workerManager } from '@/lib/worker-manager';
 
 export type ErrorCorrectionLevel = 'L' | 'M' | 'Q' | 'H';
@@ -35,65 +36,76 @@ export const useQrGenerator = () => {
   }, []);
 
   // Debounce function
-  const debounce = useCallback((func: Function, delay: number) => {
-    let timeoutId: NodeJS.Timeout;
-    return (...args: any[]) => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => func.apply(null, args), delay);
-    };
-  }, []);
+  type Debounced<T extends (...args: any[]) => void> = ((...args: Parameters<T>) => void) & {
+    cancel: () => void;
+  };
+  const debounce = useCallback(
+    <T extends (...args: any[]) => void>(func: T, delay: number): Debounced<T> => {
+      let timeoutId: NodeJS.Timeout;
+      const debounced = (...args: Parameters<T>) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func(...args), delay);
+      };
+      debounced.cancel = () => clearTimeout(timeoutId);
+      return debounced as Debounced<T>;
+    },
+    []
+  );
 
   // Generate QR code using Web Worker or fallback
-  const generateQrCode = useCallback(async (options: QrGeneratorOptions) => {
-    if (!options.text.trim()) {
-      setQrDataURL(null);
-      return;
-    }
-
-    setIsGenerating(true);
-    try {
-      if (useWebWorker && typeof Worker !== 'undefined') {
-        // Use Web Worker for QR generation
-        const dataURL = await workerManager.postMessage('qr', 'GENERATE_QR_CANVAS', {
-          text: options.text,
-          size: options.size,
-          errorCorrectionLevel: options.errorCorrectionLevel,
-          foregroundColor: options.foregroundColor,
-          backgroundColor: options.backgroundColor
-        });
-        setQrDataURL(dataURL);
-      } else {
-        // Fallback to main thread
-        const QRCode = await loadQRCodeLibrary();
-        const canvas = canvasRef.current;
-        if (canvas && QRCode) {
-          await QRCode.toCanvas(canvas, options.text, {
-            width: options.size,
-            errorCorrectionLevel: options.errorCorrectionLevel,
-            color: {
-              dark: options.foregroundColor,
-              light: options.backgroundColor,
-            },
-            margin: 2,
-          });
-          setQrDataURL(canvas.toDataURL('image/png'));
-        }
-      }
-    } catch (error) {
-      console.error('QR Generation error:', error);
-      // Try fallback on worker error
-      if (useWebWorker) {
-        setUseWebWorker(false);
-        toast.error('Web Worker使用不可、フォールバックモードで再試行します');
-        setTimeout(() => generateQrCode(options), 100);
-      } else {
-        toast.error('QRコードの生成に失敗しました');
+  const generateQrCode = useCallback(
+    async (options: QrGeneratorOptions) => {
+      if (!options.text.trim()) {
         setQrDataURL(null);
+        return;
       }
-    } finally {
-      setIsGenerating(false);
-    }
-  }, [useWebWorker, loadQRCodeLibrary]);
+
+      setIsGenerating(true);
+      try {
+        if (useWebWorker && typeof Worker !== 'undefined') {
+          // Use Web Worker for QR generation
+          const dataURL = await workerManager.postMessage('qr', 'GENERATE_QR_CANVAS', {
+            text: options.text,
+            size: options.size,
+            errorCorrectionLevel: options.errorCorrectionLevel,
+            foregroundColor: options.foregroundColor,
+            backgroundColor: options.backgroundColor,
+          });
+          setQrDataURL(dataURL);
+        } else {
+          // Fallback to main thread
+          const QRCode = await loadQRCodeLibrary();
+          const canvas = canvasRef.current;
+          if (canvas && QRCode) {
+            await QRCode.toCanvas(canvas, options.text, {
+              width: options.size,
+              errorCorrectionLevel: options.errorCorrectionLevel,
+              color: {
+                dark: options.foregroundColor,
+                light: options.backgroundColor,
+              },
+              margin: 2,
+            });
+            setQrDataURL(canvas.toDataURL('image/png'));
+          }
+        }
+      } catch (error) {
+        console.error('QR Generation error:', error);
+        // Try fallback on worker error
+        if (useWebWorker) {
+          setUseWebWorker(false);
+          toast.error('Web Worker使用不可、フォールバックモードで再試行します');
+          setTimeout(() => generateQrCode(options), 100);
+        } else {
+          toast.error('QRコードの生成に失敗しました');
+          setQrDataURL(null);
+        }
+      } finally {
+        setIsGenerating(false);
+      }
+    },
+    [useWebWorker, loadQRCodeLibrary]
+  );
 
   // Debounced QR code generation
   const debouncedGenerate = useCallback(
@@ -118,7 +130,7 @@ export const useQrGenerator = () => {
   useEffect(() => {
     return () => {
       // Cleanup any pending timeouts in debounced function
-      debouncedGenerate.cancel && debouncedGenerate.cancel();
+      debouncedGenerate.cancel?.();
     };
   }, [debouncedGenerate]);
 
@@ -131,8 +143,10 @@ export const useQrGenerator = () => {
 
     try {
       const QRCode = await loadQRCodeLibrary();
-      if (!QRCode) return;
-      
+      if (!QRCode) {
+        return;
+      }
+
       // Generate high-resolution QR code for download
       const dataURL = await QRCode.toDataURL(text, {
         width: size * 2, // Double resolution for better quality

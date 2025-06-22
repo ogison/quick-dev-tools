@@ -1,7 +1,7 @@
 // QR Code generation Web Worker
 self.importScripts('https://unpkg.com/qrcode@1.5.4/build/qrcode.min.js');
 
-self.onmessage = async function(e) {
+self.onmessage = async function (e) {
   const { id, type, data } = e.data;
 
   try {
@@ -18,14 +18,14 @@ self.onmessage = async function(e) {
           },
           margin: 2,
         });
-        
+
         self.postMessage({
           id,
           type: 'QR_GENERATED',
-          result: dataURL
+          result: dataURL,
         });
         break;
-        
+
       case 'GENERATE_QR_HIGH_RES':
         const highResDataURL = await QRCode.toDataURL(data.text, {
           width: data.size * 2,
@@ -36,14 +36,14 @@ self.onmessage = async function(e) {
           },
           margin: 2,
         });
-        
+
         self.postMessage({
           id,
           type: 'QR_HIGH_RES_GENERATED',
-          result: highResDataURL
+          result: highResDataURL,
         });
         break;
-        
+
       default:
         throw new Error(`Unknown message type: ${type}`);
     }
@@ -51,7 +51,7 @@ self.onmessage = async function(e) {
     self.postMessage({
       id,
       type: 'ERROR',
-      error: error.message
+      error: error.message,
     });
   }
 };

@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   eslint: {
@@ -19,9 +19,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Static generation
-  generateStaticParams: true,
-  
+
   // Bundle analysis
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     // Bundle analyzer in production
@@ -39,12 +37,12 @@ const nextConfig: NextConfig = {
     // Web Worker support
     config.module.rules.push({
       test: /\.worker\.js$/,
-      use: { loader: 'worker-loader' }
+      use: { loader: 'worker-loader' },
     });
 
     return config;
   },
-  
+
   // Experimental features for performance
   experimental: {
     optimizePackageImports: ['react-window', 'qrcode'],
@@ -52,7 +50,7 @@ const nextConfig: NextConfig = {
 
   // Compression
   compress: true,
-  
+
   // Headers for performance
   async headers() {
     return [
@@ -70,14 +68,14 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'X-DNS-Prefetch-Control',
-            value: 'on'
+            value: 'on',
           },
           {
             key: 'X-Frame-Options',
-            value: 'DENY'
-          }
-        ]
-      }
+            value: 'DENY',
+          },
+        ],
+      },
     ];
   },
 };

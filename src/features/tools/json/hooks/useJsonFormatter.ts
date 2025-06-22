@@ -1,17 +1,18 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
-import { 
-  validateJson, 
-  formatJson, 
+
+import type { IndentType, JsonFormatterOptions, JsonValidationResult } from '../types';
+import {
+  validateJson,
+  formatJson,
   minifyJson,
   jsonToJavaScript,
   escapeJson,
   unescapeJson,
   getSampleJson,
   copyToClipboard,
-  debounce
+  debounce,
 } from '../utils/json-formatter';
-import type { IndentType, JsonFormatterOptions, JsonValidationResult } from '../types';
 
 export const useJsonFormatter = () => {
   const [jsonInput, setJsonInput] = useState('');
@@ -19,7 +20,7 @@ export const useJsonFormatter = () => {
   const [validationResult, setValidationResult] = useState<JsonValidationResult>({ isValid: true });
   const [options, setOptions] = useState<JsonFormatterOptions>({
     indentType: 'spaces2',
-    indentSize: 2
+    indentSize: 2,
   });
   const [isDragging, setIsDragging] = useState(false);
   const [enableVirtualization, setEnableVirtualization] = useState(false);
@@ -46,10 +47,10 @@ export const useJsonFormatter = () => {
 
   // Handle indent type change
   const handleIndentTypeChange = (type: IndentType) => {
-    setOptions(prev => ({
+    setOptions((prev) => ({
       ...prev,
       indentType: type,
-      indentSize: type === 'tab' ? 1 : type === 'spaces4' ? 4 : 2
+      indentSize: type === 'tab' ? 1 : type === 'spaces4' ? 4 : 2,
     }));
   };
 
@@ -63,7 +64,7 @@ export const useJsonFormatter = () => {
       const errorMsg = error instanceof Error ? error.message : '整形に失敗しました';
       setValidationResult({
         isValid: false,
-        error: errorMsg
+        error: errorMsg,
       });
       toast.error(`整形エラー: ${errorMsg}`);
     }
@@ -79,7 +80,7 @@ export const useJsonFormatter = () => {
       const errorMsg = error instanceof Error ? error.message : '圧縮に失敗しました';
       setValidationResult({
         isValid: false,
-        error: errorMsg
+        error: errorMsg,
       });
       toast.error(`圧縮エラー: ${errorMsg}`);
     }
@@ -95,7 +96,7 @@ export const useJsonFormatter = () => {
       const errorMsg = error instanceof Error ? error.message : 'JavaScript変換に失敗しました';
       setValidationResult({
         isValid: false,
-        error: errorMsg
+        error: errorMsg,
       });
       toast.error(`変換エラー: ${errorMsg}`);
     }
@@ -159,12 +160,13 @@ export const useJsonFormatter = () => {
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
     const files = Array.from(e.dataTransfer.files);
-    const jsonFile = files.find(file => 
-      file.type === 'application/json' || 
-      file.name.endsWith('.json') ||
-      file.type === 'text/plain'
+    const jsonFile = files.find(
+      (file) =>
+        file.type === 'application/json' ||
+        file.name.endsWith('.json') ||
+        file.type === 'text/plain'
     );
 
     if (!jsonFile) {
@@ -172,7 +174,8 @@ export const useJsonFormatter = () => {
       return;
     }
 
-    if (jsonFile.size > 10 * 1024 * 1024) { // 10MB limit
+    if (jsonFile.size > 10 * 1024 * 1024) {
+      // 10MB limit
       toast.error('ファイルサイズが10MBを超えています');
       return;
     }

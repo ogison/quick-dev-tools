@@ -1,8 +1,9 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
+
 import { useLoremGenerator } from '../hooks/useLoremGenerator';
 
 const GENERATION_TYPES = [
@@ -44,12 +45,14 @@ export default function LoremIpsum() {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-2 text-gray-800">ダミーテキスト生成</h2>
-      <p className="text-gray-600 mb-6">Webデザインやレイアウト確認用のダミーテキストを生成するツールです</p>
+      <h2 className="mb-2 text-2xl font-semibold text-gray-800">ダミーテキスト生成</h2>
+      <p className="mb-6 text-gray-600">
+        Webデザインやレイアウト確認用のダミーテキストを生成するツールです
+      </p>
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid gap-6 lg:grid-cols-3">
         {/* 設定パネル */}
-        <div className="lg:col-span-1 space-y-6">
+        <div className="space-y-6 lg:col-span-1">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">生成設定</CardTitle>
@@ -57,13 +60,11 @@ export default function LoremIpsum() {
             <CardContent className="space-y-4">
               {/* 生成タイプ */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  生成単位
-                </label>
+                <label className="mb-2 block text-sm font-medium text-gray-700">生成単位</label>
                 <select
                   value={generationType}
                   onChange={(e) => setGenerationType(e.target.value as any)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
                 >
                   {GENERATION_TYPES.map((type) => (
                     <option key={type.value} value={type.value}>
@@ -75,7 +76,7 @@ export default function LoremIpsum() {
 
               {/* 数量 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-medium text-gray-700">
                   数量: {count}
                 </label>
                 <input
@@ -84,9 +85,9 @@ export default function LoremIpsum() {
                   max="50"
                   value={count}
                   onChange={(e) => setCount(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200"
                 />
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <div className="mt-1 flex justify-between text-xs text-gray-500">
                   <span>1</span>
                   <span>50</span>
                 </div>
@@ -94,13 +95,11 @@ export default function LoremIpsum() {
 
               {/* 言語 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  言語
-                </label>
+                <label className="mb-2 block text-sm font-medium text-gray-700">言語</label>
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value as any)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
                 >
                   {LANGUAGES.map((lang) => (
                     <option key={lang.value} value={lang.value}>
@@ -112,13 +111,11 @@ export default function LoremIpsum() {
 
               {/* 出力形式 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  出力形式
-                </label>
+                <label className="mb-2 block text-sm font-medium text-gray-700">出力形式</label>
                 <select
                   value={outputFormat}
                   onChange={(e) => setOutputFormat(e.target.value as any)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
                 >
                   {OUTPUT_FORMATS.map((format) => (
                     <option key={format.value} value={format.value}>
@@ -147,7 +144,12 @@ export default function LoremIpsum() {
                 <Button onClick={generateText} className="w-full">
                   テキスト生成
                 </Button>
-                <Button onClick={copyToClipboard} variant="outline" className="w-full" disabled={!generatedText}>
+                <Button
+                  onClick={copyToClipboard}
+                  variant="outline"
+                  className="w-full"
+                  disabled={!generatedText}
+                >
                   コピー
                 </Button>
                 <Button onClick={clearAll} variant="outline" className="w-full">
@@ -171,7 +173,9 @@ export default function LoremIpsum() {
                   </div>
                   <div>
                     <div className="text-gray-600">文字数（スペース除く）</div>
-                    <div className="font-semibold">{statistics.charactersNoSpaces.toLocaleString()}</div>
+                    <div className="font-semibold">
+                      {statistics.charactersNoSpaces.toLocaleString()}
+                    </div>
                   </div>
                   <div>
                     <div className="text-gray-600">単語数</div>
@@ -202,11 +206,11 @@ export default function LoremIpsum() {
                 <Textarea
                   value={generatedText}
                   readOnly
-                  className="h-96 font-mono text-sm bg-gray-50 resize-none"
+                  className="h-96 resize-none bg-gray-50 font-mono text-sm"
                   placeholder="生成されたテキストがここに表示されます..."
                 />
               ) : (
-                <div className="flex items-center justify-center h-96 text-gray-500 border-2 border-dashed border-gray-200 rounded-md">
+                <div className="flex h-96 items-center justify-center rounded-md border-2 border-dashed border-gray-200 text-gray-500">
                   テキストを生成するとここに表示されます
                 </div>
               )}

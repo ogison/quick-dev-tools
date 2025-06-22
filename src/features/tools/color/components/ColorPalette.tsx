@@ -1,14 +1,15 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+
+import type { PaletteType, ColorPalette as ColorPaletteType, ColorConversions } from '../types';
 import {
   generateColorPalette,
   getColorConversions,
   calculateContrastRatio,
   copyToClipboard,
-  generateRandomColor
+  generateRandomColor,
 } from '../utils/color';
-import type { PaletteType, ColorPalette as ColorPaletteType, ColorConversions } from '../types';
 
 export default function ColorPalette() {
   const [baseColor, setBaseColor] = useState('#3b82f6');
@@ -24,13 +25,13 @@ export default function ColorPalette() {
     { value: 'complementary', label: '補色' },
     { value: 'triadic', label: '三角配色' },
     { value: 'tetradic', label: '四角配色' },
-    { value: 'splitComplementary', label: '分裂補色' }
+    { value: 'splitComplementary', label: '分裂補色' },
   ];
 
   const generatePalette = useCallback(() => {
     const palette = generateColorPalette(baseColor, paletteType);
     const conversions = getColorConversions(baseColor);
-    
+
     setColorPalette(palette);
     setColorConversions(conversions);
   }, [baseColor, paletteType]);
@@ -52,20 +53,20 @@ export default function ColorPalette() {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-2 text-gray-800">カラーパレット生成</h2>
-      <p className="text-gray-600 mb-6">開発者向けのカラーパレット生成・変換ツールです</p>
+      <h2 className="mb-2 text-2xl font-semibold text-gray-800">カラーパレット生成</h2>
+      <p className="mb-6 text-gray-600">開発者向けのカラーパレット生成・変換ツールです</p>
 
       {/* カラー選択とオプション */}
       <div className="mb-6">
-        <div className="flex flex-wrap items-center gap-4 mb-4">
+        <div className="mb-4 flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
             <label className="text-sm font-medium text-gray-700">配色タイプ:</label>
             <select
               value={paletteType}
               onChange={(e) => setPaletteType(e.target.value as PaletteType)}
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
             >
-              {paletteTypeOptions.map(option => (
+              {paletteTypeOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -74,7 +75,7 @@ export default function ColorPalette() {
           </div>
           <button
             onClick={handleRandomColor}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+            className="rounded bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
           >
             ランダム色生成
           </button>
@@ -82,47 +83,45 @@ export default function ColorPalette() {
       </div>
 
       {/* ベースカラー入力 */}
-      <div className="grid md:grid-cols-2 gap-6 mb-6">
+      <div className="mb-6 grid gap-6 md:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">ベースカラー</label>
-          <div className="flex gap-4 items-center mb-4">
+          <label className="mb-2 block text-sm font-medium text-gray-700">ベースカラー</label>
+          <div className="mb-4 flex items-center gap-4">
             <input
               type="color"
               value={baseColor}
               onChange={(e) => setBaseColor(e.target.value)}
-              className="w-16 h-12 border border-gray-300 rounded cursor-pointer"
+              className="h-12 w-16 cursor-pointer rounded border border-gray-300"
             />
             <input
               type="text"
               value={baseColor}
               onChange={(e) => setBaseColor(e.target.value)}
               placeholder="#3b82f6"
-              className="flex-1 p-2 border border-gray-300 rounded font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 rounded border border-gray-300 p-2 font-mono text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500"
             />
           </div>
         </div>
-        
+
         {/* カラー形式変換 */}
         {colorConversions && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">カラー形式変換</label>
+            <label className="mb-2 block text-sm font-medium text-gray-700">カラー形式変換</label>
             <div className="space-y-2">
               {Object.entries(colorConversions).map(([format, value]) => (
                 <div key={format} className="flex items-center gap-2">
-                  <span className="text-xs font-medium text-gray-600 w-8 uppercase">
-                    {format}
-                  </span>
+                  <span className="w-8 text-xs font-medium text-gray-600 uppercase">{format}</span>
                   <input
                     type="text"
                     value={value}
                     readOnly
-                    className="flex-1 p-2 text-sm border border-gray-300 rounded font-mono bg-gray-50"
+                    className="flex-1 rounded border border-gray-300 bg-gray-50 p-2 font-mono text-sm"
                   />
                   <button
                     onClick={() => handleCopyColor(value)}
-                    className={`px-3 py-2 text-sm rounded ${
+                    className={`rounded px-3 py-2 text-sm ${
                       copySuccess === value
-                        ? 'bg-green-100 text-green-700 border border-green-300'
+                        ? 'border border-green-300 bg-green-100 text-green-700'
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                     }`}
                   >
@@ -136,40 +135,42 @@ export default function ColorPalette() {
       </div>
 
       {/* コントラスト比チェック */}
-      <div className="mb-6 p-4 border border-gray-300 rounded-lg">
-        <h3 className="text-lg font-medium text-gray-800 mb-3">コントラスト比チェック</h3>
-        <div className="flex items-center gap-4 mb-3">
+      <div className="mb-6 rounded-lg border border-gray-300 p-4">
+        <h3 className="mb-3 text-lg font-medium text-gray-800">コントラスト比チェック</h3>
+        <div className="mb-3 flex items-center gap-4">
           <div className="flex items-center gap-2">
             <label className="text-sm font-medium text-gray-700">背景色:</label>
             <input
               type="color"
               value={contrastColor}
               onChange={(e) => setContrastColor(e.target.value)}
-              className="w-12 h-8 border border-gray-300 rounded cursor-pointer"
+              className="h-8 w-12 cursor-pointer rounded border border-gray-300"
             />
             <input
               type="text"
               value={contrastColor}
               onChange={(e) => setContrastColor(e.target.value)}
-              className="w-24 p-1 border border-gray-300 rounded font-mono text-sm"
+              className="w-24 rounded border border-gray-300 p-1 font-mono text-sm"
             />
           </div>
           <div className="text-sm">
             <span className="font-medium">比率: {contrastResult.ratio.toFixed(2)}</span>
-            <span className={`ml-2 px-2 py-1 rounded text-xs font-medium ${
-              contrastResult.isAccessible 
-                ? 'bg-green-100 text-green-800'
-                : 'bg-red-100 text-red-800'
-            }`}>
+            <span
+              className={`ml-2 rounded px-2 py-1 text-xs font-medium ${
+                contrastResult.isAccessible
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-red-100 text-red-800'
+              }`}
+            >
               {contrastResult.level} {contrastResult.isAccessible ? '(合格)' : '(不合格)'}
             </span>
           </div>
         </div>
-        <div 
-          className="w-full h-16 rounded flex items-center justify-center font-medium text-lg"
-          style={{ 
-            backgroundColor: contrastColor, 
-            color: baseColor 
+        <div
+          className="flex h-16 w-full items-center justify-center rounded text-lg font-medium"
+          style={{
+            backgroundColor: contrastColor,
+            color: baseColor,
           }}
         >
           サンプルテキスト
@@ -178,9 +179,9 @@ export default function ColorPalette() {
 
       {/* パレット生成ボタン */}
       <div className="mb-6">
-        <button 
+        <button
           onClick={generatePalette}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+          className="rounded-lg bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700"
         >
           パレット生成
         </button>
@@ -189,23 +190,23 @@ export default function ColorPalette() {
       {/* 生成されたパレット */}
       {colorPalette && (
         <div>
-          <h3 className="text-lg font-medium text-gray-800 mb-4">
+          <h3 className="mb-4 text-lg font-medium text-gray-800">
             {colorPalette.name} ({colorPalette.colors.length}色)
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
             {colorPalette.colors.map((color, index) => (
-              <div key={index} className="border border-gray-300 rounded-lg overflow-hidden">
+              <div key={index} className="overflow-hidden rounded-lg border border-gray-300">
                 <div
-                  className="w-full h-24 cursor-pointer transition-transform hover:scale-105"
+                  className="h-24 w-full cursor-pointer transition-transform hover:scale-105"
                   style={{ backgroundColor: color }}
                   onClick={() => handleCopyColor(color)}
                   title={`${color}をコピー`}
                 />
-                <div className="p-3 bg-white">
-                  <p className="text-sm font-mono text-gray-800 mb-1">{color}</p>
+                <div className="bg-white p-3">
+                  <p className="mb-1 font-mono text-sm text-gray-800">{color}</p>
                   <button
                     onClick={() => handleCopyColor(color)}
-                    className={`text-xs px-2 py-1 rounded ${
+                    className={`rounded px-2 py-1 text-xs ${
                       copySuccess === color
                         ? 'bg-green-100 text-green-700'
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'

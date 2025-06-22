@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { highlightUrl, highlightEncodedString } from '../utils/url-highlighter';
+
 import type { UrlMode } from '../types';
+import { highlightUrl, highlightEncodedString } from '../utils/url-highlighter';
 
 interface SyntaxHighlightedOutputProps {
   text: string;
@@ -21,9 +22,7 @@ export function SyntaxHighlightedOutput({
 
   useEffect(() => {
     if (text) {
-      const highlighted = mode === 'encode' 
-        ? highlightEncodedString(text)
-        : highlightUrl(text);
+      const highlighted = mode === 'encode' ? highlightEncodedString(text) : highlightUrl(text);
       setHighlightedContent(highlighted);
     } else {
       setHighlightedContent('');
@@ -32,7 +31,7 @@ export function SyntaxHighlightedOutput({
 
   if (!text) {
     return (
-      <div className={`${className} p-3 text-muted-foreground`} {...ariaProps}>
+      <div className={`${className} text-muted-foreground p-3`} {...ariaProps}>
         {mode === 'encode' ? 'エンコード' : 'デコード'}されたテキストがここに表示されます...
       </div>
     );
@@ -41,7 +40,7 @@ export function SyntaxHighlightedOutput({
   return (
     <div className={`${className} relative`} {...ariaProps}>
       <pre
-        className="p-3 m-0 font-mono text-sm url-syntax whitespace-pre-wrap"
+        className="url-syntax m-0 p-3 font-mono text-sm whitespace-pre-wrap"
         dangerouslySetInnerHTML={{ __html: highlightedContent }}
       />
       <style jsx>{`

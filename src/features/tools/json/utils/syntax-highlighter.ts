@@ -7,8 +7,9 @@ export interface TokenType {
 
 export function tokenizeJSON(json: string): TokenType[] {
   const tokens: TokenType[] = [];
-  const regex = /("(?:[^"\\]|\\.)*")|(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)|(\btrue\b|\bfalse\b)|(\bnull\b)|([\[\]{}:,])/g;
-  
+  const regex =
+    /("(?:[^"\\]|\\.)*")|(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)|(\btrue\b|\bfalse\b)|(\bnull\b)|([\[\]{}:,])/g;
+
   let match;
   let lastIndex = 0;
   let insideObject = false;
@@ -47,14 +48,14 @@ export function tokenizeJSON(json: string): TokenType[] {
         type: 'punctuation',
         value: punctuation,
         start,
-        end
+        end,
       });
     } else if (stringMatch) {
       tokens.push({
         type: expectingKey ? 'key' : 'string',
         value: stringMatch,
         start,
-        end
+        end,
       });
       if (expectingKey) {
         expectingKey = false;
@@ -64,21 +65,21 @@ export function tokenizeJSON(json: string): TokenType[] {
         type: 'number',
         value: numberMatch,
         start,
-        end
+        end,
       });
     } else if (booleanMatch) {
       tokens.push({
         type: 'boolean',
         value: booleanMatch,
         start,
-        end
+        end,
       });
     } else if (nullMatch) {
       tokens.push({
         type: 'null',
         value: nullMatch,
         start,
-        end
+        end,
       });
     }
 
@@ -102,7 +103,7 @@ export function highlightJSON(json: string): string {
     // Add the highlighted token
     const className = getTokenClassName(token.type);
     highlighted += `<span class="${className}">${escapeHtml(token.value)}</span>`;
-    
+
     lastIndex = token.end;
   }
 
@@ -139,7 +140,7 @@ function escapeHtml(text: string): string {
     '<': '&lt;',
     '>': '&gt;',
     '"': '&quot;',
-    "'": '&#39;'
+    "'": '&#39;',
   };
-  return text.replace(/[&<>"']/g, char => map[char]);
+  return text.replace(/[&<>"']/g, (char) => map[char]);
 }

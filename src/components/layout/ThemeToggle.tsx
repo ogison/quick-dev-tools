@@ -1,8 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import { useTheme } from './ThemeProvider';
+
 import { Button } from '@/components/ui/button';
+
+import { useTheme } from './ThemeProvider';
 
 export function ThemeToggle() {
   const { theme, setTheme, actualTheme } = useTheme();
@@ -36,7 +38,7 @@ export function ThemeToggle() {
         </svg>
       );
     }
-    
+
     if (actualTheme === 'dark') {
       return (
         <svg
@@ -72,8 +74,12 @@ export function ThemeToggle() {
   };
 
   const getLabel = () => {
-    if (theme === 'system') return 'システム';
-    if (actualTheme === 'dark') return 'ダーク';
+    if (theme === 'system') {
+      return 'システム';
+    }
+    if (actualTheme === 'dark') {
+      return 'ダーク';
+    }
     return 'ライト';
   };
 

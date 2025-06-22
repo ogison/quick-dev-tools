@@ -1,5 +1,5 @@
-import type { Tool } from '@/features/tools/types';
 import type { SearchResult, SearchOptions, SearchFilters } from '@/components/search/types';
+import type { Tool } from '@/features/tools/types';
 
 // デフォルトの検索オプション
 const DEFAULT_SEARCH_OPTIONS: SearchOptions = {
@@ -8,7 +8,7 @@ const DEFAULT_SEARCH_OPTIONS: SearchOptions = {
   includeBadge: true,
   caseSensitive: false,
   fuzzyMatch: true,
-  maxResults: 10
+  maxResults: 10,
 };
 
 // 文字列の正規化（ひらがな・カタカナ・英数字の統一）
@@ -24,21 +24,21 @@ function normalizeString(str: string): string {
 function preprocessQuery(query: string): string[] {
   return query
     .split(/[\s\u3000]+/) // スペースと全角スペースで分割
-    .filter(term => term.length > 0)
+    .filter((term) => term.length > 0)
     .map(normalizeString);
 }
 
 // テキストマッチングのスコア計算
 function calculateMatchScore(
-  text: string, 
-  queryTerms: string[], 
+  text: string,
+  queryTerms: string[],
   fieldWeight: number = 1
 ): { score: number; matched: boolean } {
   const normalizedText = normalizeString(text);
   let totalScore = 0;
   let matchedTerms = 0;
 
-  queryTerms.forEach(term => {
+  queryTerms.forEach((term) => {
     if (normalizedText.includes(term)) {
       matchedTerms++;
       // 完全一致ボーナス
@@ -60,49 +60,53 @@ function calculateMatchScore(
 
   return {
     score: totalScore,
-    matched: matchedTerms > 0
+    matched: matchedTerms > 0,
   };
 }
 
 // テキストハイライト処理
 function highlightText(text: string, queryTerms: string[]): string {
   let highlightedText = text;
-  
-  queryTerms.forEach(term => {
+
+  queryTerms.forEach((term) => {
     const regex = new RegExp(`(${term})`, 'gi');
     highlightedText = highlightedText.replace(
-      regex, 
+      regex,
       '<mark class="bg-yellow-200 px-1 rounded">$1</mark>'
     );
   });
-  
+
   return highlightedText;
 }
 
 // メイン検索関数
 export function searchTools(
-  tools: Tool[], 
-  query: string, 
+  tools: Tool[],
+  query: string,
   filters: SearchFilters = {},
   options: Partial<SearchOptions> = {}
 ): SearchResult[] {
   const searchOptions = { ...DEFAULT_SEARCH_OPTIONS, ...options };
-  
+
   if (!query.trim()) {
-    return tools.map(tool => ({
+    return tools.map((tool) => ({
       tool,
       score: 0,
-      matchedFields: []
+      matchedFields: [],
     }));
   }
 
   const queryTerms = preprocessQuery(query);
   const results: SearchResult[] = [];
 
-  tools.forEach(tool => {
+  tools.forEach((tool) => {
     // フィルター適用
-    if (filters.category && tool.category !== filters.category) return;
-    if (filters.badge && tool.badge !== filters.badge) return;
+    if (filters.category && tool.category !== filters.category) {
+      return;
+    }
+    if (filters.badge && tool.badge !== filters.badge) {
+      return;
+    }
 
     let totalScore = 0;
     const matchedFields: string[] = [];
@@ -152,7 +156,7 @@ export function searchTools(
         score: totalScore,
         matchedFields,
         highlightedName,
-        highlightedDescription
+        highlightedDescription,
       });
     }
   });
@@ -167,11 +171,11 @@ export function searchTools(
 // 検索候補生成
 export function generateSearchSuggestions(tools: Tool[], query: string = ''): string[] {
   const suggestions = new Set<string>();
-  
+
   // ツール名を候補に追加
-  tools.forEach(tool => {
+  tools.forEach((tool) => {
     suggestions.add(tool.name);
-    
+
     // 部分一致でフィルタリング
     if (query && normalizeString(tool.name).includes(normalizeString(query))) {
       suggestions.add(tool.name);
@@ -179,8 +183,8 @@ export function generateSearchSuggestions(tools: Tool[], query: string = ''): st
   });
 
   // カテゴリを候補に追加
-  const categories = [...new Set(tools.map(tool => tool.category))];
-  categories.forEach(category => {
+  const categories = [...new Set(tools.map((tool) => tool.category))];
+  categories.forEach((category) => {
     if (!query || normalizeString(category).includes(normalizeString(query))) {
       suggestions.add(category);
     }
@@ -188,12 +192,24 @@ export function generateSearchSuggestions(tools: Tool[], query: string = ''): st
 
   // 人気キーワードを追加
   const popularKeywords = [
-    'JSON', 'Base64', 'URL', 'ハッシュ', '正規表現', 'カラー', 
-    'QR', 'パスワード', 'タイムスタンプ', 'ダミーテキスト',
-    'エンコード', 'デコード', '変換', '生成', 'テスト'
+    'JSON',
+    'Base64',
+    'URL',
+    'ハッシュ',
+    '正規表現',
+    'カラー',
+    'QR',
+    'パスワード',
+    'タイムスタンプ',
+    'ダミーテキスト',
+    'エンコード',
+    'デコード',
+    '変換',
+    '生成',
+    'テスト',
   ];
 
-  popularKeywords.forEach(keyword => {
+  popularKeywords.forEach((keyword) => {
     if (!query || normalizeString(keyword).includes(normalizeString(query))) {
       suggestions.add(keyword);
     }
@@ -209,22 +225,26 @@ export function saveSearchHistory(query: string, resultCount: number): void {
     const newItem = {
       query: query.trim(),
       timestamp: Date.now(),
-      resultCount
+      resultCount,
     };
 
     // 重複除去
-    const filteredHistory = history.filter(item => item.query !== newItem.query);
-    
+    const filteredHistory = history.filter((item) => item.query !== newItem.query);
+
     // 新しいアイテムを先頭に追加し、最大10件に制限
     const updatedHistory = [newItem, ...filteredHistory].slice(0, 10);
-    
+
     localStorage.setItem('search_history', JSON.stringify(updatedHistory));
   } catch (error) {
     console.error('検索履歴の保存に失敗:', error);
   }
 }
 
-export function getSearchHistory(): Array<{query: string; timestamp: number; resultCount: number}> {
+export function getSearchHistory(): Array<{
+  query: string;
+  timestamp: number;
+  resultCount: number;
+}> {
   try {
     const history = localStorage.getItem('search_history');
     return history ? JSON.parse(history) : [];

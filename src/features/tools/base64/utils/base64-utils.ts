@@ -15,13 +15,13 @@ export function toUrlSafeBase64(base64: string): string {
  */
 export function fromUrlSafeBase64(urlSafeBase64: string): string {
   let base64 = urlSafeBase64.replace(/-/g, '+').replace(/_/g, '/');
-  
+
   // Add padding if needed
   const padding = base64.length % 4;
   if (padding) {
     base64 += '='.repeat(4 - padding);
   }
-  
+
   return base64;
 }
 
@@ -51,11 +51,13 @@ export function generateDataUri(base64Content: string, mimeType: string): string
  */
 export function parseDataUri(dataUri: string): { mimeType: string; base64Content: string } | null {
   const match = dataUri.match(/^data:([^;]+);base64,(.+)$/);
-  if (!match) return null;
-  
+  if (!match) {
+    return null;
+  }
+
   return {
     mimeType: match[1],
-    base64Content: match[2]
+    base64Content: match[2],
   };
 }
 
@@ -108,28 +110,28 @@ export function encodeBase64(
   } = {}
 ): string {
   const { encoding = 'standard', mimeLineBreaks = false, characterEncoding = 'utf-8' } = options;
-  
+
   let bytes: Uint8Array;
   if (typeof input === 'string') {
     bytes = encodeTextToBytes(input, characterEncoding);
   } else {
     bytes = input;
   }
-  
+
   // Convert to base64
-  const binaryString = Array.from(bytes, byte => String.fromCharCode(byte)).join('');
+  const binaryString = Array.from(bytes, (byte) => String.fromCharCode(byte)).join('');
   let base64 = btoa(binaryString);
-  
+
   // Apply URL-safe encoding if requested
   if (encoding === 'url-safe') {
     base64 = toUrlSafeBase64(base64);
   }
-  
+
   // Add MIME line breaks if requested
   if (mimeLineBreaks) {
     base64 = addMimeLineBreaks(base64);
   }
-  
+
   return base64;
 }
 
@@ -145,28 +147,28 @@ export function decodeBase64(
   } = {}
 ): string | Uint8Array {
   const { encoding = 'standard', characterEncoding = 'utf-8', outputType = 'text' } = options;
-  
+
   let processedBase64 = base64;
-  
+
   // Remove MIME line breaks
   processedBase64 = removeMimeLineBreaks(processedBase64);
-  
+
   // Convert from URL-safe if needed
   if (encoding === 'url-safe') {
     processedBase64 = fromUrlSafeBase64(processedBase64);
   }
-  
+
   // Decode from base64
   const binaryString = atob(processedBase64);
   const bytes = new Uint8Array(binaryString.length);
   for (let i = 0; i < binaryString.length; i++) {
     bytes[i] = binaryString.charCodeAt(i);
   }
-  
+
   if (outputType === 'bytes') {
     return bytes;
   }
-  
+
   return decodeBytesToText(bytes, characterEncoding);
 }
 
@@ -175,7 +177,7 @@ export function decodeBase64(
  */
 export function getMimeTypeFromExtension(filename: string): string {
   const ext = filename.toLowerCase().split('.').pop();
-  
+
   const mimeTypes: Record<string, string> = {
     // Images
     png: 'image/png',
@@ -184,7 +186,7 @@ export function getMimeTypeFromExtension(filename: string): string {
     gif: 'image/gif',
     svg: 'image/svg+xml',
     webp: 'image/webp',
-    
+
     // Text
     txt: 'text/plain',
     html: 'text/html',
@@ -192,35 +194,39 @@ export function getMimeTypeFromExtension(filename: string): string {
     js: 'text/javascript',
     json: 'application/json',
     xml: 'text/xml',
-    
+
     // Documents
     pdf: 'application/pdf',
     doc: 'application/msword',
     docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    
+
     // Archives
     zip: 'application/zip',
     rar: 'application/x-rar-compressed',
-    
+
     // Default
-    default: 'application/octet-stream'
+    default: 'application/octet-stream',
   };
-  
+
   return mimeTypes[ext || ''] || mimeTypes.default;
 }
 
 /**
  * Download data as file
  */
-export function downloadAsFile(data: string | Uint8Array, filename: string, mimeType?: string): void {
+export function downloadAsFile(
+  data: string | Uint8Array,
+  filename: string,
+  mimeType?: string
+): void {
   let blob: Blob;
-  
+
   if (typeof data === 'string') {
     blob = new Blob([data], { type: mimeType || 'text/plain' });
   } else {
     blob = new Blob([data], { type: mimeType || 'application/octet-stream' });
   }
-  
+
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
