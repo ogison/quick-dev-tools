@@ -1,124 +1,147 @@
 'use client';
 
-import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { useBase64Converter } from '../hooks/useBase64Converter';
 
 export default function Base64Encoder() {
-  const [base64Input, setBase64Input] = useState('');
-  const [base64Output, setBase64Output] = useState('');
-  const [base64Mode, setBase64Mode] = useState('encode');
-  const [base64Error, setBase64Error] = useState('');
+  const {
+    base64Input,
+    base64Output,
+    base64Mode,
+    base64Error,
+    isDragging,
+    fileInfo,
+    setBase64Input,
+    setBase64Mode,
+    clearAll,
+    copyResult,
+    handleFileUpload,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop,
+  } = useBase64Converter();
 
-  const handleBase64Convert = () => {
-    try {
-      // Check if browser APIs are available
-      if (typeof window === 'undefined') {
-        setBase64Error('Base64 conversion not available in this environment');
-        return;
-      }
-
-      if (base64Mode === 'encode') {
-        if (typeof btoa === 'undefined') {
-          setBase64Error('Base64 encoding not supported in this environment');
-          return;
-        }
-        const encoded = btoa(unescape(encodeURIComponent(base64Input)));
-        setBase64Output(encoded);
-      } else {
-        if (typeof atob === 'undefined') {
-          setBase64Error('Base64 decoding not supported in this environment');
-          return;
-        }
-        const decoded = decodeURIComponent(escape(atob(base64Input)));
-        setBase64Output(decoded);
-      }
-      setBase64Error('');
-    } catch (err) {
-      setBase64Error(`Invalid ${base64Mode === 'encode' ? 'text' : 'Base64'} format: ${err instanceof Error ? err.message : 'Unknown error'}`);
-      setBase64Output('');
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      handleFileUpload(files[0]);
     }
-  };
-
-  const clearBase64 = () => {
-    setBase64Input('');
-    setBase64Output('');
-    setBase64Error('');
   };
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-6 text-gray-800">Base64 Encoder/Decoder</h2>
+      <h2 className="text-2xl font-semibold mb-2 text-gray-800">Base64エンコード・デコード</h2>
+      <p className="text-gray-600 mb-6">テキストやファイルをBase64形式でエンコード・デコードするツールです</p>
       <div className="mb-6">
-        <div className="flex gap-4 mb-4">
-          <button
-            onClick={() => setBase64Mode('encode')}
-            className={`px-4 py-2 rounded ${
-              base64Mode === 'encode'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
-            Encode
-          </button>
-          <button
-            onClick={() => setBase64Mode('decode')}
-            className={`px-4 py-2 rounded ${
-              base64Mode === 'decode'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
-            Decode
-          </button>
+        <div className="flex flex-wrap items-center gap-4 mb-4">
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setBase64Mode('encode')}
+              variant={base64Mode === 'encode' ? 'default' : 'outline'}
+            >
+              エンコード
+            </Button>
+            <Button
+              onClick={() => setBase64Mode('decode')}
+              variant={base64Mode === 'decode' ? 'default' : 'outline'}
+            >
+              デコード
+            </Button>
+          </div>
+          
+          {base64Mode === 'encode' && (
+            <div className="flex items-center gap-2">
+              <label htmlFor="file-upload" className="cursor-pointer">
+                <Button variant="outline" asChild>
+                  <span>ファイル選択</span>
+                </Button>
+              </label>
+              <input
+                id="file-upload"
+                type="file"
+                onChange={handleFileInputChange}
+                className="hidden"
+              />
+            </div>
+          )}
         </div>
+        
+        {fileInfo && (
+          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+            <div className="text-sm text-blue-800">
+              <strong>ファイル情報:</strong> {fileInfo.name} ({(fileInfo.size / 1024).toFixed(1)} KB, {fileInfo.type || '不明'})
+            </div>
+          </div>
+        )}
       </div>
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            {base64Mode === 'encode' ? 'Text to Encode' : 'Base64 to Decode'}
+            {base64Mode === 'encode' ? 'エンコードするテキスト' : 'デコードするBase64文字列'}
+            {base64Mode === 'encode' && (
+              <span className="text-xs text-gray-500 ml-2">（ファイルをドラッグ&ドロップも可能）</span>
+            )}
           </label>
-          <textarea
-            value={base64Input}
-            onChange={(e) => setBase64Input(e.target.value)}
-            placeholder={
-              base64Mode === 'encode'
-                ? 'Enter text to encode...'
-                : 'Enter Base64 string to decode...'
-            }
-            className="w-full h-64 p-3 border border-gray-300 rounded-md font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          <div
+            className={`relative ${base64Mode === 'encode' ? '' : 'pointer-events-none'}`}
+            onDragOver={base64Mode === 'encode' ? handleDragOver : undefined}
+            onDragLeave={base64Mode === 'encode' ? handleDragLeave : undefined}
+            onDrop={base64Mode === 'encode' ? handleDrop : undefined}
+          >
+            <Textarea
+              value={base64Input}
+              onChange={(e) => setBase64Input(e.target.value)}
+              placeholder={
+                base64Mode === 'encode'
+                  ? 'エンコードするテキストを入力、またはファイルをドラッグ&ドロップしてください（リアルタイム変換）...'
+                  : 'デコードするBase64文字列を入力してください（リアルタイム変換）...'
+              }
+              className={`h-64 font-mono text-sm ${
+                isDragging ? 'border-blue-400 bg-blue-50' : ''
+              }`}
+            />
+            {isDragging && base64Mode === 'encode' && (
+              <div className="absolute inset-0 bg-blue-100 bg-opacity-75 border-2 border-dashed border-blue-400 rounded-md flex items-center justify-center">
+                <div className="text-blue-600 font-medium">
+                  ファイルをここにドロップしてください
+                </div>
+              </div>
+            )}
+          </div>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            {base64Mode === 'encode' ? 'Base64 Output' : 'Decoded Text'}
+            {base64Mode === 'encode' ? 'Base64出力' : 'デコード結果'}
           </label>
-          <textarea
+          <Textarea
             value={base64Output}
             readOnly
-            className="w-full h-64 p-3 border border-gray-300 rounded-md font-mono text-sm bg-gray-50"
+            className="h-64 font-mono text-sm bg-gray-50"
+            placeholder={base64Mode === 'encode' ? 'エンコード結果がここに表示されます...' : 'デコード結果がここに表示されます...'}
           />
         </div>
       </div>
       {base64Error && (
         <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-          {base64Error}
+          <strong>エラー:</strong> {base64Error}
         </div>
       )}
       <div className="mt-6 flex flex-wrap gap-3">
-        <button onClick={handleBase64Convert} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-          {base64Mode === 'encode' ? 'Encode' : 'Decode'}
-        </button>
-        <button
-          onClick={() => {
-            if (typeof navigator !== 'undefined' && navigator.clipboard) {
-              navigator.clipboard.writeText(base64Output).catch(err => console.error('Copy failed:', err));
-            }
-          }}
+        <Button
+          onClick={copyResult}
           disabled={!base64Output}
-          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          variant="outline"
         >
-          Copy Result
-        </button>
-        <button onClick={clearBase64} className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">Clear All</button>
+          結果をコピー
+        </Button>
+        <Button 
+          onClick={clearAll}
+          variant="outline"
+        >
+          すべてクリア
+        </Button>
       </div>
     </div>
   );

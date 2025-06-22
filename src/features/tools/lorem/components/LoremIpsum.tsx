@@ -1,132 +1,218 @@
 'use client';
 
-import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useLoremGenerator } from '../hooks/useLoremGenerator';
+
+const GENERATION_TYPES = [
+  { value: 'words', label: '単語' },
+  { value: 'sentences', label: '文' },
+  { value: 'paragraphs', label: '段落' },
+] as const;
+
+const LANGUAGES = [
+  { value: 'latin', label: 'Lorem Ipsum（ラテン語）' },
+  { value: 'japanese', label: '日本語ダミー' },
+  { value: 'programming', label: 'プログラミング用語' },
+] as const;
+
+const OUTPUT_FORMATS = [
+  { value: 'plain', label: 'プレーンテキスト' },
+  { value: 'html', label: 'HTML' },
+  { value: 'markdown', label: 'Markdown' },
+] as const;
 
 export default function LoremIpsum() {
-  const [loremType, setLoremType] = useState('paragraphs');
-  const [loremCount, setLoremCount] = useState(3);
-  const [loremText, setLoremText] = useState('');
-
-  const loremWords = [
-    'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit', 
-    'sed', 'do', 'eiusmod', 'tempor', 'incididunt', 'ut', 'labore', 'et', 'dolore', 
-    'magna', 'aliqua', 'enim', 'ad', 'minim', 'veniam', 'quis', 'nostrud', 
-    'exercitation', 'ullamco', 'laboris', 'nisi', 'aliquip', 'ex', 'ea', 'commodo', 
-    'consequat', 'duis', 'aute', 'irure', 'in', 'reprehenderit', 'voluptate', 
-    'velit', 'esse', 'cillum', 'fugiat', 'nulla', 'pariatur', 'excepteur', 'sint', 
-    'occaecat', 'cupidatat', 'non', 'proident', 'sunt', 'culpa', 'qui', 'officia', 
-    'deserunt', 'mollit', 'anim', 'id', 'est', 'laborum'
-  ];
-  
-  const generateLorem = () => {
-    if (loremCount <= 0) {
-      setLoremText('Please enter a count greater than 0');
-      return;
-    }
-    
-    let result = '';
-    
-    if (loremType === 'words') {
-      const words = [];
-      for (let i = 0; i < loremCount; i++) {
-        words.push(loremWords[Math.floor(Math.random() * loremWords.length)]);
-      }
-      result = words.join(' ');
-    } else if (loremType === 'sentences') {
-      const sentences = [];
-      for (let i = 0; i < loremCount; i++) {
-        const wordCount = Math.floor(Math.random() * 12) + 8;
-        const words = [];
-        for (let j = 0; j < wordCount; j++) {
-          words.push(loremWords[Math.floor(Math.random() * loremWords.length)]);
-        }
-        const sentence = words.join(' ');
-        sentences.push(sentence.charAt(0).toUpperCase() + sentence.slice(1) + '.');
-      }
-      result = sentences.join(' ');
-    } else if (loremType === 'paragraphs') {
-      const paragraphs = [];
-      for (let i = 0; i < loremCount; i++) {
-        const sentenceCount = Math.floor(Math.random() * 4) + 4;
-        const sentences = [];
-        for (let j = 0; j < sentenceCount; j++) {
-          const wordCount = Math.floor(Math.random() * 12) + 8;
-          const words = [];
-          for (let k = 0; k < wordCount; k++) {
-            words.push(loremWords[Math.floor(Math.random() * loremWords.length)]);
-          }
-          const sentence = words.join(' ');
-          sentences.push(sentence.charAt(0).toUpperCase() + sentence.slice(1) + '.');
-        }
-        paragraphs.push(sentences.join(' '));
-      }
-      result = paragraphs.join('\n\n');
-    }
-    
-    setLoremText(result);
-  };
-
-  const clearLorem = () => {
-    setLoremText('');
-    setLoremCount(3);
-    setLoremType('paragraphs');
-  };
+  const {
+    generationType,
+    count,
+    language,
+    outputFormat,
+    generatedText,
+    statistics,
+    autoGenerate,
+    setGenerationType,
+    setCount,
+    setLanguage,
+    setOutputFormat,
+    setAutoGenerate,
+    generateText,
+    copyToClipboard,
+    clearAll,
+  } = useLoremGenerator();
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-6 text-gray-800">Lorem Ipsum Generator</h2>
-      <div className="space-y-4">
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
-            <select
-              value={loremType}
-              onChange={(e) => setLoremType(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="words">Words</option>
-              <option value="sentences">Sentences</option>
-              <option value="paragraphs">Paragraphs</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Count</label>
-            <input
-              type="number"
-              min="1"
-              max="50"
-              value={loremCount}
-              onChange={(e) => setLoremCount(Number(e.target.value))}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+      <h2 className="text-2xl font-semibold mb-2 text-gray-800">ダミーテキスト生成</h2>
+      <p className="text-gray-600 mb-6">Webデザインやレイアウト確認用のダミーテキストを生成するツールです</p>
+
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* 設定パネル */}
+        <div className="lg:col-span-1 space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">生成設定</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* 生成タイプ */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  生成単位
+                </label>
+                <select
+                  value={generationType}
+                  onChange={(e) => setGenerationType(e.target.value as any)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  {GENERATION_TYPES.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 数量 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  数量: {count}
+                </label>
+                <input
+                  type="range"
+                  min="1"
+                  max="50"
+                  value={count}
+                  onChange={(e) => setCount(Number(e.target.value))}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                />
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>1</span>
+                  <span>50</span>
+                </div>
+              </div>
+
+              {/* 言語 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  言語
+                </label>
+                <select
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value as any)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  {LANGUAGES.map((lang) => (
+                    <option key={lang.value} value={lang.value}>
+                      {lang.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 出力形式 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  出力形式
+                </label>
+                <select
+                  value={outputFormat}
+                  onChange={(e) => setOutputFormat(e.target.value as any)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  {OUTPUT_FORMATS.map((format) => (
+                    <option key={format.value} value={format.value}>
+                      {format.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 自動生成 */}
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="auto-generate"
+                  checked={autoGenerate}
+                  onChange={(e) => setAutoGenerate(e.target.checked)}
+                  className="rounded border-gray-300 focus:ring-2 focus:ring-blue-500"
+                />
+                <label htmlFor="auto-generate" className="text-sm text-gray-700">
+                  設定変更時に自動生成
+                </label>
+              </div>
+
+              {/* アクションボタン */}
+              <div className="space-y-2">
+                <Button onClick={generateText} className="w-full">
+                  テキスト生成
+                </Button>
+                <Button onClick={copyToClipboard} variant="outline" className="w-full" disabled={!generatedText}>
+                  コピー
+                </Button>
+                <Button onClick={clearAll} variant="outline" className="w-full">
+                  すべてクリア
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* 統計情報 */}
+          {generatedText && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">統計情報</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <div className="text-gray-600">文字数</div>
+                    <div className="font-semibold">{statistics.characters.toLocaleString()}</div>
+                  </div>
+                  <div>
+                    <div className="text-gray-600">文字数（スペース除く）</div>
+                    <div className="font-semibold">{statistics.charactersNoSpaces.toLocaleString()}</div>
+                  </div>
+                  <div>
+                    <div className="text-gray-600">単語数</div>
+                    <div className="font-semibold">{statistics.words.toLocaleString()}</div>
+                  </div>
+                  <div>
+                    <div className="text-gray-600">文数</div>
+                    <div className="font-semibold">{statistics.sentences.toLocaleString()}</div>
+                  </div>
+                  <div>
+                    <div className="text-gray-600">段落数</div>
+                    <div className="font-semibold">{statistics.paragraphs.toLocaleString()}</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
-        <div className="flex flex-wrap gap-3">
-          <button onClick={generateLorem} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Generate Lorem Ipsum</button>
-          <button onClick={clearLorem} className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">Clear</button>
+
+        {/* テキスト表示エリア */}
+        <div className="lg:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">生成されたテキスト</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {generatedText ? (
+                <Textarea
+                  value={generatedText}
+                  readOnly
+                  className="h-96 font-mono text-sm bg-gray-50 resize-none"
+                  placeholder="生成されたテキストがここに表示されます..."
+                />
+              ) : (
+                <div className="flex items-center justify-center h-96 text-gray-500 border-2 border-dashed border-gray-200 rounded-md">
+                  テキストを生成するとここに表示されます
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
-        {loremText && (
-          <div className="p-4 bg-gray-100 rounded-lg">
-            <div className="flex justify-between items-center mb-2">
-              <label className="text-sm font-medium text-gray-700">Generated Text</label>
-              <button
-                onClick={() => {
-                  if (typeof navigator !== 'undefined' && navigator.clipboard) {
-                    navigator.clipboard.writeText(loremText).catch(err => console.error('Copy failed:', err));
-                  }
-                }}
-                className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700"
-              >
-                Copy
-              </button>
-            </div>
-            <textarea
-              value={loremText}
-              readOnly
-              className="w-full h-48 p-3 border border-gray-300 rounded-md text-sm bg-white"
-            />
-          </div>
-        )}
       </div>
     </div>
   );
