@@ -1,71 +1,102 @@
 'use client';
 
+import { Menu, ChevronDown, Settings, Search } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
+
+import SearchModal from '@/components/search/SearchModal';
 import { Button } from '@/components/ui/button';
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuList,
-} from '@/components/ui/navigation-menu';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Menu, ChevronDown, Settings } from 'lucide-react';
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuList,
+} from '@/components/ui/navigation-menu';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
+import type { Tool } from '@/features/tools/types';
+import { useSearchShortcuts } from '@/lib/search/search-hooks';
 
-interface HeaderProps {
-  currentView?: string;
-  onViewChange?: (view: string) => void;
-}
-
-export default function Header({ currentView = 'home', onViewChange }: HeaderProps) {
+export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
   const navigationItems = [
-    { id: 'home', name: 'ホーム', description: 'すべての開発者ツール' },
-    { id: 'json', name: 'JSON', description: 'JSON整形ツール' },
-    { id: 'base64', name: 'Base64', description: 'Base64エンコーダー' },
-    { id: 'url', name: 'URL', description: 'URLエンコーダー' },
-    { id: 'hash', name: 'ハッシュ', description: 'ハッシュ生成器' },
-    { id: 'regex', name: '正規表現', description: '正規表現テスター' },
-    { id: 'color', name: 'カラー', description: 'カラーパレット生成' },
-    { id: 'qr', name: 'QRコード', description: 'QRコード生成器' },
-    { id: 'password', name: 'パスワード', description: 'パスワード生成器' },
-    { id: 'timestamp', name: 'タイムスタンプ', description: 'タイムスタンプ変換' },
-    { id: 'lorem', name: 'ダミーテキスト', description: 'ダミーテキスト生成' },
+    { id: 'home', name: 'ホーム', description: 'すべての開発者ツール', href: '/' },
+    { id: 'json', name: 'JSON', description: 'JSON整形ツール', href: '/tools/json' },
+    { id: 'base64', name: 'Base64', description: 'Base64エンコーダー', href: '/tools/base64' },
+    { id: 'url', name: 'URL', description: 'URLエンコーダー', href: '/tools/url-encoder' },
+    { id: 'hash', name: 'ハッシュ', description: 'ハッシュ生成器', href: '/tools/hash-generator' },
+    { id: 'regex', name: '正規表現', description: '正規表現テスター', href: '/tools/regex' },
+    { id: 'color', name: 'カラー', description: 'カラーパレット生成', href: '/tools/color' },
+    { id: 'qr', name: 'QRコード', description: 'QRコード生成器', href: '/tools/qr' },
+    {
+      id: 'password',
+      name: 'パスワード',
+      description: 'パスワード生成器',
+      href: '/tools/password',
+    },
+    {
+      id: 'timestamp',
+      name: 'タイムスタンプ',
+      description: 'タイムスタンプ変換',
+      href: '/tools/timestamp',
+    },
+    {
+      id: 'lorem',
+      name: 'ダミーテキスト',
+      description: 'ダミーテキスト生成',
+      href: '/tools/lorem',
+    },
   ];
-
-  const handleNavigation = (viewId: string) => {
-    if (onViewChange) {
-      onViewChange(viewId);
-    }
-    setIsMobileMenuOpen(false);
-  };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const isActive = (href: string) => {
+    return pathname === href;
+  };
+
+  // 検索モーダルの開閉
+  const openSearchModal = () => setIsSearchModalOpen(true);
+  const closeSearchModal = () => setIsSearchModalOpen(false);
+
+  // ツール選択時の処理
+  const handleSelectTool = (tool: Tool) => {
+    router.push(tool.href);
+  };
+
+  // キーボードショートカットの設定
+  useSearchShortcuts(openSearchModal);
+
   return (
-    <header className="border-b sticky top-0 z-50 bg-background">
+    <header className="bg-background sticky top-0 z-50 border-b">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex h-16 items-center justify-between">
           {/* Logo and Brand */}
           <div className="flex items-center">
-            <button
-              onClick={() => handleNavigation('home')}
-              className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
+            <Link
+              href="/"
+              className="flex items-center space-x-3 transition-opacity hover:opacity-80"
             >
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <Settings className="w-5 h-5 text-primary-foreground" />
+              <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-lg">
+                <Settings className="text-primary-foreground h-5 w-5" />
               </div>
               <div>
                 <h1 className="text-xl font-bold">開発ツール</h1>
-                <p className="text-xs text-muted-foreground hidden sm:block">開発者向けユーティリティ</p>
+                <p className="text-muted-foreground hidden text-xs sm:block">
+                  開発者向けユーティリティ
+                </p>
               </div>
-            </button>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
@@ -73,17 +104,18 @@ export default function Header({ currentView = 'home', onViewChange }: HeaderPro
             <NavigationMenuList>
               {navigationItems.slice(0, 6).map((item) => (
                 <NavigationMenuItem key={item.id}>
-                  <Button
-                    variant={currentView === item.id ? 'default' : 'ghost'}
-                    size="sm"
-                    onClick={() => handleNavigation(item.id)}
-                    title={item.description}
-                  >
-                    {item.name}
-                  </Button>
+                  <Link href={item.href}>
+                    <Button
+                      variant={isActive(item.href) ? 'default' : 'ghost'}
+                      size="sm"
+                      title={item.description}
+                    >
+                      {item.name}
+                    </Button>
+                  </Link>
                 </NavigationMenuItem>
               ))}
-              
+
               {/* More Tools Dropdown */}
               <NavigationMenuItem>
                 <DropdownMenu>
@@ -95,15 +127,13 @@ export default function Header({ currentView = 'home', onViewChange }: HeaderPro
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
                     {navigationItems.slice(6).map((item) => (
-                      <DropdownMenuItem
-                        key={item.id}
-                        onClick={() => handleNavigation(item.id)}
-                        className={currentView === item.id ? 'bg-accent' : ''}
-                      >
-                        <div>
-                          <div className="font-medium">{item.name}</div>
-                          <div className="text-xs text-muted-foreground">{item.description}</div>
-                        </div>
+                      <DropdownMenuItem key={item.id} asChild>
+                        <Link href={item.href} className={isActive(item.href) ? 'bg-accent' : ''}>
+                          <div>
+                            <div className="font-medium">{item.name}</div>
+                            <div className="text-muted-foreground text-xs">{item.description}</div>
+                          </div>
+                        </Link>
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuContent>
@@ -112,41 +142,77 @@ export default function Header({ currentView = 'home', onViewChange }: HeaderPro
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* Mobile menu button */}
-          <div className="lg:hidden">
+          {/* Search and Theme toggle and Mobile menu button */}
+          <div className="flex items-center gap-2">
+            {/* Search Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={openSearchModal}
+              className="text-muted-foreground hover:text-foreground hidden items-center gap-2 sm:flex"
+            >
+              <Search className="h-4 w-4" />
+              <span className="text-sm">検索</span>
+              <div className="bg-muted hidden items-center gap-1 rounded px-2 py-1 text-xs md:flex">
+                <span>⌘</span>
+                <span>K</span>
+              </div>
+            </Button>
+
+            {/* Mobile Search Button */}
             <Button
               variant="ghost"
               size="icon"
-              onClick={toggleMobileMenu}
-              aria-expanded={isMobileMenuOpen}
+              onClick={openSearchModal}
+              className="sm:hidden"
+              aria-label="検索"
             >
-              <span className="sr-only">Open main menu</span>
-              <Menu className="h-6 w-6" />
+              <Search className="h-5 w-5" />
             </Button>
+
+            <ThemeToggle />
+            <div className="lg:hidden">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleMobileMenu}
+                aria-expanded={isMobileMenuOpen}
+              >
+                <span className="sr-only">Open main menu</span>
+                <Menu className="h-6 w-6" />
+              </Button>
+            </div>
           </div>
         </div>
 
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
           <div className="lg:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 border-t">
+            <div className="space-y-1 border-t px-2 pt-2 pb-3">
               {navigationItems.map((item) => (
-                <Button
-                  key={item.id}
-                  variant={currentView === item.id ? 'default' : 'ghost'}
-                  className="w-full justify-start"
-                  onClick={() => handleNavigation(item.id)}
-                >
-                  <div className="text-left">
-                    <div className="font-medium">{item.name}</div>
-                    <div className="text-sm text-muted-foreground">{item.description}</div>
-                  </div>
-                </Button>
+                <Link key={item.id} href={item.href} onClick={() => setIsMobileMenuOpen(false)}>
+                  <Button
+                    variant={isActive(item.href) ? 'default' : 'ghost'}
+                    className="w-full justify-start"
+                  >
+                    <div className="text-left">
+                      <div className="font-medium">{item.name}</div>
+                      <div className="text-muted-foreground text-sm">{item.description}</div>
+                    </div>
+                  </Button>
+                </Link>
               ))}
             </div>
           </div>
         )}
       </div>
+
+      {/* Search Modal */}
+      <SearchModal
+        isOpen={isSearchModalOpen}
+        onClose={closeSearchModal}
+        onSelectTool={handleSelectTool}
+      />
     </header>
   );
 }
