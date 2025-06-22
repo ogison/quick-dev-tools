@@ -20,6 +20,7 @@ interface ConversionResult {
     dd_mm_yyyy: string;
     mm_dd_yyyy: string;
     japanese: string;
+    relative: string;
   };
 }
 
@@ -53,6 +54,43 @@ export default function TimestampConverter() {
 
     return () => clearInterval(interval);
   }, []);
+
+  const getRelativeTime = (date: Date): string => {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMinutes = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (Math.abs(diffMinutes) < 1) {
+      return 'たった今';
+    }
+    if (diffMs < 0) {
+      // Future dates
+      if (Math.abs(diffMinutes) < 60) {
+        return `${Math.abs(diffMinutes)}分後`;
+      }
+      if (Math.abs(diffHours) < 24) {
+        return `${Math.abs(diffHours)}時間後`;
+      }
+      if (Math.abs(diffDays) < 7) {
+        return `${Math.abs(diffDays)}日後`;
+      }
+    } else {
+      // Past dates
+      if (diffMinutes < 60) {
+        return `${diffMinutes}分前`;
+      }
+      if (diffHours < 24) {
+        return `${diffHours}時間前`;
+      }
+      if (diffDays < 7) {
+        return `${diffDays}日前`;
+      }
+    }
+
+    return date.toLocaleDateString('ja-JP');
+  };
 
   const formatDate = (date: Date): ConversionResult => {
     const unix = Math.floor(date.getTime() / 1000);
@@ -95,6 +133,7 @@ export default function TimestampConverter() {
           day: 'numeric',
           weekday: 'long',
         }),
+        relative: getRelativeTime(date),
       },
     };
   };
@@ -183,6 +222,15 @@ export default function TimestampConverter() {
             <div>
               <strong>ISO形式:</strong> {currentTime.toISOString()}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Current Time Relative Display */}
+      {currentTime && (
+        <div className="mb-6 rounded-lg border border-gray-200 bg-gray-50 p-3">
+          <div className="text-sm text-gray-600">
+            <strong>相対時間:</strong> たった今
           </div>
         </div>
       )}
@@ -427,6 +475,23 @@ export default function TimestampConverter() {
                   </button>
                 </div>
                 <div className="rounded bg-gray-50 p-2 text-sm">{result.formatted.japanese}</div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">相対時間:</span>
+                  <button
+                    onClick={() => copyToClipboard(result.formatted.relative, 'relative')}
+                    className={`rounded px-2 py-1 text-xs ${
+                      copySuccess.relative
+                        ? 'border border-green-300 bg-green-100 text-green-700'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    {copySuccess.relative ? 'コピー完了!' : 'コピー'}
+                  </button>
+                </div>
+                <div className="rounded bg-gray-50 p-2 text-sm">{result.formatted.relative}</div>
               </div>
             </div>
           </div>
