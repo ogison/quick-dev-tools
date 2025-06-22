@@ -9,6 +9,13 @@ import {
   getSampleData,
   debounce
 } from '../utils/url-encoder';
+import { 
+  processLargeText, 
+  isLargeText,
+  processInChunks 
+} from '../utils/async-processor';
+import { SyntaxHighlightedOutput } from './SyntaxHighlightedOutput';
+import { ErrorHighlightedInput } from './ErrorHighlightedInput';
 import type { 
   UrlMode, 
   SpaceMode, 
@@ -26,6 +33,11 @@ export default function UrlEncoder() {
   const [copySuccess, setCopySuccess] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [urlAnalysis, setUrlAnalysis] = useState<UrlAnalysis | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [processingProgress, setProcessingProgress] = useState(0);
+  const [isLargeData, setIsLargeData] = useState(false);
+  const [enableSyntaxHighlight, setEnableSyntaxHighlight] = useState(true);
+  const [enableErrorHighlight, setEnableErrorHighlight] = useState(true);
 
   // デバウンス付きの変換関数
   const debouncedConvert = useCallback(() => {
@@ -51,7 +63,7 @@ export default function UrlEncoder() {
     setHistory(savedHistory);
   }, []);
 
-  const handleUrlConvert = () => {
+  const handleUrlConvert = async () => {
     if (!urlInput.trim()) {
       setUrlError('変換する文字列を入力してください');
       setUrlOutput('');
@@ -59,23 +71,51 @@ export default function UrlEncoder() {
       return;
     }
 
-    const result = convertUrl(urlInput, urlMode, spaceMode);
+    const isLarge = isLargeText(urlInput);
+    setIsLargeData(isLarge);
     
-    setUrlOutput(result.result);
-    setUrlError(result.error || '');
-    setUrlAnalysis(result.analysis || null);
+    if (isLarge) {
+      setIsProcessing(true);
+      setProcessingProgress(0);
+    }
 
-    // 履歴に追加
-    if (result.result) {
-      const historyItem: HistoryItem = {
-        input: urlInput,
-        output: result.result,
-        mode: urlMode,
-        timestamp: Date.now()
-      };
+    try {
+      let result;
       
-      const newHistory = addToHistory(historyItem, history);
-      setHistory(newHistory);
+      if (isLarge) {
+        result = await processInChunks(
+          urlInput, 
+          urlMode, 
+          spaceMode,
+          (progress) => setProcessingProgress(progress)
+        );
+      } else {
+        result = await processLargeText(urlInput, urlMode, spaceMode);
+      }
+      
+      setUrlOutput(result.result);
+      setUrlError(result.error || '');
+      setUrlAnalysis(result.analysis || null);
+
+      // 履歴に追加
+      if (result.result) {
+        const historyItem: HistoryItem = {
+          input: urlInput.length > 100 ? urlInput.slice(0, 100) + '...' : urlInput,
+          output: result.result.length > 100 ? result.result.slice(0, 100) + '...' : result.result,
+          mode: urlMode,
+          timestamp: Date.now()
+        };
+        
+        const newHistory = addToHistory(historyItem, history);
+        setHistory(newHistory);
+      }
+    } catch (error) {
+      setUrlError(error instanceof Error ? error.message : '処理中にエラーが発生しました');
+      setUrlOutput('');
+      setUrlAnalysis(null);
+    } finally {
+      setIsProcessing(false);
+      setProcessingProgress(0);
     }
   };
 
@@ -119,18 +159,43 @@ export default function UrlEncoder() {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-2 text-gray-800">URLエンコード・デコード</h2>
-      <p className="text-gray-600 mb-6">URL文字列のエンコード・デコードを行うツールです</p>
+      <h2 className="text-2xl font-semibold mb-2">URLエンコード・デコード</h2>
+      <p className="text-muted-foreground mb-6">URL文字列のエンコード・デコードを行うツールです</p>
+      
+      {/* 大容量データ処理通知 */}
+      {isLargeData && (
+        <div className="mb-4 p-3 bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-md">
+          <p className="text-sm text-yellow-800 dark:text-yellow-200">
+            <strong>大容量データ検出:</strong> 1MB以上のデータが検出されました。非同期処理モードで実行します。
+          </p>
+        </div>
+      )}
+      
+      {/* 処理進捗表示 */}
+      {isProcessing && (
+        <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-md">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-blue-800 dark:text-blue-200">処理中...</span>
+            <span className="text-sm text-blue-800 dark:text-blue-200">{Math.round(processingProgress)}%</span>
+          </div>
+          <div className="w-full bg-blue-200 dark:bg-blue-900 rounded-full h-2">
+            <div 
+              className="bg-blue-600 dark:bg-blue-400 h-2 rounded-full transition-all duration-300" 
+              style={{ width: `${processingProgress}%` }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* オプションツールバー */}
       <div className="mb-6">
         <div className="flex flex-wrap items-center gap-4 mb-4">
           <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-gray-700">モード:</label>
+            <label className="text-sm font-medium">モード:</label>
             <select
               value={urlMode}
               onChange={(e) => setUrlMode(e.target.value as UrlMode)}
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-3 py-2 border border-input bg-background rounded-md text-sm focus:ring-2 focus:ring-ring focus:border-transparent"
             >
               <option value="encode">エンコード</option>
               <option value="decode">デコード</option>
@@ -139,11 +204,11 @@ export default function UrlEncoder() {
           
           {urlMode === 'encode' && (
             <div className="flex items-center gap-2">
-              <label className="text-sm font-medium text-gray-700">スペース:</label>
+              <label className="text-sm font-medium">スペース:</label>
               <select
                 value={spaceMode}
                 onChange={(e) => setSpaceMode(e.target.value as SpaceMode)}
-                className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="px-3 py-2 border border-input bg-background rounded-md text-sm focus:ring-2 focus:ring-ring focus:border-transparent"
               >
                 <option value="%20">%20</option>
                 <option value="+">+</option>
@@ -161,9 +226,29 @@ export default function UrlEncoder() {
             リアルタイム変換
           </label>
           
+          <label className="flex items-center gap-2 text-sm">
+            <input 
+              type="checkbox" 
+              checked={enableSyntaxHighlight} 
+              onChange={(e) => setEnableSyntaxHighlight(e.target.checked)}
+              className="rounded"
+            />
+            シンタックスハイライト
+          </label>
+          
+          <label className="flex items-center gap-2 text-sm">
+            <input 
+              type="checkbox" 
+              checked={enableErrorHighlight} 
+              onChange={(e) => setEnableErrorHighlight(e.target.checked)}
+              className="rounded"
+            />
+            エラーハイライト
+          </label>
+          
           <button
             onClick={loadSample}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+            className="px-4 py-2 bg-secondary text-secondary-foreground rounded hover:bg-secondary/80"
           >
             サンプル読み込み
           </button>
@@ -174,59 +259,84 @@ export default function UrlEncoder() {
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium">
               {urlMode === 'encode' ? '入力テキスト/URL' : 'エンコード済み文字列'}
             </label>
           </div>
-          <textarea
-            value={urlInput}
-            onChange={(e) => setUrlInput(e.target.value)}
-            placeholder={
-              urlMode === 'encode'
-                ? 'エンコードするテキストやURLを入力してください...\n例: こんにちは 世界!'
-                : 'デコードするURLエンコード文字列を入力してください...\n例: %E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF%20%E4%B8%96%E7%95%8C%21'
-            }
-            className="w-full h-64 p-3 border border-gray-300 rounded-md font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          {enableErrorHighlight ? (
+            <ErrorHighlightedInput
+              value={urlInput}
+              onChange={setUrlInput}
+              mode={urlMode}
+              placeholder={
+                urlMode === 'encode'
+                  ? 'エンコードするテキストやURLを入力してください...\n例: こんにちは 世界!'
+                  : 'デコードするURLエンコード文字列を入力してください...\n例: %E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF%20%E4%B8%96%E7%95%8C%21'
+              }
+              className="w-full"
+              aria-label={urlMode === 'encode' ? '入力テキスト/URL' : 'エンコード済み文字列'}
+              aria-invalid={!!urlError}
+            />
+          ) : (
+            <textarea
+              value={urlInput}
+              onChange={(e) => setUrlInput(e.target.value)}
+              placeholder={
+                urlMode === 'encode'
+                  ? 'エンコードするテキストやURLを入力してください...\n例: こんにちは 世界!'
+                  : 'デコードするURLエンコード文字列を入力してください...\n例: %E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF%20%E4%B8%96%E7%95%8C%21'
+              }
+              className="w-full h-64 p-3 border border-input bg-background rounded-md font-mono text-sm focus:ring-2 focus:ring-ring focus:border-transparent"
+            />
+          )}
         </div>
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium">
               {urlMode === 'encode' ? 'エンコード結果' : 'デコード結果'}
             </label>
             {urlOutput && (
               <button
                 onClick={handleCopy}
-                className={`px-3 py-1 text-sm rounded ${
+                className={`px-3 py-1 text-sm rounded transition-colors ${
                   copySuccess 
-                    ? 'bg-green-100 text-green-700 border border-green-300' 
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 border border-green-300 dark:border-green-700' 
+                    : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
                 }`}
               >
                 {copySuccess ? 'コピー完了!' : 'コピー'}
               </button>
             )}
           </div>
-          <textarea
-            value={urlOutput}
-            readOnly
-            className="w-full h-64 p-3 border border-gray-300 rounded-md font-mono text-sm bg-gray-50"
-            placeholder={`${urlMode === 'encode' ? 'エンコード' : 'デコード'}されたテキストがここに表示されます...`}
-          />
+          {enableSyntaxHighlight ? (
+            <SyntaxHighlightedOutput
+              text={urlOutput}
+              mode={urlMode}
+              className="w-full h-64 border border-input rounded-md bg-muted/50 overflow-auto"
+              aria-label={`${urlMode === 'encode' ? 'エンコード' : 'デコード'}された結果`}
+            />
+          ) : (
+            <textarea
+              value={urlOutput}
+              readOnly
+              className="w-full h-64 p-3 border border-input rounded-md font-mono text-sm bg-muted/50"
+              placeholder={`${urlMode === 'encode' ? 'エンコード' : 'デコード'}されたテキストがここに表示されます...`}
+            />
+          )}
         </div>
       </div>
 
       {/* エラー表示 */}
       {urlError && (
-        <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+        <div className="mt-4 p-3 bg-destructive/10 border border-destructive/50 text-destructive rounded">
           <strong>情報:</strong> {urlError}
         </div>
       )}
 
       {/* URL解析結果 */}
       {urlAnalysis && (
-        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded">
-          <h3 className="text-lg font-medium text-blue-900 mb-3">URL解析結果</h3>
+        <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded">
+          <h3 className="text-lg font-medium text-blue-900 dark:text-blue-100 mb-3">URL解析結果</h3>
           <div className="grid md:grid-cols-2 gap-4 text-sm">
             <div>
               <div className="space-y-2">
@@ -245,7 +355,7 @@ export default function UrlEncoder() {
                   <div className="ml-4 space-y-1">
                     {urlAnalysis.parameters.map(([key, value], index) => (
                       <div key={index} className="font-mono text-xs">
-                        <span className="text-blue-600">{key}</span> = <span className="text-green-600">{value}</span>
+                        <span className="text-blue-600 dark:text-blue-400">{key}</span> = <span className="text-green-600 dark:text-green-400">{value}</span>
                       </div>
                     ))}
                   </div>
@@ -260,21 +370,21 @@ export default function UrlEncoder() {
       <div className="mt-6 flex flex-wrap gap-3">
         <button 
           onClick={handleUrlConvert} 
-          disabled={!urlInput.trim()}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          disabled={!urlInput.trim() || isProcessing}
+          className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed transition-colors"
         >
-          {urlMode === 'encode' ? 'エンコード' : 'デコード'}
+          {isProcessing ? '処理中...' : (urlMode === 'encode' ? 'エンコード' : 'デコード')}
         </button>
         <button 
           onClick={swapInputOutput}
           disabled={!urlOutput}
-          className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          className="px-4 py-2 bg-purple-600 dark:bg-purple-700 text-white rounded hover:bg-purple-700 dark:hover:bg-purple-800 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed transition-colors"
         >
           入力⇔出力切替
         </button>
         <button 
           onClick={clearAll}
-          className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+          className="px-4 py-2 bg-secondary text-secondary-foreground rounded hover:bg-secondary/80 transition-colors"
         >
           すべてクリア
         </button>
@@ -283,21 +393,21 @@ export default function UrlEncoder() {
       {/* 履歴表示 */}
       {history.length > 0 && (
         <div className="mt-6">
-          <h3 className="text-lg font-medium text-gray-800 mb-3">変換履歴</h3>
+          <h3 className="text-lg font-medium mb-3">変換履歴</h3>
           <div className="space-y-2">
             {history.map((item, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded border">
+              <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded border border-border">
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium">
                     {item.mode === 'encode' ? 'エンコード' : 'デコード'}: {item.input.slice(0, 50)}{item.input.length > 50 ? '...' : ''}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-muted-foreground">
                     {new Date(item.timestamp).toLocaleString('ja-JP')}
                   </div>
                 </div>
                 <button
                   onClick={() => selectFromHistory(item)}
-                  className="ml-3 px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                  className="ml-3 px-3 py-1 text-sm bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
                 >
                   選択
                 </button>
