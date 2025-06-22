@@ -1,5 +1,10 @@
-import QrGenerator from '@/features/tools/qr/components/QrGenerator';
 import { Metadata } from 'next';
+import dynamic from 'next/dynamic';
+
+const QrGenerator = dynamic(() => import('@/features/tools/qr/components/QrGenerator'), {
+  loading: () => <div className="animate-pulse bg-gray-200 rounded-lg h-96" />,
+  ssr: false
+});
 
 export const metadata: Metadata = {
   title: 'QRコードジェネレーター',

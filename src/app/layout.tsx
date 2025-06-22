@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { DefaultSkipLinks } from "@/components/a11y/SkipLink";
+import { PerformanceMonitor } from "@/components/shared/PerformanceMonitor";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -82,6 +83,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <PerformanceMonitor />
         </ThemeProvider>
       </body>
     </html>

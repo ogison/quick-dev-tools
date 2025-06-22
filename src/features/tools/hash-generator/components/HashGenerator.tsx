@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
+import { workerManager } from '@/lib/worker-manager';
 
 type HashType = 'md5' | 'sha1' | 'sha256' | 'sha512';
 
@@ -21,57 +22,80 @@ export default function HashGenerator() {
   });
   const [hashError, setHashError] = useState('');
   const [copySuccess, setCopySuccess] = useState<{[key: string]: boolean}>({});
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [useWebWorker, setUseWebWorker] = useState(true);
 
-  const generateHashes = async () => {
-    try {
-      if (!hashInput.trim()) {
-        setHashError('ハッシュ化するテキストを入力してください');
-        return;
-      }
+  // Memoized utility functions
+  const arrayBufferToHex = useCallback((buffer: ArrayBuffer) => {
+    return Array.from(new Uint8Array(buffer))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+  }, []);
 
-      // Check if browser APIs are available
-      if (typeof window === 'undefined' || !window.crypto || !window.crypto.subtle) {
-        setHashError('この環境では暗号化APIが利用できません');
-        return;
-      }
-
-      const encoder = new TextEncoder();
-      const data = encoder.encode(hashInput);
-
-      const sha1Hash = await crypto.subtle.digest('SHA-1', data);
-      const sha256Hash = await crypto.subtle.digest('SHA-256', data);
-      const sha512Hash = await crypto.subtle.digest('SHA-512', data);
-
-      const arrayBufferToHex = (buffer: ArrayBuffer) => {
-        return Array.from(new Uint8Array(buffer))
-          .map(b => b.toString(16).padStart(2, '0'))
-          .join('');
-      };
-
-      const simpleMD5 = (str: string) => {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-          const char = str.charCodeAt(i);
-          hash = ((hash << 5) - hash) + char;
-          hash = hash & hash;
-        }
-        return Math.abs(hash).toString(16).padStart(8, '0').substring(0, 32);
-      };
-
-      setHashResults({
-        md5: simpleMD5(hashInput),
-        sha1: arrayBufferToHex(sha1Hash),
-        sha256: arrayBufferToHex(sha256Hash),
-        sha512: arrayBufferToHex(sha512Hash)
-      });
-      setHashError('');
-    } catch (err) {
-      setHashError('ハッシュ生成エラー: ' + (err instanceof Error ? err.message : '不明なエラー'));
-      console.error(err);
+  const simpleMD5 = useCallback((str: string) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
     }
-  };
+    return Math.abs(hash).toString(16).padStart(8, '0').substring(0, 32);
+  }, []);
 
-  const clearHash = () => {
+  const generateHashes = useCallback(async () => {
+    if (!hashInput.trim()) {
+      setHashError('ハッシュ化するテキストを入力してください');
+      return;
+    }
+
+    setIsGenerating(true);
+    setHashError('');
+
+    try {
+      if (useWebWorker && typeof Worker !== 'undefined') {
+        // Use Web Worker for hash generation
+        const results = await workerManager.postMessage('hash', 'GENERATE_HASHES', {
+          input: hashInput
+        });
+        setHashResults(results);
+      } else {
+        // Fallback to main thread
+        if (typeof window === 'undefined' || !window.crypto || !window.crypto.subtle) {
+          setHashError('この環境では暗号化APIが利用できません');
+          return;
+        }
+
+        const encoder = new TextEncoder();
+        const data = encoder.encode(hashInput);
+
+        const [sha1Hash, sha256Hash, sha512Hash] = await Promise.all([
+          crypto.subtle.digest('SHA-1', data),
+          crypto.subtle.digest('SHA-256', data),
+          crypto.subtle.digest('SHA-512', data)
+        ]);
+
+        setHashResults({
+          md5: simpleMD5(hashInput),
+          sha1: arrayBufferToHex(sha1Hash),
+          sha256: arrayBufferToHex(sha256Hash),
+          sha512: arrayBufferToHex(sha512Hash)
+        });
+      }
+    } catch (err) {
+      console.error('Hash generation error:', err);
+      // Try fallback on worker error
+      if (useWebWorker) {
+        setUseWebWorker(false);
+        setTimeout(() => generateHashes(), 100);
+      } else {
+        setHashError('ハッシュ生成エラー: ' + (err instanceof Error ? err.message : '不明なエラー'));
+      }
+    } finally {
+      setIsGenerating(false);
+    }
+  }, [hashInput, useWebWorker, arrayBufferToHex, simpleMD5]);
+
+  const clearHash = useCallback(() => {
     setHashInput('');
     setHashResults({
       md5: '',
@@ -81,9 +105,9 @@ export default function HashGenerator() {
     });
     setHashError('');
     setCopySuccess({});
-  };
+  }, []);
 
-  const copyToClipboard = async (text: string, hashType: string) => {
+  const copyToClipboard = useCallback(async (text: string, hashType: string) => {
     try {
       if (typeof navigator !== 'undefined' && navigator.clipboard) {
         await navigator.clipboard.writeText(text);
@@ -95,7 +119,7 @@ export default function HashGenerator() {
     } catch (err) {
       console.error('コピーに失敗しました:', err);
     }
-  };
+  }, []);
 
   const getAlgorithmInfo = (hashType: HashType) => {
     switch (hashType) {

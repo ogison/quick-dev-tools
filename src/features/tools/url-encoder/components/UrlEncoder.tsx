@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import {
   convertUrl,
   copyToClipboard,
@@ -38,6 +38,10 @@ export default function UrlEncoder() {
   const [isLargeData, setIsLargeData] = useState(false);
   const [enableSyntaxHighlight, setEnableSyntaxHighlight] = useState(true);
   const [enableErrorHighlight, setEnableErrorHighlight] = useState(true);
+
+  // Memoized values
+  const isInputLargeData = useMemo(() => isLargeText(urlInput), [urlInput]);
+  const trimmedInput = useMemo(() => urlInput.trim(), [urlInput]);
 
   // デバウンス付きの変換関数
   const debouncedConvert = useCallback(() => {

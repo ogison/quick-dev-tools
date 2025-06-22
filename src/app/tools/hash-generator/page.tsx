@@ -1,5 +1,10 @@
-import HashGenerator from '@/features/tools/hash-generator/components/HashGenerator';
 import { Metadata } from 'next';
+import dynamic from 'next/dynamic';
+
+const HashGenerator = dynamic(() => import('@/features/tools/hash-generator/components/HashGenerator'), {
+  loading: () => <div className="animate-pulse bg-gray-200 rounded-lg h-96" />,
+  ssr: false
+});
 
 export const metadata: Metadata = {
   title: 'ハッシュ生成ツール',
