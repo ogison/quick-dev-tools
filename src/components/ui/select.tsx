@@ -12,7 +12,7 @@ const selectVariants = cva(
         success: "border-success focus:ring-success",
         warning: "border-warning focus:ring-warning",
       },
-      size: {
+      selectSize: {
         default: "h-10",
         sm: "h-8 px-2 text-xs",
         lg: "h-12 px-4",
@@ -20,7 +20,7 @@ const selectVariants = cva(
     },
     defaultVariants: {
       variant: "default",
-      size: "default",
+      selectSize: "default",
     },
   }
 );
@@ -40,7 +40,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   ({ 
     className, 
     variant, 
-    size, 
+    selectSize, 
     label, 
     description, 
     error, 
@@ -70,7 +70,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
         )}
         <select
           id={selectId}
-          className={cn(selectVariants({ variant: finalVariant, size, className }))}
+          className={cn(selectVariants({ variant: finalVariant, selectSize, className }))}
           ref={ref}
           aria-describedby={cn(descriptionId, errorId, successId)}
           aria-invalid={error ? "true" : undefined}

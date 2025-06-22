@@ -3,9 +3,14 @@
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Select } from '@/components/ui/select';
 import { useBase64Converter } from '../hooks/useBase64Converter';
+import { Download, Settings, Eye } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Base64Encoder() {
+  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
+  
   const {
     base64Input,
     base64Output,
@@ -13,10 +18,14 @@ export default function Base64Encoder() {
     base64Error,
     isDragging,
     fileInfo,
+    options,
+    imagePreview,
     setBase64Input,
     setBase64Mode,
+    updateOptions,
     clearAll,
     copyResult,
+    downloadResult,
     handleFileUpload,
     handleDragOver,
     handleDragLeave,
@@ -66,12 +75,113 @@ export default function Base64Encoder() {
               />
             </div>
           )}
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
+          >
+            <Settings className="w-4 h-4 mr-2" />
+            詳細オプション
+          </Button>
         </div>
         
+        {/* Advanced Options Panel */}
+        {showAdvancedOptions && (
+          <Card className="mb-4">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">詳細オプション</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Base64 Encoding Type */}
+                <div>
+                  <Select
+                    label="エンコード形式"
+                    value={options.encoding}
+                    onChange={(e) => updateOptions({ encoding: e.target.value as any })}
+                    options={[
+                      { value: "standard", label: "標準 Base64" },
+                      { value: "url-safe", label: "URL-safe Base64" }
+                    ]}
+                  />
+                </div>
+                
+                {/* Character Encoding */}
+                <div>
+                  <Select
+                    label="文字エンコーディング"
+                    value={options.characterEncoding}
+                    onChange={(e) => updateOptions({ characterEncoding: e.target.value as any })}
+                    options={[
+                      { value: "utf-8", label: "UTF-8" },
+                      { value: "shift-jis", label: "Shift-JIS" },
+                      { value: "euc-jp", label: "EUC-JP" },
+                      { value: "iso-2022-jp", label: "ISO-2022-JP" }
+                    ]}
+                  />
+                </div>
+                
+                {/* MIME Line Breaks */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">MIME改行</label>
+                  <Button
+                    variant={options.mimeLineBreaks ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => updateOptions({ mimeLineBreaks: !options.mimeLineBreaks })}
+                    className="w-full"
+                  >
+                    {options.mimeLineBreaks ? "有効" : "無効"}
+                  </Button>
+                </div>
+                
+                {/* Data URI Generation */}
+                {base64Mode === 'encode' && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">データURI生成</label>
+                    <Button
+                      variant={options.generateDataUri ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => updateOptions({ generateDataUri: !options.generateDataUri })}
+                      className="w-full"
+                    >
+                      {options.generateDataUri ? "有効" : "無効"}
+                    </Button>
+                  </div>
+                )}
+              </div>
+              
+              {/* Option descriptions */}
+              <div className="text-xs text-muted-foreground space-y-1">
+                <p><strong>URL-safe Base64:</strong> URLに安全な文字（+/を-_に置換）を使用</p>
+                <p><strong>MIME改行:</strong> 76文字ごとに改行を挿入（RFC2045準拠）</p>
+                <p><strong>データURI:</strong> data:スキーマ形式でファイルを埋め込み可能なURI生成</p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+        
         {fileInfo && (
-          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
-            <div className="text-sm text-blue-800">
+          <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-md">
+            <div className="text-sm text-blue-800 dark:text-blue-200">
               <strong>ファイル情報:</strong> {fileInfo.name} ({(fileInfo.size / 1024).toFixed(1)} KB, {fileInfo.type || '不明'})
+            </div>
+          </div>
+        )}
+        
+        {/* Image Preview */}
+        {imagePreview && (
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2">
+              <Eye className="w-4 h-4 inline mr-1" />
+              画像プレビュー
+            </label>
+            <div className="border rounded-md p-4 bg-gray-50 dark:bg-gray-900">
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="max-w-full max-h-64 object-contain mx-auto rounded"
+              />
             </div>
           </div>
         )}
@@ -135,6 +245,14 @@ export default function Base64Encoder() {
           variant="outline"
         >
           結果をコピー
+        </Button>
+        <Button
+          onClick={downloadResult}
+          disabled={!base64Output}
+          variant="outline"
+        >
+          <Download className="w-4 h-4 mr-2" />
+          結果をダウンロード
         </Button>
         <Button 
           onClick={clearAll}

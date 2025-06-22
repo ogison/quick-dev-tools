@@ -1,5 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
+import { 
+  encodeBase64, 
+  decodeBase64, 
+  generateDataUri, 
+  parseDataUri, 
+  downloadAsFile, 
+  getMimeTypeFromExtension,
+  type Base64Encoding,
+  type CharacterEncoding
+} from '../utils/base64-utils';
 
 export type Base64Mode = 'encode' | 'decode';
 
@@ -9,6 +19,13 @@ export interface FileInfo {
   type: string;
 }
 
+export interface Base64Options {
+  encoding: Base64Encoding;
+  mimeLineBreaks: boolean;
+  characterEncoding: CharacterEncoding;
+  generateDataUri: boolean;
+}
+
 export const useBase64Converter = () => {
   const [base64Input, setBase64Input] = useState('');
   const [base64Output, setBase64Output] = useState('');
@@ -16,6 +33,13 @@ export const useBase64Converter = () => {
   const [base64Error, setBase64Error] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
+  const [options, setOptions] = useState<Base64Options>({
+    encoding: 'standard',
+    mimeLineBreaks: false,
+    characterEncoding: 'utf-8',
+    generateDataUri: false
+  });
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   // Debounce function
   const debounce = useCallback((func: Function, delay: number) => {
@@ -28,7 +52,7 @@ export const useBase64Converter = () => {
 
   // Debounced conversion function
   const debouncedConvert = useCallback(
-    debounce((input: string, mode: Base64Mode) => {
+    debounce((input: string, mode: Base64Mode, currentOptions: Base64Options) => {
       if (!input.trim()) {
         setBase64Output('');
         setBase64Error('');
@@ -37,17 +61,37 @@ export const useBase64Converter = () => {
 
       try {
         if (mode === 'encode') {
-          if (typeof btoa === 'undefined') {
-            return;
+          let encoded = encodeBase64(input, {
+            encoding: currentOptions.encoding,
+            mimeLineBreaks: currentOptions.mimeLineBreaks,
+            characterEncoding: currentOptions.characterEncoding
+          });
+
+          // Generate data URI if requested and we have file info
+          if (currentOptions.generateDataUri && fileInfo) {
+            const mimeType = fileInfo.type || getMimeTypeFromExtension(fileInfo.name);
+            encoded = generateDataUri(encoded, mimeType);
           }
-          const encoded = btoa(unescape(encodeURIComponent(input)));
+
           setBase64Output(encoded);
         } else {
-          if (typeof atob === 'undefined') {
-            return;
+          // Check if input is a data URI
+          const dataUriParsed = parseDataUri(input);
+          if (dataUriParsed) {
+            const decoded = decodeBase64(dataUriParsed.base64Content, {
+              encoding: currentOptions.encoding,
+              characterEncoding: currentOptions.characterEncoding,
+              outputType: 'text'
+            }) as string;
+            setBase64Output(decoded);
+          } else {
+            const decoded = decodeBase64(input, {
+              encoding: currentOptions.encoding,
+              characterEncoding: currentOptions.characterEncoding,
+              outputType: 'text'
+            }) as string;
+            setBase64Output(decoded);
           }
-          const decoded = decodeURIComponent(escape(atob(input)));
-          setBase64Output(decoded);
         }
         setBase64Error('');
       } catch (err) {
@@ -55,19 +99,20 @@ export const useBase64Converter = () => {
         setBase64Output('');
       }
     }, 300),
-    []
+    [fileInfo]
   );
 
   // Real-time conversion
   useEffect(() => {
-    debouncedConvert(base64Input, base64Mode);
-  }, [base64Input, base64Mode, debouncedConvert]);
+    debouncedConvert(base64Input, base64Mode, options);
+  }, [base64Input, base64Mode, options, debouncedConvert]);
 
   const clearAll = () => {
     setBase64Input('');
     setBase64Output('');
     setBase64Error('');
     setFileInfo(null);
+    setImagePreview(null);
   };
 
   const copyResult = async () => {
@@ -106,11 +151,26 @@ export const useBase64Converter = () => {
         } else if (result instanceof ArrayBuffer) {
           // For binary files
           const uint8Array = new Uint8Array(result);
-          const binaryString = Array.from(uint8Array)
-            .map(byte => String.fromCharCode(byte))
-            .join('');
-          const base64 = btoa(binaryString);
-          setBase64Output(base64);
+          const encoded = encodeBase64(uint8Array, {
+            encoding: options.encoding,
+            mimeLineBreaks: options.mimeLineBreaks,
+            characterEncoding: options.characterEncoding
+          });
+          
+          // Generate data URI if requested
+          if (options.generateDataUri) {
+            const mimeType = file.type || getMimeTypeFromExtension(file.name);
+            const dataUri = generateDataUri(encoded, mimeType);
+            setBase64Output(dataUri);
+            
+            // Set image preview for image files
+            if (file.type.startsWith('image/')) {
+              setImagePreview(dataUri);
+            }
+          } else {
+            setBase64Output(encoded);
+          }
+          
           setBase64Input(''); // Clear text input for file upload
         }
         toast.success('ファイルが読み込まれました');
@@ -149,6 +209,43 @@ export const useBase64Converter = () => {
     }
   };
 
+  const downloadResult = () => {
+    if (!base64Output) return;
+
+    try {
+      if (base64Mode === 'decode') {
+        // Download decoded result
+        const dataUriParsed = parseDataUri(base64Input);
+        if (dataUriParsed) {
+          // If input was a data URI, download as binary file
+          const bytes = decodeBase64(dataUriParsed.base64Content, {
+            encoding: options.encoding,
+            outputType: 'bytes'
+          }) as Uint8Array;
+          
+          const originalName = fileInfo?.name || 'decoded_file';
+          downloadAsFile(bytes, originalName, dataUriParsed.mimeType);
+        } else {
+          // If input was plain Base64, download as text
+          const originalName = fileInfo?.name || 'decoded.txt';
+          downloadAsFile(base64Output, originalName, 'text/plain');
+        }
+        toast.success('ファイルをダウンロードしました');
+      } else {
+        // Download encoded result as text file
+        const filename = fileInfo ? `${fileInfo.name}.base64` : 'encoded.base64';
+        downloadAsFile(base64Output, filename, 'text/plain');
+        toast.success('Base64ファイルをダウンロードしました');
+      }
+    } catch (err) {
+      toast.error('ダウンロードに失敗しました');
+    }
+  };
+
+  const updateOptions = (newOptions: Partial<Base64Options>) => {
+    setOptions(prev => ({ ...prev, ...newOptions }));
+  };
+
   return {
     // State
     base64Input,
@@ -157,14 +254,18 @@ export const useBase64Converter = () => {
     base64Error,
     isDragging,
     fileInfo,
+    options,
+    imagePreview,
     
     // Setters
     setBase64Input,
     setBase64Mode,
+    updateOptions,
     
     // Actions
     clearAll,
     copyResult,
+    downloadResult,
     handleFileUpload,
     handleDragOver,
     handleDragLeave,
