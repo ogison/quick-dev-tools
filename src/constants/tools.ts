@@ -1,54 +1,111 @@
-import { ToolConfig } from '@/features/tools/types';
+import { Tool, ToolConfig } from '@/features/tools/types';
 
-export const TOOL_CONFIGS: ToolConfig[] = [
+export const TOOLS: Tool[] = [
   {
-    id: 'json',
-    name: 'JSON整形化ツール',
-    description: 'JSONを美しく整形・検証'
+    id: "json",
+    name: "JSON整形ツール",
+    number: "1",
+    description: "JSONデータの整形・検証・最小化をシンタックスハイライト付きで",
+    icon: "{}",
+    category: "データ処理",
+    badge: "人気",
+    href: "/tools/json",
   },
   {
-    id: 'base64',
-    name: 'Base64エンコード/デコード',
-    description: 'Base64の変換処理'
+    id: "base64",
+    name: "Base64エンコーダー",
+    number: "2",
+    description: "テキストをBase64に変換、またはBase64文字列をテキストに変換",
+    icon: "🔤",
+    category: "エンコーディング",
+    badge: "実用",
+    href: "/tools/base64",
   },
   {
-    id: 'url',
-    name: 'URLエンコード/デコード',
-    description: 'URL文字列の変換処理'
+    id: "url",
+    name: "URLエンコーダー",
+    number: "3",
+    description: "URLの安全なエンコード・デコードを行います",
+    icon: "🌐",
+    category: "エンコーディング",
+    badge: "実用",
+    href: "/tools/url-encoder",
   },
   {
-    id: 'hash',
-    name: 'ハッシュ生成ツール',
-    description: 'MD5, SHA1, SHA256ハッシュ生成'
+    id: "hash",
+    name: "ハッシュ生成器",
+    number: "4",
+    description: "MD5、SHA-1、SHA-256、SHA-512のハッシュ値を生成",
+    icon: "#",
+    category: "暗号化",
+    badge: "セキュリティ",
+    href: "/tools/hash-generator",
   },
   {
-    id: 'regex',
-    name: '正規表現テスター',
-    description: '正規表現のテスト・検証'
+    id: "regex",
+    name: "正規表現テスター",
+    number: "5",
+    description: "正規表現をテストし、リアルタイムでマッチ結果を確認",
+    icon: ".*",
+    category: "テキスト処理",
+    badge: "開発",
+    href: "/tools/regex",
   },
   {
-    id: 'color',
-    name: 'カラーパレット生成器',
-    description: '開発用カラーコード生成'
+    id: "color",
+    name: "カラーパレット生成",
+    number: "6",
+    description: "調和の取れた美しいカラーパレットを自動生成",
+    icon: "🎨",
+    category: "デザイン",
+    badge: "クリエイティブ",
+    href: "/tools/color",
   },
   {
-    id: 'qr',
-    name: 'QRコード生成器',
-    description: 'テキストからQRコード生成'
+    id: "qr",
+    name: "QRコード生成器",
+    number: "7",
+    description: "テキストやURLから簡単にQRコードを生成",
+    icon: "▦",
+    category: "ユーティリティ",
+    badge: "便利",
+    href: "/tools/qr",
   },
   {
-    id: 'password',
-    name: 'パスワード生成器',
-    description: 'セキュアなパスワード生成'
+    id: "password",
+    name: "パスワード生成器",
+    number: "8",
+    description: "カスタム条件で安全なパスワードを生成",
+    icon: "🔐",
+    category: "セキュリティ",
+    badge: "セキュリティ",
+    href: "/tools/password",
   },
   {
-    id: 'timestamp',
-    name: 'タイムスタンプ変換器',
-    description: 'Unix時間と日時の相互変換'
+    id: "timestamp",
+    name: "タイムスタンプ変換",
+    number: "9",
+    description: "Unixタイムスタンプと日時の相互変換",
+    icon: "⏰",
+    category: "ユーティリティ",
+    badge: "実用",
+    href: "/tools/timestamp",
   },
   {
-    id: 'lorem',
-    name: 'Lorem Ipsum生成器',
-    description: 'ダミーテキスト生成'
-  }
+    id: "lorem",
+    name: "ダミーテキスト生成",
+    number: "10",
+    description: "デザインや開発用のプレースホルダーテキストを生成",
+    icon: "📝",
+    category: "コンテンツ",
+    badge: "デザイン",
+    href: "/tools/lorem",
+  },
 ];
+
+export const TOOL_CONFIGS: ToolConfig[] = TOOLS.map(tool => ({
+  id: tool.id,
+  name: tool.name,
+  description: tool.description,
+  icon: tool.icon
+}));

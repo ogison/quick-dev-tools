@@ -1,9 +1,20 @@
-import { RegexTestResult } from '../types';
+import { RegexTestResult, RegexMatch } from '../types';
 
 export function testRegex(pattern: string, testString: string, flags?: string): RegexTestResult {
   try {
     const regex = new RegExp(pattern, flags);
-    const matches = testString.match(regex);
+    const matchResult = testString.match(regex);
+    
+    const matches: RegexMatch[] = [];
+    if (matchResult) {
+      matchResult.forEach((match, index) => {
+        matches.push({
+          match,
+          index: testString.indexOf(match),
+          groups: matchResult.slice(1)
+        });
+      });
+    }
     
     return {
       matches,
@@ -11,7 +22,7 @@ export function testRegex(pattern: string, testString: string, flags?: string): 
     };
   } catch (error) {
     return {
-      matches: null,
+      matches: [],
       isValid: false,
       error: error instanceof Error ? error.message : '正規表現が無効です'
     };

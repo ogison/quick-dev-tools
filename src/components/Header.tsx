@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
@@ -15,11 +15,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Menu, ChevronDown, Settings } from 'lucide-react';
+import { Menu, ChevronDown, Settings, Search } from 'lucide-react';
+import { ThemeToggle } from '@/components/layout/ThemeToggle';
+import SearchModal from '@/components/search/SearchModal';
+import { useSearchShortcuts } from '@/lib/search/search-hooks';
+import type { Tool } from '@/features/tools/types';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   const navigationItems = [
     { id: 'home', name: 'ホーム', description: 'すべての開発者ツール', href: '/' },
@@ -42,6 +48,18 @@ export default function Header() {
   const isActive = (href: string) => {
     return pathname === href;
   };
+
+  // 検索モーダルの開閉
+  const openSearchModal = () => setIsSearchModalOpen(true);
+  const closeSearchModal = () => setIsSearchModalOpen(false);
+
+  // ツール選択時の処理
+  const handleSelectTool = (tool: Tool) => {
+    router.push(tool.href);
+  };
+
+  // キーボードショートカットの設定
+  useSearchShortcuts(openSearchModal);
 
   return (
     <header className="border-b sticky top-0 z-50 bg-background">
@@ -103,17 +121,46 @@ export default function Header() {
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* Mobile menu button */}
-          <div className="lg:hidden">
+          {/* Search and Theme toggle and Mobile menu button */}
+          <div className="flex items-center gap-2">
+            {/* Search Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={openSearchModal}
+              className="hidden sm:flex items-center gap-2 text-muted-foreground hover:text-foreground"
+            >
+              <Search className="h-4 w-4" />
+              <span className="text-sm">検索</span>
+              <div className="hidden md:flex items-center gap-1 text-xs bg-muted px-2 py-1 rounded">
+                <span>⌘</span>
+                <span>K</span>
+              </div>
+            </Button>
+
+            {/* Mobile Search Button */}
             <Button
               variant="ghost"
               size="icon"
-              onClick={toggleMobileMenu}
-              aria-expanded={isMobileMenuOpen}
+              onClick={openSearchModal}
+              className="sm:hidden"
+              aria-label="検索"
             >
-              <span className="sr-only">Open main menu</span>
-              <Menu className="h-6 w-6" />
+              <Search className="h-5 w-5" />
             </Button>
+
+            <ThemeToggle />
+            <div className="lg:hidden">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleMobileMenu}
+                aria-expanded={isMobileMenuOpen}
+              >
+                <span className="sr-only">Open main menu</span>
+                <Menu className="h-6 w-6" />
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -138,6 +185,13 @@ export default function Header() {
           </div>
         )}
       </div>
+
+      {/* Search Modal */}
+      <SearchModal
+        isOpen={isSearchModalOpen}
+        onClose={closeSearchModal}
+        onSelectTool={handleSelectTool}
+      />
     </header>
   );
 }

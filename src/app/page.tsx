@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardHeader,
@@ -6,112 +8,29 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { Search, Command } from "lucide-react";
+import { TOOLS } from "@/constants/tools";
+import { useHomePage } from "@/hooks/useHomePage";
 
 export default function Home() {
-  const tools = [
-    {
-      id: "json",
-      name: "JSON整形ツール",
-      number: "1",
-      description:
-        "JSONデータの整形・検証・最小化をシンタックスハイライト付きで",
-      icon: "{}",
-      category: "データ処理",
-      badge: "人気",
-      href: "/tools/json",
-    },
-    {
-      id: "base64",
-      name: "Base64エンコーダー",
-      number: "2",
-      description: "テキストをBase64に変換、またはBase64文字列をテキストに変換",
-      icon: "🔤",
-      category: "エンコーディング",
-      badge: "実用",
-      href: "/tools/base64",
-    },
-    {
-      id: "url",
-      name: "URLエンコーダー",
-      number: "3",
-      description: "URLの安全なエンコード・デコードを行います",
-      icon: "🌐",
-      category: "エンコーディング",
-      badge: "実用",
-      href: "/tools/url-encoder",
-    },
-    {
-      id: "hash",
-      name: "ハッシュ生成器",
-      number: "4",
-      description: "MD5、SHA-1、SHA-256、SHA-512のハッシュ値を生成",
-      icon: "#",
-      category: "暗号化",
-      badge: "セキュリティ",
-      href: "/tools/hash-generator",
-    },
-    {
-      id: "regex",
-      name: "正規表現テスター",
-      number: "5",
-      description: "正規表現をテストし、リアルタイムでマッチ結果を確認",
-      icon: ".*",
-      category: "テキスト処理",
-      badge: "開発",
-      href: "/tools/regex",
-    },
-    {
-      id: "color",
-      name: "カラーパレット生成",
-      number: "6",
-      description: "調和の取れた美しいカラーパレットを自動生成",
-      icon: "🎨",
-      category: "デザイン",
-      badge: "クリエイティブ",
-      href: "/tools/color",
-    },
-    {
-      id: "qr",
-      name: "QRコード生成器",
-      number: "7",
-      description: "テキストやURLから簡単にQRコードを生成",
-      icon: "▦",
-      category: "ユーティリティ",
-      badge: "便利",
-      href: "/tools/qr",
-    },
-    {
-      id: "password",
-      name: "パスワード生成器",
-      number: "8",
-      description: "カスタム条件で安全なパスワードを生成",
-      icon: "🔐",
-      category: "セキュリティ",
-      badge: "セキュリティ",
-      href: "/tools/password",
-    },
-    {
-      id: "timestamp",
-      name: "タイムスタンプ変換",
-      number: "9",
-      description: "Unixタイムスタンプと日時の相互変換",
-      icon: "⏰",
-      category: "ユーティリティ",
-      badge: "実用",
-      href: "/tools/timestamp",
-    },
-    {
-      id: "lorem",
-      name: "ダミーテキスト生成",
-      number: "10",
-      description: "デザインや開発用のプレースホルダーテキストを生成",
-      icon: "📝",
-      category: "コンテンツ",
-      badge: "デザイン",
-      href: "/tools/lorem",
-    },
-  ];
+  const {
+    searchQuery,
+    selectedCategory,
+    showSearch,
+    filteredTools,
+    categories,
+    popularTools,
+    searchSuggestions,
+    setSearchQuery,
+    setSelectedCategory,
+    setShowSearch,
+    clearSearch,
+    resetFilters,
+    navigateToTool,
+    getCategoryDisplayName,
+  } = useHomePage();
 
   const renderHomePage = () => (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
@@ -154,6 +73,49 @@ export default function Home() {
       </section>
 
       <main className="container mx-auto px-4 py-16">
+        {/* Search Section */}
+        <section className="mb-16">
+          <div className="max-w-2xl mx-auto">
+            <div className="relative">
+              <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+              <Input
+                placeholder="ツールを検索... (Ctrl+K)"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-20 py-6 text-lg bg-white/80 backdrop-blur-sm border-0 shadow-lg search-focus"
+              />
+              <div className="absolute right-3 top-2">
+                <div className="flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+                  <Command className="h-3 w-3" />
+                  <span>K</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Search Suggestions */}
+            {searchSuggestions.length > 0 && (
+              <div className="mt-2 bg-white rounded-lg shadow-lg border p-2">
+                <div className="text-xs text-muted-foreground mb-2 px-2">
+                  検索候補:
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {searchSuggestions.map((suggestion, index) => (
+                    <Button
+                      key={index}
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs h-6"
+                      onClick={() => setSearchQuery(suggestion)}
+                    >
+                      {suggestion}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
         {/* Features Section */}
         <section className="mb-20">
           <div className="text-center mb-12">
@@ -200,22 +162,37 @@ export default function Home() {
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold mb-4">カテゴリから選ぶ</h2>
             <p className="text-muted-foreground">
-              用途に応じてツールを分類しています
+              用途に応じてツールを分類しています（←→キーで移動）
             </p>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
-            {[...new Set(tools.map((tool) => tool.category))].map(
-              (category) => (
-                <Button
-                  key={category}
-                  variant="outline"
-                  className="rounded-full px-6 py-2 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-all"
-                >
-                  {category}
-                </Button>
-              )
-            )}
+            {categories.map((category) => (
+              <Button
+                key={category}
+                variant={selectedCategory === category ? "default" : "outline"}
+                onClick={() => setSelectedCategory(category)}
+                className={`rounded-full px-6 py-2 transition-all ${
+                  selectedCategory === category
+                    ? "bg-blue-600 text-white shadow-lg category-active"
+                    : "hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
+                }`}
+              >
+                {getCategoryDisplayName(category)}
+              </Button>
+            ))}
           </div>
+          {selectedCategory !== "all" && (
+            <div className="text-center mt-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={resetFilters}
+                className="text-xs text-muted-foreground"
+              >
+                フィルターをリセット
+              </Button>
+            </div>
+          )}
         </section>
 
         {/* Tools Grid */}
@@ -223,13 +200,31 @@ export default function Home() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">開発ツール一覧</h2>
             <p className="text-muted-foreground">
-              プロフェッショナルな開発に必要なツールを厳選
+              プロフェッショナルな開発に必要なツールを厳選（1-9キーで直接アクセス）
             </p>
+            {filteredTools.length === 0 && searchQuery && (
+              <div className="mt-8 p-8 bg-gray-50 rounded-lg">
+                <p className="text-gray-500">
+                  「{searchQuery}」に一致するツールが見つかりません
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={clearSearch}
+                  className="mt-4"
+                >
+                  検索をクリア
+                </Button>
+              </div>
+            )}
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tools.map((tool) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+            {filteredTools.map((tool, index) => (
               <Link key={tool.id} href={tool.href}>
-                <Card className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-0 shadow-lg">
+                <Card
+                  className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 border-0 shadow-lg animate-fadeIn"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between mb-3">
                       <div className="text-4xl group-hover:scale-110 transition-transform duration-300">
@@ -242,6 +237,11 @@ export default function Home() {
                         <span className="text-xs font-semibold text-muted-foreground bg-muted px-2 py-1 rounded-full">
                           #{tool.number}
                         </span>
+                        {index < 9 && (
+                          <span className="text-xs font-mono text-white bg-gray-600 px-2 py-1 rounded-full">
+                            {index + 1}
+                          </span>
+                        )}
                       </div>
                     </div>
                     <CardTitle className="group-hover:text-blue-600 transition-colors text-lg">
@@ -278,7 +278,7 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {tools.slice(0, 4).map((tool) => (
+                {popularTools.map((tool) => (
                   <Link key={tool.id} href={tool.href}>
                     <Button
                       variant="outline"

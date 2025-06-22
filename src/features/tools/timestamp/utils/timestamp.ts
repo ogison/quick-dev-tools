@@ -26,8 +26,10 @@ export function convertTimestamp(input: string | number): TimestampFormat | null
     if (isNaN(date.getTime())) return null;
     
     return {
+      timestamp,
       unix: Math.floor(timestamp / 1000),
       iso: date.toISOString(),
+      utc: date.toUTCString(),
       local: date.toLocaleString('ja-JP', {
         year: 'numeric',
         month: '2-digit',
@@ -36,7 +38,8 @@ export function convertTimestamp(input: string | number): TimestampFormat | null
         minute: '2-digit',
         second: '2-digit',
         timeZoneName: 'short'
-      })
+      }),
+      relative: getRelativeTime(date)
     };
   } catch {
     return null;
@@ -45,9 +48,12 @@ export function convertTimestamp(input: string | number): TimestampFormat | null
 
 export function getCurrentTimestamp(): TimestampFormat {
   const now = new Date();
+  const timestamp = now.getTime();
   return {
-    unix: Math.floor(now.getTime() / 1000),
+    timestamp,
+    unix: Math.floor(timestamp / 1000),
     iso: now.toISOString(),
+    utc: now.toUTCString(),
     local: now.toLocaleString('ja-JP', {
       year: 'numeric',
       month: '2-digit',
@@ -56,6 +62,22 @@ export function getCurrentTimestamp(): TimestampFormat {
       minute: '2-digit',
       second: '2-digit',
       timeZoneName: 'short'
-    })
+    }),
+    relative: getRelativeTime(now)
   };
+}
+
+function getRelativeTime(date: Date): string {
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMinutes = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+
+  if (diffMinutes < 1) return 'たった今';
+  if (diffMinutes < 60) return `${diffMinutes}分前`;
+  if (diffHours < 24) return `${diffHours}時間前`;
+  if (diffDays < 7) return `${diffDays}日前`;
+  
+  return date.toLocaleDateString('ja-JP');
 }
