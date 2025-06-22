@@ -1,16 +1,9 @@
-import TimestampConverter from '@/components/TimestampConverter';
-import { Card, CardContent } from '@/components/ui/card';
+import TimestampConverter from '@/features/tools/timestamp/components/TimestampConverter';
 
 export default function TimestampPage() {
   return (
-    <div className="min-h-screen bg-background py-8">
-      <div className="container mx-auto px-4">
-        <Card>
-          <CardContent className="p-6">
-            <TimestampConverter />
-          </CardContent>
-        </Card>
-      </div>
+    <div className="container mx-auto px-4 py-8">
+      <TimestampConverter />
     </div>
   );
 }

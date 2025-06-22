@@ -1,16 +1,9 @@
-import QrGenerator from '@/components/QrGenerator';
-import { Card, CardContent } from '@/components/ui/card';
+import QrGenerator from '@/features/tools/qr/components/QrGenerator';
 
 export default function QrPage() {
   return (
-    <div className="min-h-screen bg-background py-8">
-      <div className="container mx-auto px-4">
-        <Card>
-          <CardContent className="p-6">
-            <QrGenerator />
-          </CardContent>
-        </Card>
-      </div>
+    <div className="container mx-auto px-4 py-8">
+      <QrGenerator />
     </div>
   );
 }
