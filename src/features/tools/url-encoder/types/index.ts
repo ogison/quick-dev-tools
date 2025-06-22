@@ -33,7 +33,7 @@ export interface UrlAnalysis {
 export interface UrlConversionResult {
   result: string;
   error?: string;
-  analysis?: UrlAnalysis;
+  analysis?: UrlAnalysis | null;
 }
 
 // URLエンコーダーの状態

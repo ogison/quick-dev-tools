@@ -36,7 +36,7 @@ export default function JsonFormatter() {
     <div>
       <h2 className="text-2xl font-semibold mb-2">JSON整形・検証</h2>
       <p className="text-muted-foreground mb-6">JSONデータの整形、検証、変換を行うツールです</p>
-      
+
       {/* Keyboard shortcuts help */}
       <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-md">
         <p className="text-sm text-blue-800 dark:text-blue-200">

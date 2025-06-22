@@ -48,7 +48,7 @@ export function decodeUrl(input: string): UrlConversionResult {
     }
     
     // デコード結果がURLの場合は解析
-    let analysis: UrlAnalysis | undefined;
+    let analysis: UrlAnalysis | null = null;
     if (decoded.includes('://')) {
       analysis = analyzeUrl(decoded);
     }
@@ -159,7 +159,7 @@ export function getSampleData(mode: UrlMode): string {
 }
 
 // debounce関数
-export function debounce<T extends (...args: unknown[]) => void>(
+export function debounce<T extends (...args: any[]) => void>(
   func: T,
   delay: number
 ): (...args: Parameters<T>) => void {

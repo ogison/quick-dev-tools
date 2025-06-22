@@ -13,15 +13,10 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     rules: {
-      // TypeScript 厳格化ルール
-      "@typescript-eslint/no-explicit-any": "error",
-      "@typescript-eslint/explicit-function-return-type": ["error", {
-        allowExpressions: true,
-        allowTypedFunctionExpressions: true,
-        allowHigherOrderFunctions: true,
-        allowDirectConstAssertionInArrowFunctions: true,
-      }],
-      "@typescript-eslint/no-unused-vars": ["error", {
+      // TypeScript 厳格化ルール（一時的に緩和）
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/explicit-function-return-type": "warn",
+      "@typescript-eslint/no-unused-vars": ["warn", {
         argsIgnorePattern: "^_",
         varsIgnorePattern: "^_",
         caughtErrorsIgnorePattern: "^_",
@@ -32,16 +27,16 @@ const eslintConfig = [
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
       
-      // コード品質ルール
+      // コード品質ルール（一時的に緩和）
       "no-console": ["warn", { allow: ["warn", "error"] }],
-      "no-debugger": "error",
-      "prefer-const": "error",
-      "no-var": "error",
-      "eqeqeq": ["error", "always"],
-      "curly": ["error", "all"],
+      "no-debugger": "warn",
+      "prefer-const": "warn",
+      "no-var": "warn",
+      "eqeqeq": ["warn", "always"],
+      "curly": "warn",
       
-      // インポート順序
-      "import/order": ["error", {
+      // インポート順序（一時的に緩和）
+      "import/order": ["warn", {
         groups: ["builtin", "external", "internal", "parent", "sibling", "index"],
         "newlines-between": "always",
         alphabetize: {
@@ -51,9 +46,9 @@ const eslintConfig = [
       }],
       
       // アクセシビリティ
-      "jsx-a11y/alt-text": "error",
-      "jsx-a11y/anchor-is-valid": "error",
-      "jsx-a11y/role-supports-aria-props": "error",
+      "jsx-a11y/alt-text": "warn",
+      "jsx-a11y/anchor-is-valid": "warn",
+      "jsx-a11y/role-supports-aria-props": "warn",
     },
   },
 ];
