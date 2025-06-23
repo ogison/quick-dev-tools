@@ -41,7 +41,7 @@ export default function Home() {
         <section className="mb-12">
           <div className="mx-auto max-w-3xl">
             <div className="relative mb-6">
-              <Search className="absolute top-4 left-4 h-6 w-6 text-gray-400" />
+              <Search className="absolute top-1/2 -translate-y-1/2 left-4 h-6 w-6 text-gray-400" />
               <Input
                 placeholder="ツールを検索してください..."
                 value={searchQuery}

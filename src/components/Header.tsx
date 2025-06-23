@@ -92,9 +92,7 @@ export default function Header() {
               </div>
               <div>
                 <h2 className="font-bold">Tooly</h2>
-                <p className="text-muted-foreground hidden text-xs sm:block">
-                  開発者向けユーティリティ
-                </p>
+                <p className="text-muted-foreground hidden text-xs sm:block">開発者向けツール集</p>
               </div>
             </Link>
           </div>

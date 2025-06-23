@@ -33,7 +33,7 @@ export function ThemeToggle() {
           <span className="sr-only">テーマを切り替え</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="bg-background">
         <DropdownMenuItem onClick={() => setTheme('light')}>
           <Sun className="mr-2 h-4 w-4" />
           <span>ライトモード</span>
