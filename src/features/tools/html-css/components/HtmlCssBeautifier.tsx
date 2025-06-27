@@ -1,16 +1,37 @@
 'use client';
 
+import { Copy, Download, RotateCcw, CheckCircle2, XCircle, FileText, Palette } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
+
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { beautifyHtml, beautifyCss, minifyHtml, minifyCss, validateHtml, validateCss, detectLanguage, extractInlineStyles, BeautifyOptions, CssBeautifyOptions, DEFAULT_HTML_OPTIONS, DEFAULT_CSS_OPTIONS } from '../utils/html-css';
-import { Copy, Download, RotateCcw, Code2, Minimize2, CheckCircle2, XCircle, FileText, Palette } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+
+import {
+  beautifyHtml,
+  beautifyCss,
+  minifyHtml,
+  minifyCss,
+  validateHtml,
+  validateCss,
+  detectLanguage,
+  extractInlineStyles,
+  BeautifyOptions,
+  CssBeautifyOptions,
+  DEFAULT_HTML_OPTIONS,
+  DEFAULT_CSS_OPTIONS,
+} from '../utils/html-css';
 
 export default function HtmlCssBeautifier() {
   const [input, setInput] = useState('');
@@ -19,7 +40,10 @@ export default function HtmlCssBeautifier() {
   const [mode, setMode] = useState<'beautify' | 'minify' | 'validate'>('beautify');
   const [htmlOptions, setHtmlOptions] = useState<BeautifyOptions>(DEFAULT_HTML_OPTIONS);
   const [cssOptions, setCssOptions] = useState<CssBeautifyOptions>(DEFAULT_CSS_OPTIONS);
-  const [validation, setValidation] = useState<{ isValid: boolean; errors: string[] }>({ isValid: true, errors: [] });
+  const [validation, setValidation] = useState<{ isValid: boolean; errors: string[] }>({
+    isValid: true,
+    errors: [],
+  });
   const [detectedLanguage, setDetectedLanguage] = useState<string>('');
 
   useEffect(() => {
@@ -47,7 +71,7 @@ export default function HtmlCssBeautifier() {
             setOutput('Language not detected. Please select HTML or CSS manually.');
           }
           break;
-          
+
         case 'minify':
           if (actualLanguage === 'html') {
             setOutput(minifyHtml(input));
@@ -57,7 +81,7 @@ export default function HtmlCssBeautifier() {
             setOutput('Language not detected. Please select HTML or CSS manually.');
           }
           break;
-          
+
         case 'validate':
           let validationResult;
           if (actualLanguage === 'html') {
@@ -72,7 +96,9 @@ export default function HtmlCssBeautifier() {
           break;
       }
     } catch (error) {
-      setOutput('Error processing code: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      setOutput(
+        'Error processing code: ' + (error instanceof Error ? error.message : 'Unknown error')
+      );
     }
   };
 
@@ -83,11 +109,13 @@ export default function HtmlCssBeautifier() {
   };
 
   const handleDownload = () => {
-    if (!output) return;
-    
+    if (!output) {
+      return;
+    }
+
     const extension = detectedLanguage === 'css' ? 'css' : 'html';
     const mimeType = detectedLanguage === 'css' ? 'text/css' : 'text/html';
-    
+
     const blob = new Blob([output], { type: mimeType });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -109,10 +137,14 @@ export default function HtmlCssBeautifier() {
 
   const loadSample = (type: 'html' | 'css') => {
     if (type === 'html') {
-      setInput(`<!DOCTYPE html><html><head><title>Sample</title><style>.header{background:#333;color:white;padding:10px;}.content{margin:20px;}</style></head><body><div class="header"><h1>Welcome</h1></div><div class="content"><p>This is a sample HTML document.</p><ul><li>Item 1</li><li>Item 2</li></ul></div></body></html>`);
+      setInput(
+        `<!DOCTYPE html><html><head><title>Sample</title><style>.header{background:#333;color:white;padding:10px;}.content{margin:20px;}</style></head><body><div class="header"><h1>Welcome</h1></div><div class="content"><p>This is a sample HTML document.</p><ul><li>Item 1</li><li>Item 2</li></ul></div></body></html>`
+      );
       setLanguage('html');
     } else {
-      setInput(`.navbar{background-color:#333;overflow:hidden;}.navbar a{float:left;display:block;color:#f2f2f2;text-align:center;padding:14px 20px;text-decoration:none;}.navbar a:hover{background-color:#ddd;color:black;}@media screen and (max-width:600px){.navbar a{float:none;display:block;}}`);
+      setInput(
+        `.navbar{background-color:#333;overflow:hidden;}.navbar a{float:left;display:block;color:#f2f2f2;text-align:center;padding:14px 20px;text-decoration:none;}.navbar a:hover{background-color:#ddd;color:black;}@media screen and (max-width:600px){.navbar a{float:none;display:block;}}`
+      );
       setLanguage('css');
     }
   };
@@ -120,19 +152,21 @@ export default function HtmlCssBeautifier() {
   const extractStyles = () => {
     if (detectedLanguage === 'html') {
       const result = extractInlineStyles(input);
-      setOutput(`<!-- HTML with extracted classes -->\n${result.html}\n\n<!-- Extracted CSS -->\n<style>\n${result.css}\n</style>`);
+      setOutput(
+        `<!-- HTML with extracted classes -->\n${result.html}\n\n<!-- Extracted CSS -->\n<style>\n${result.css}\n</style>`
+      );
     }
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-6">
+    <div className="mx-auto w-full max-w-7xl space-y-6">
       {/* Mode and Language Selection */}
       <Card>
         <CardHeader>
           <CardTitle>処理設定</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <Label htmlFor="language">言語</Label>
               <Select value={language} onValueChange={(value) => setLanguage(value as any)}>
@@ -146,7 +180,7 @@ export default function HtmlCssBeautifier() {
                 </SelectContent>
               </Select>
               {detectedLanguage && (
-                <div className="text-sm text-gray-600 mt-1">
+                <div className="mt-1 text-sm text-gray-600">
                   検出: {detectedLanguage.toUpperCase()}
                 </div>
               )}
@@ -183,10 +217,15 @@ export default function HtmlCssBeautifier() {
               </TabsList>
 
               <TabsContent value="html" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                   <div>
                     <Label htmlFor="indentSize">インデントサイズ</Label>
-                    <Select value={htmlOptions.indentSize.toString()} onValueChange={(value) => setHtmlOptions({...htmlOptions, indentSize: parseInt(value)})}>
+                    <Select
+                      value={htmlOptions.indentSize.toString()}
+                      onValueChange={(value) =>
+                        setHtmlOptions({ ...htmlOptions, indentSize: parseInt(value) })
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -200,7 +239,12 @@ export default function HtmlCssBeautifier() {
 
                   <div>
                     <Label htmlFor="indentType">インデントタイプ</Label>
-                    <Select value={htmlOptions.indentType} onValueChange={(value) => setHtmlOptions({...htmlOptions, indentType: value as any})}>
+                    <Select
+                      value={htmlOptions.indentType}
+                      onValueChange={(value) =>
+                        setHtmlOptions({ ...htmlOptions, indentType: value as any })
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -213,7 +257,12 @@ export default function HtmlCssBeautifier() {
 
                   <div>
                     <Label htmlFor="maxLineLength">最大行長</Label>
-                    <Select value={htmlOptions.maxLineLength.toString()} onValueChange={(value) => setHtmlOptions({...htmlOptions, maxLineLength: parseInt(value)})}>
+                    <Select
+                      value={htmlOptions.maxLineLength.toString()}
+                      onValueChange={(value) =>
+                        setHtmlOptions({ ...htmlOptions, maxLineLength: parseInt(value) })
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -226,12 +275,14 @@ export default function HtmlCssBeautifier() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="flex items-center space-x-2">
                     <Switch
                       id="preserveNewlines"
                       checked={htmlOptions.preserveNewlines}
-                      onCheckedChange={(checked) => setHtmlOptions({...htmlOptions, preserveNewlines: checked})}
+                      onCheckedChange={(checked) =>
+                        setHtmlOptions({ ...htmlOptions, preserveNewlines: checked })
+                      }
                     />
                     <Label htmlFor="preserveNewlines">改行を保持</Label>
                   </div>
@@ -240,7 +291,9 @@ export default function HtmlCssBeautifier() {
                     <Switch
                       id="endWithNewline"
                       checked={htmlOptions.endWithNewline}
-                      onCheckedChange={(checked) => setHtmlOptions({...htmlOptions, endWithNewline: checked})}
+                      onCheckedChange={(checked) =>
+                        setHtmlOptions({ ...htmlOptions, endWithNewline: checked })
+                      }
                     />
                     <Label htmlFor="endWithNewline">末尾に改行</Label>
                   </div>
@@ -248,10 +301,15 @@ export default function HtmlCssBeautifier() {
               </TabsContent>
 
               <TabsContent value="css" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                   <div>
                     <Label htmlFor="cssIndentSize">インデントサイズ</Label>
-                    <Select value={cssOptions.indentSize.toString()} onValueChange={(value) => setCssOptions({...cssOptions, indentSize: parseInt(value)})}>
+                    <Select
+                      value={cssOptions.indentSize.toString()}
+                      onValueChange={(value) =>
+                        setCssOptions({ ...cssOptions, indentSize: parseInt(value) })
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -265,7 +323,12 @@ export default function HtmlCssBeautifier() {
 
                   <div>
                     <Label htmlFor="cssIndentType">インデントタイプ</Label>
-                    <Select value={cssOptions.indentType} onValueChange={(value) => setCssOptions({...cssOptions, indentType: value as any})}>
+                    <Select
+                      value={cssOptions.indentType}
+                      onValueChange={(value) =>
+                        setCssOptions({ ...cssOptions, indentType: value as any })
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -277,12 +340,14 @@ export default function HtmlCssBeautifier() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                   <div className="flex items-center space-x-2">
                     <Switch
                       id="sortProperties"
                       checked={cssOptions.sortProperties}
-                      onCheckedChange={(checked) => setCssOptions({...cssOptions, sortProperties: checked})}
+                      onCheckedChange={(checked) =>
+                        setCssOptions({ ...cssOptions, sortProperties: checked })
+                      }
                     />
                     <Label htmlFor="sortProperties">プロパティをソート</Label>
                   </div>
@@ -291,7 +356,9 @@ export default function HtmlCssBeautifier() {
                     <Switch
                       id="newlineBetweenRules"
                       checked={cssOptions.newlineBetweenRules}
-                      onCheckedChange={(checked) => setCssOptions({...cssOptions, newlineBetweenRules: checked})}
+                      onCheckedChange={(checked) =>
+                        setCssOptions({ ...cssOptions, newlineBetweenRules: checked })
+                      }
                     />
                     <Label htmlFor="newlineBetweenRules">ルール間に改行</Label>
                   </div>
@@ -300,7 +367,9 @@ export default function HtmlCssBeautifier() {
                     <Switch
                       id="preserveComments"
                       checked={cssOptions.preserveComments}
-                      onCheckedChange={(checked) => setCssOptions({...cssOptions, preserveComments: checked})}
+                      onCheckedChange={(checked) =>
+                        setCssOptions({ ...cssOptions, preserveComments: checked })
+                      }
                     />
                     <Label htmlFor="preserveComments">コメントを保持</Label>
                   </div>
@@ -316,11 +385,11 @@ export default function HtmlCssBeautifier() {
         <CardContent className="pt-6">
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" size="sm" onClick={() => loadSample('html')}>
-              <FileText className="h-4 w-4 mr-2" />
+              <FileText className="mr-2 h-4 w-4" />
               HTMLサンプル
             </Button>
             <Button variant="outline" size="sm" onClick={() => loadSample('css')}>
-              <Palette className="h-4 w-4 mr-2" />
+              <Palette className="mr-2 h-4 w-4" />
               CSSサンプル
             </Button>
             {detectedLanguage === 'html' && (
@@ -329,7 +398,7 @@ export default function HtmlCssBeautifier() {
               </Button>
             )}
             <Button variant="outline" size="sm" onClick={handleReset}>
-              <RotateCcw className="h-4 w-4 mr-2" />
+              <RotateCcw className="mr-2 h-4 w-4" />
               リセット
             </Button>
           </div>
@@ -337,7 +406,7 @@ export default function HtmlCssBeautifier() {
       </Card>
 
       {/* Input/Output */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>入力コード</CardTitle>
@@ -347,7 +416,7 @@ export default function HtmlCssBeautifier() {
               placeholder="HTML または CSS コードを入力してください..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="font-mono text-sm h-96 resize-none"
+              className="h-96 resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -370,7 +439,7 @@ export default function HtmlCssBeautifier() {
             <Textarea
               value={output}
               readOnly
-              className="font-mono text-sm h-96 resize-none"
+              className="h-96 resize-none font-mono text-sm"
               placeholder="処理結果がここに表示されます"
             />
           </CardContent>
@@ -390,9 +459,7 @@ export default function HtmlCssBeautifier() {
             <div className="space-y-2">
               {validation.errors.map((error, index) => (
                 <Alert key={index} className="border-red-200 bg-red-50">
-                  <AlertDescription className="text-red-800">
-                    {error}
-                  </AlertDescription>
+                  <AlertDescription className="text-red-800">{error}</AlertDescription>
                 </Alert>
               ))}
             </div>

@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -33,7 +34,6 @@ export default function ContactPage() {
     // 仮の送信処理（実際にはAPIエンドポイントに送信）
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // 送信をシミュレート
-      console.log('Form submitted:', formData);
       setSubmitStatus('success');
       // フォームをリセット
       setFormData({

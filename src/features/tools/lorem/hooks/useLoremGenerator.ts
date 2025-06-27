@@ -383,7 +383,7 @@ export const useLoremGenerator = () => {
       } else {
         toast.error('クリップボードへのコピーがサポートされていません');
       }
-    } catch (err) {
+    } catch {
       toast.error('コピーに失敗しました');
     }
   };

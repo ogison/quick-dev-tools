@@ -23,7 +23,6 @@ export default function HashGenerator() {
   });
   const [hashError, setHashError] = useState('');
   const [copySuccess, setCopySuccess] = useState<{ [key: string]: boolean }>({});
-  const [isGenerating, setIsGenerating] = useState(false);
   const [useWebWorker, setUseWebWorker] = useState(true);
 
   // Memoized utility functions
@@ -48,8 +47,6 @@ export default function HashGenerator() {
       setHashError('ハッシュ化するテキストを入力してください');
       return;
     }
-
-    setIsGenerating(true);
     setHashError('');
 
     try {
@@ -93,8 +90,6 @@ export default function HashGenerator() {
           'ハッシュ生成エラー: ' + (err instanceof Error ? err.message : '不明なエラー')
         );
       }
-    } finally {
-      setIsGenerating(false);
     }
   }, [hashInput, useWebWorker, arrayBufferToHex, simpleMD5]);
 

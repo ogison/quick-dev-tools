@@ -36,8 +36,13 @@ export const DEFAULT_CSS_OPTIONS: CssBeautifyOptions = {
   preserveComments: true,
 };
 
-export const beautifyHtml = (html: string, options: BeautifyOptions = DEFAULT_HTML_OPTIONS): string => {
-  if (!html.trim()) return '';
+export const beautifyHtml = (
+  html: string,
+  options: BeautifyOptions = DEFAULT_HTML_OPTIONS
+): string => {
+  if (!html.trim()) {
+    return '';
+  }
 
   const indent = options.indentType === 'tabs' ? '\t' : ' '.repeat(options.indentSize);
   let result = '';
@@ -47,23 +52,22 @@ export const beautifyHtml = (html: string, options: BeautifyOptions = DEFAULT_HT
   let inScript = false;
   let inStyle = false;
   let buffer = '';
-  
+
   // Normalize whitespace
   html = html.replace(/\s+/g, ' ').trim();
-  
+
   for (let i = 0; i < html.length; i++) {
     const char = html[i];
     const next = html[i + 1];
-    const prev = html[i - 1];
-    
+
     buffer += char;
-    
+
     // Handle comments
     if (buffer.endsWith('<!--')) {
       inComment = true;
       continue;
     }
-    
+
     if (inComment && buffer.endsWith('-->')) {
       inComment = false;
       result += buffer;
@@ -73,9 +77,11 @@ export const beautifyHtml = (html: string, options: BeautifyOptions = DEFAULT_HT
       }
       continue;
     }
-    
-    if (inComment) continue;
-    
+
+    if (inComment) {
+      continue;
+    }
+
     // Handle script/style tags
     if (buffer.toLowerCase().includes('<script')) {
       inScript = true;
@@ -85,7 +91,7 @@ export const beautifyHtml = (html: string, options: BeautifyOptions = DEFAULT_HT
       buffer = '';
       continue;
     }
-    
+
     if (buffer.toLowerCase().includes('<style')) {
       inStyle = true;
     } else if (buffer.toLowerCase().includes('</style>')) {
@@ -94,9 +100,11 @@ export const beautifyHtml = (html: string, options: BeautifyOptions = DEFAULT_HT
       buffer = '';
       continue;
     }
-    
-    if (inScript || inStyle) continue;
-    
+
+    if (inScript || inStyle) {
+      continue;
+    }
+
     // Handle regular tags
     if (char === '<' && !inTag) {
       inTag = true;
@@ -108,11 +116,11 @@ export const beautifyHtml = (html: string, options: BeautifyOptions = DEFAULT_HT
         buffer = '<';
       }
     }
-    
+
     if (char === '>' && inTag) {
       inTag = false;
       const tag = buffer.toLowerCase();
-      
+
       // Self-closing or void tags
       if (buffer.endsWith('/>') || isVoidElement(tag)) {
         result += '\n' + indent.repeat(level) + buffer;
@@ -132,27 +140,32 @@ export const beautifyHtml = (html: string, options: BeautifyOptions = DEFAULT_HT
       }
     }
   }
-  
+
   if (buffer) {
     result += buffer;
   }
-  
+
   // Clean up and format
   result = result
     .split('\n')
-    .map(line => line.trim())
-    .filter(line => line.length > 0)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0)
     .join('\n');
-  
+
   if (options.endWithNewline) {
     result += '\n';
   }
-  
+
   return result;
 };
 
-export const beautifyCss = (css: string, options: CssBeautifyOptions = DEFAULT_CSS_OPTIONS): string => {
-  if (!css.trim()) return '';
+export const beautifyCss = (
+  css: string,
+  options: CssBeautifyOptions = DEFAULT_CSS_OPTIONS
+): string => {
+  if (!css.trim()) {
+    return '';
+  }
 
   const indent = options.indentType === 'tabs' ? '\t' : ' '.repeat(options.indentSize);
   let result = '';
@@ -161,15 +174,15 @@ export const beautifyCss = (css: string, options: CssBeautifyOptions = DEFAULT_C
   let inRule = false;
   let currentRule = '';
   let currentProperties: string[] = [];
-  
+
   // Remove extra whitespace
   css = css.replace(/\s+/g, ' ').trim();
-  
+
   let i = 0;
   while (i < css.length) {
     const char = css[i];
     const next = css[i + 1];
-    
+
     // Handle comments
     if (char === '/' && next === '*') {
       if (!inComment) {
@@ -193,7 +206,7 @@ export const beautifyCss = (css: string, options: CssBeautifyOptions = DEFAULT_C
         continue;
       }
     }
-    
+
     // Handle rule start
     if (char === '{') {
       inRule = true;
@@ -205,7 +218,7 @@ export const beautifyCss = (css: string, options: CssBeautifyOptions = DEFAULT_C
       i++;
       continue;
     }
-    
+
     // Handle rule end
     if (char === '}') {
       if (inRule) {
@@ -213,16 +226,16 @@ export const beautifyCss = (css: string, options: CssBeautifyOptions = DEFAULT_C
         if (options.sortProperties) {
           currentProperties.sort();
         }
-        
-        currentProperties.forEach(prop => {
+
+        currentProperties.forEach((prop) => {
           result += indent + prop + '\n';
         });
-        
+
         result += '}\n';
         if (options.newlineBetweenRules) {
           result += '\n';
         }
-        
+
         inRule = false;
         level--;
         currentProperties = [];
@@ -230,7 +243,7 @@ export const beautifyCss = (css: string, options: CssBeautifyOptions = DEFAULT_C
         continue;
       }
     }
-    
+
     // Handle properties within rules
     if (inRule && char === ';') {
       let property = '';
@@ -240,7 +253,7 @@ export const beautifyCss = (css: string, options: CssBeautifyOptions = DEFAULT_C
         j--;
       }
       result = result.substring(0, j + 1);
-      
+
       property = property.trim();
       if (property) {
         currentProperties.push(property + ';');
@@ -248,18 +261,18 @@ export const beautifyCss = (css: string, options: CssBeautifyOptions = DEFAULT_C
       i++;
       continue;
     }
-    
+
     result += char;
     i++;
   }
-  
+
   // Clean up
   result = result
     .split('\n')
-    .map(line => line.trim())
-    .filter(line => line.length > 0)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0)
     .join('\n');
-  
+
   return result;
 };
 
@@ -285,18 +298,33 @@ export const minifyCss = (css: string): string => {
 
 export const validateHtml = (html: string): { isValid: boolean; errors: string[] } => {
   const errors: string[] = [];
-  
+
   // Basic validation
   const openTags: string[] = [];
-  const voidElements = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
-  
+  const voidElements = [
+    'area',
+    'base',
+    'br',
+    'col',
+    'embed',
+    'hr',
+    'img',
+    'input',
+    'link',
+    'meta',
+    'param',
+    'source',
+    'track',
+    'wbr',
+  ];
+
   const tagRegex = /<\/?([a-zA-Z][a-zA-Z0-9]*)[^>]*>/g;
   let match;
-  
+
   while ((match = tagRegex.exec(html)) !== null) {
     const fullTag = match[0];
     const tagName = match[1].toLowerCase();
-    
+
     if (fullTag.startsWith('</')) {
       // Closing tag
       const lastOpenTag = openTags.pop();
@@ -308,76 +336,106 @@ export const validateHtml = (html: string): { isValid: boolean; errors: string[]
       openTags.push(tagName);
     }
   }
-  
+
   // Check for unclosed tags
   if (openTags.length > 0) {
     errors.push(`Unclosed tags: ${openTags.join(', ')}`);
   }
-  
+
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   };
 };
 
 export const validateCss = (css: string): { isValid: boolean; errors: string[] } => {
   const errors: string[] = [];
-  
+
   // Check for unmatched braces
   const openBraces = (css.match(/{/g) || []).length;
   const closeBraces = (css.match(/}/g) || []).length;
-  
+
   if (openBraces !== closeBraces) {
     errors.push('Unmatched braces');
   }
-  
+
   // Check for basic syntax errors
   const lines = css.split('\n');
   lines.forEach((line, index) => {
     const trimmed = line.trim();
-    if (trimmed && !trimmed.match(/^[a-zA-Z@]/) && !trimmed.match(/[{}]/) && !trimmed.includes(':') && !trimmed.startsWith('/*')) {
+    if (
+      trimmed &&
+      !trimmed.match(/^[a-zA-Z@]/) &&
+      !trimmed.match(/[{}]/) &&
+      !trimmed.includes(':') &&
+      !trimmed.startsWith('/*')
+    ) {
       errors.push(`Line ${index + 1}: Invalid CSS syntax`);
     }
   });
-  
+
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   };
 };
 
 const isVoidElement = (tag: string): boolean => {
-  const voidElements = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
+  const voidElements = [
+    'area',
+    'base',
+    'br',
+    'col',
+    'embed',
+    'hr',
+    'img',
+    'input',
+    'link',
+    'meta',
+    'param',
+    'source',
+    'track',
+    'wbr',
+  ];
   const tagName = tag.replace(/<\/?([a-zA-Z][a-zA-Z0-9]*)[^>]*>/, '$1').toLowerCase();
   return voidElements.includes(tagName);
 };
 
 export const detectLanguage = (code: string): 'html' | 'css' | 'unknown' => {
   const trimmed = code.trim().toLowerCase();
-  
-  if (trimmed.includes('<!doctype') || trimmed.includes('<html') || trimmed.includes('<div') || trimmed.includes('<span')) {
+
+  if (
+    trimmed.includes('<!doctype') ||
+    trimmed.includes('<html') ||
+    trimmed.includes('<div') ||
+    trimmed.includes('<span')
+  ) {
     return 'html';
   }
-  
-  if (trimmed.includes('{') && trimmed.includes('}') && (trimmed.includes(':') || trimmed.includes('selector'))) {
+
+  if (
+    trimmed.includes('{') &&
+    trimmed.includes('}') &&
+    (trimmed.includes(':') || trimmed.includes('selector'))
+  ) {
     return 'css';
   }
-  
+
   return 'unknown';
 };
 
 export const extractInlineStyles = (html: string): { html: string; css: string } => {
   const styles: string[] = [];
   let counter = 0;
-  
+
   const processedHtml = html.replace(/style\s*=\s*["']([^"']+)["']/gi, (match, styleContent) => {
     const className = `extracted-style-${counter++}`;
     styles.push(`.${className} { ${styleContent} }`);
     return `class="${className}"`;
   });
-  
+
   return {
     html: processedHtml,
-    css: styles.join('\n')
+    css: styles.join('\n'),
   };
 };

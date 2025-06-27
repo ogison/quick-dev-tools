@@ -1,15 +1,23 @@
 'use client';
 
+import { Copy, Clock, RotateCcw, CheckCircle2 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { buildCronExpression, parseCronExpression, getNextExecutions, describeCronExpression, CronField, DEFAULT_CRON } from '../utils/cron';
-import { Copy, Clock, Calendar, RotateCcw, CheckCircle2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+
+import {
+  buildCronExpression,
+  parseCronExpression,
+  getNextExecutions,
+  describeCronExpression,
+  CronField,
+  DEFAULT_CRON,
+} from '../utils/cron';
 
 export default function CronGenerator() {
   const [cronFields, setCronFields] = useState<CronField>(DEFAULT_CRON);
@@ -44,14 +52,14 @@ export default function CronGenerator() {
       const executions = getNextExecutions(expression, 5);
       setNextExecutions(executions);
       setDescription(describeCronExpression(expression));
-    } catch (error) {
+    } catch {
       setNextExecutions([]);
       setDescription('Invalid cron expression');
     }
   };
 
   const handleFieldChange = (field: keyof CronField, value: string) => {
-    setCronFields(prev => ({ ...prev, [field]: value }));
+    setCronFields((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleCopy = async () => {
@@ -70,15 +78,30 @@ export default function CronGenerator() {
 
   const templates = [
     { name: '毎分', cron: { minute: '*', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' } },
-    { name: '毎時0分', cron: { minute: '0', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' } },
-    { name: '毎日午前9時', cron: { minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '*' } },
-    { name: '平日午前9時', cron: { minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '1-5' } },
-    { name: '毎週月曜日', cron: { minute: '0', hour: '0', dayOfMonth: '*', month: '*', dayOfWeek: '1' } },
-    { name: '毎月1日', cron: { minute: '0', hour: '0', dayOfMonth: '1', month: '*', dayOfWeek: '*' } },
+    {
+      name: '毎時0分',
+      cron: { minute: '0', hour: '*', dayOfMonth: '*', month: '*', dayOfWeek: '*' },
+    },
+    {
+      name: '毎日午前9時',
+      cron: { minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '*' },
+    },
+    {
+      name: '平日午前9時',
+      cron: { minute: '0', hour: '9', dayOfMonth: '*', month: '*', dayOfWeek: '1-5' },
+    },
+    {
+      name: '毎週月曜日',
+      cron: { minute: '0', hour: '0', dayOfMonth: '*', month: '*', dayOfWeek: '1' },
+    },
+    {
+      name: '毎月1日',
+      cron: { minute: '0', hour: '0', dayOfMonth: '1', month: '*', dayOfWeek: '*' },
+    },
   ];
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-6">
+    <div className="mx-auto w-full max-w-6xl space-y-6">
       {/* Mode Selector */}
       <Card>
         <CardHeader>
@@ -120,7 +143,7 @@ export default function CronGenerator() {
               </Button>
             ))}
             <Button variant="outline" size="sm" onClick={handleReset}>
-              <RotateCcw className="h-4 w-4 mr-2" />
+              <RotateCcw className="mr-2 h-4 w-4" />
               リセット
             </Button>
           </div>
@@ -134,7 +157,7 @@ export default function CronGenerator() {
             <CardTitle>Cron式エディター</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
               <div>
                 <Label htmlFor="minute">分 (0-59)</Label>
                 <Input
@@ -181,8 +204,8 @@ export default function CronGenerator() {
                 />
               </div>
             </div>
-            
-            <div className="text-sm text-gray-600 space-y-1">
+
+            <div className="space-y-1 text-sm text-gray-600">
               <div>• * = すべての値</div>
               <div>• 0-23 = 範囲指定</div>
               <div>• */5 = 5間隔</div>
@@ -206,9 +229,7 @@ export default function CronGenerator() {
                 onChange={(e) => setManualInput(e.target.value)}
                 className="font-mono"
               />
-              <div className="text-sm text-gray-600">
-                形式: 分 時 日 月 曜日
-              </div>
+              <div className="text-sm text-gray-600">形式: 分 時 日 月 曜日</div>
             </div>
           </CardContent>
         </Card>
@@ -220,17 +241,17 @@ export default function CronGenerator() {
           <CardTitle className="flex items-center justify-between">
             生成されたCron式
             <Button variant="outline" size="sm" onClick={handleCopy} disabled={!cronExpression}>
-              <Copy className="h-4 w-4 mr-2" />
+              <Copy className="mr-2 h-4 w-4" />
               コピー
             </Button>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="bg-gray-50 p-4 rounded font-mono text-lg">
+            <div className="rounded bg-gray-50 p-4 font-mono text-lg">
               {cronExpression || '0 0 * * *'}
             </div>
-            
+
             {description && (
               <Alert>
                 <CheckCircle2 className="h-4 w-4" />
@@ -255,7 +276,10 @@ export default function CronGenerator() {
           <CardContent>
             <div className="space-y-2">
               {nextExecutions.map((execution, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded">
+                <div
+                  key={index}
+                  className="flex items-center justify-between rounded bg-gray-50 p-3"
+                >
                   <div className="font-mono">
                     {execution.toLocaleString('ja-JP', {
                       year: 'numeric',
@@ -267,9 +291,7 @@ export default function CronGenerator() {
                       weekday: 'short',
                     })}
                   </div>
-                  <Badge variant="outline">
-                    {index === 0 ? '次回' : `+${index}`}
-                  </Badge>
+                  <Badge variant="outline">{index === 0 ? '次回' : `+${index}`}</Badge>
                 </div>
               ))}
             </div>

@@ -5,10 +5,18 @@ import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
 import { useBase64Converter } from '../hooks/useBase64Converter';
+import Image from 'next/image';
 
 export default function Base64Encoder() {
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
@@ -100,30 +108,38 @@ export default function Base64Encoder() {
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                 {/* Base64 Encoding Type */}
                 <div>
+                  <Label htmlFor="encoding">エンコード形式</Label>
                   <Select
-                    label="エンコード形式"
                     value={options.encoding}
-                    onChange={(e) => updateOptions({ encoding: e.target.value as any })}
-                    options={[
-                      { value: 'standard', label: '標準 Base64' },
-                      { value: 'url-safe', label: 'URL-safe Base64' },
-                    ]}
-                  />
+                    onValueChange={(value) => updateOptions({ encoding: value as any })}
+                  >
+                    <SelectTrigger id="encoding">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="standard">標準 Base64</SelectItem>
+                      <SelectItem value="url-safe">URL-safe Base64</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* Character Encoding */}
                 <div>
+                  <Label htmlFor="character-encoding">文字エンコーディング</Label>
                   <Select
-                    label="文字エンコーディング"
                     value={options.characterEncoding}
-                    onChange={(e) => updateOptions({ characterEncoding: e.target.value as any })}
-                    options={[
-                      { value: 'utf-8', label: 'UTF-8' },
-                      { value: 'shift-jis', label: 'Shift-JIS' },
-                      { value: 'euc-jp', label: 'EUC-JP' },
-                      { value: 'iso-2022-jp', label: 'ISO-2022-JP' },
-                    ]}
-                  />
+                    onValueChange={(value) => updateOptions({ characterEncoding: value as any })}
+                  >
+                    <SelectTrigger id="character-encoding">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="utf-8">UTF-8</SelectItem>
+                      <SelectItem value="shift-jis">Shift-JIS</SelectItem>
+                      <SelectItem value="euc-jp">EUC-JP</SelectItem>
+                      <SelectItem value="iso-2022-jp">ISO-2022-JP</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* MIME Line Breaks */}
@@ -188,7 +204,7 @@ export default function Base64Encoder() {
               画像プレビュー
             </label>
             <div className="rounded-md border bg-gray-50 p-4 dark:bg-gray-900">
-              <img
+              <Image
                 src={imagePreview}
                 alt="Preview"
                 className="mx-auto max-h-64 max-w-full rounded object-contain"

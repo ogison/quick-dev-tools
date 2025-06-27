@@ -16,18 +16,33 @@ export const DEFAULT_MARKDOWN_OPTIONS: MarkdownPreviewOptions = {
   enableTaskLists: true,
 };
 
-export const parseMarkdown = (markdown: string, options: MarkdownPreviewOptions = DEFAULT_MARKDOWN_OPTIONS): string => {
-  if (!markdown.trim()) return '';
+export const parseMarkdown = (
+  markdown: string,
+  options: MarkdownPreviewOptions = DEFAULT_MARKDOWN_OPTIONS
+): string => {
+  if (!markdown.trim()) {return '';}
 
   let html = markdown;
 
   // Headers
-  html = html.replace(/^### (.*$)/gm, '<h3 class="text-lg font-semibold mt-6 mb-3 text-gray-900">$1</h3>');
-  html = html.replace(/^## (.*$)/gm, '<h2 class="text-xl font-bold mt-8 mb-4 text-gray-900">$1</h2>');
-  html = html.replace(/^# (.*$)/gm, '<h1 class="text-2xl font-bold mt-8 mb-6 text-gray-900">$1</h1>');
+  html = html.replace(
+    /^### (.*$)/gm,
+    '<h3 class="text-lg font-semibold mt-6 mb-3 text-gray-900">$1</h3>'
+  );
+  html = html.replace(
+    /^## (.*$)/gm,
+    '<h2 class="text-xl font-bold mt-8 mb-4 text-gray-900">$1</h2>'
+  );
+  html = html.replace(
+    /^# (.*$)/gm,
+    '<h1 class="text-2xl font-bold mt-8 mb-6 text-gray-900">$1</h1>'
+  );
 
   // Bold and Italic
-  html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong class="font-bold"><em class="italic">$1</em></strong>');
+  html = html.replace(
+    /\*\*\*(.*?)\*\*\*/g,
+    '<strong class="font-bold"><em class="italic">$1</em></strong>'
+  );
   html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold">$1</strong>');
   html = html.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
 
@@ -38,13 +53,22 @@ export const parseMarkdown = (markdown: string, options: MarkdownPreviewOptions 
   });
 
   // Inline code
-  html = html.replace(/`([^`]+)`/g, '<code class="bg-gray-100 px-2 py-1 rounded text-sm font-mono">$1</code>');
+  html = html.replace(
+    /`([^`]+)`/g,
+    '<code class="bg-gray-100 px-2 py-1 rounded text-sm font-mono">$1</code>'
+  );
 
   // Links
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-600 hover:text-blue-800 underline" target="_blank" rel="noopener noreferrer">$1</a>');
+  html = html.replace(
+    /\[([^\]]+)\]\(([^)]+)\)/g,
+    '<a href="$2" class="text-blue-600 hover:text-blue-800 underline" target="_blank" rel="noopener noreferrer">$1</a>'
+  );
 
   // Images
-  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full h-auto rounded-lg shadow-sm my-4" />');
+  html = html.replace(
+    /!\[([^\]]*)\]\(([^)]+)\)/g,
+    '<img src="$2" alt="$1" class="max-w-full h-auto rounded-lg shadow-sm my-4" />'
+  );
 
   // Lists
   html = html.replace(/^\* (.+)$/gm, '<li class="ml-4">$1</li>');
@@ -57,8 +81,14 @@ export const parseMarkdown = (markdown: string, options: MarkdownPreviewOptions 
 
   // Task lists (if enabled)
   if (options.enableTaskLists) {
-    html = html.replace(/^\- \[x\] (.+)$/gm, '<li class="flex items-center"><input type="checkbox" checked disabled class="mr-2"> $1</li>');
-    html = html.replace(/^\- \[ \] (.+)$/gm, '<li class="flex items-center"><input type="checkbox" disabled class="mr-2"> $1</li>');
+    html = html.replace(
+      /^\- \[x\] (.+)$/gm,
+      '<li class="flex items-center"><input type="checkbox" checked disabled class="mr-2"> $1</li>'
+    );
+    html = html.replace(
+      /^\- \[ \] (.+)$/gm,
+      '<li class="flex items-center"><input type="checkbox" disabled class="mr-2"> $1</li>'
+    );
   }
 
   // Tables (if enabled)
@@ -67,7 +97,10 @@ export const parseMarkdown = (markdown: string, options: MarkdownPreviewOptions 
   }
 
   // Blockquotes
-  html = html.replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-gray-300 pl-4 italic text-gray-600 my-4">$1</blockquote>');
+  html = html.replace(
+    /^> (.+)$/gm,
+    '<blockquote class="border-l-4 border-gray-300 pl-4 italic text-gray-600 my-4">$1</blockquote>'
+  );
 
   // Horizontal rules
   html = html.replace(/^---$/gm, '<hr class="border-t border-gray-300 my-6" />');
@@ -88,15 +121,24 @@ export const parseMarkdown = (markdown: string, options: MarkdownPreviewOptions 
 
 const parseMarkdownTables = (html: string): string => {
   const tableRegex = /\|(.+)\|\n\|([^|]+)\|\n((?:\|.+\|\n?)*)/g;
-  
+
   return html.replace(tableRegex, (match, header, separator, rows) => {
-    const headerCells = header.split('|').map((cell: string) => cell.trim()).filter((cell: string) => cell);
-    const rowData = rows.trim().split('\n').map((row: string) => 
-      row.split('|').map((cell: string) => cell.trim()).filter((cell: string) => cell)
-    );
+    const headerCells = header
+      .split('|')
+      .map((cell: string) => cell.trim())
+      .filter((cell: string) => cell);
+    const rowData = rows
+      .trim()
+      .split('\n')
+      .map((row: string) =>
+        row
+          .split('|')
+          .map((cell: string) => cell.trim())
+          .filter((cell: string) => cell)
+      );
 
     let tableHtml = '<table class="min-w-full border-collapse border border-gray-300 my-4">';
-    
+
     // Header
     tableHtml += '<thead class="bg-gray-50"><tr>';
     headerCells.forEach((cell: string) => {
@@ -159,7 +201,9 @@ const escapeHtml = (text: string): string => {
   return div.innerHTML;
 };
 
-export const generateMarkdownToc = (markdown: string): Array<{ level: number; title: string; id: string }> => {
+export const generateMarkdownToc = (
+  markdown: string
+): Array<{ level: number; title: string; id: string }> => {
   const toc: Array<{ level: number; title: string; id: string }> = [];
   const lines = markdown.split('\n');
 
@@ -168,8 +212,12 @@ export const generateMarkdownToc = (markdown: string): Array<{ level: number; ti
     if (match) {
       const level = match[1].length;
       const title = match[2].trim();
-      const id = title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-      
+      const id = title
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+
       toc.push({ level, title, id });
     }
   });
@@ -177,11 +225,13 @@ export const generateMarkdownToc = (markdown: string): Array<{ level: number; ti
   return toc;
 };
 
-export const countMarkdownStats = (markdown: string): { words: number; characters: number; lines: number; headers: number } => {
+export const countMarkdownStats = (
+  markdown: string
+): { words: number; characters: number; lines: number; headers: number } => {
   const lines = markdown.split('\n');
   const words = markdown.trim() ? markdown.trim().split(/\s+/).length : 0;
   const characters = markdown.length;
-  const headers = lines.filter(line => line.match(/^#+\s/)).length;
+  const headers = lines.filter((line) => line.match(/^#+\s/)).length;
 
   return { words, characters, lines: lines.length, headers };
 };
@@ -208,10 +258,10 @@ export const exportMarkdownAs = (markdown: string, format: 'html' | 'pdf' | 'txt
 ${parseMarkdown(markdown)}
 </body>
 </html>`;
-    
+
     case 'txt':
       return markdown;
-    
+
     default:
       return markdown;
   }

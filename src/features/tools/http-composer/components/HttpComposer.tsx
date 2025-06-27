@@ -1,24 +1,33 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react';
+
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
 import { HttpRequest, HttpResponse, HttpMethod, BodyType, AuthType } from '../types';
-import { sendHttpRequest, generateCurlCommand, formatResponseTime, formatResponseSize, isValidUrl, isValidJson } from '../utils/http-composer';
+import {
+  sendHttpRequest,
+  generateCurlCommand,
+  formatResponseTime,
+  formatResponseSize,
+  isValidUrl,
+  isValidJson,
+} from '../utils/http-composer';
 
 export default function HttpComposer() {
   const [request, setRequest] = useState<HttpRequest>({
     method: 'GET',
     url: 'https://jsonplaceholder.typicode.com/posts/1',
     headers: {
-      'Accept': 'application/json',
-      'User-Agent': 'Engineer-Tools HTTP Composer'
+      Accept: 'application/json',
+      'User-Agent': 'Engineer-Tools HTTP Composer',
     },
     body: '',
     bodyType: 'json',
-    auth: { type: 'none' }
+    auth: { type: 'none' },
   });
-  
+
   const [response, setResponse] = useState<HttpResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +42,7 @@ export default function HttpComposer() {
 
     setLoading(true);
     setError(null);
-    
+
     try {
       const result = await sendHttpRequest(request);
       setResponse(result);
@@ -61,7 +70,7 @@ export default function HttpComposer() {
   const addHeader = () => {
     setRequest({
       ...request,
-      headers: { ...request.headers, '': '' }
+      headers: { ...request.headers, '': '' },
     });
   };
 
@@ -72,9 +81,9 @@ export default function HttpComposer() {
   };
 
   const getStatusColor = (status: number) => {
-    if (status >= 200 && status < 300) return 'text-green-600';
-    if (status >= 300 && status < 400) return 'text-yellow-600';
-    if (status >= 400) return 'text-red-600';
+    if (status >= 200 && status < 300) {return 'text-green-600';}
+    if (status >= 300 && status < 400) {return 'text-yellow-600';}
+    if (status >= 400) {return 'text-red-600';}
     return 'text-gray-600';
   };
 
@@ -89,7 +98,7 @@ export default function HttpComposer() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="mb-8 text-3xl font-bold">HTTP Request Composer</h1>
-      
+
       <div className="space-y-6">
         {/* Request URL */}
         <Card>
@@ -97,11 +106,11 @@ export default function HttpComposer() {
             <CardTitle>Request</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-2 mb-4">
+            <div className="mb-4 flex gap-2">
               <select
                 value={request.method}
                 onChange={(e) => setRequest({ ...request, method: e.target.value as HttpMethod })}
-                className="px-3 py-2 border rounded-md min-w-[120px]"
+                className="min-w-[120px] rounded-md border px-3 py-2"
               >
                 <option value="GET">GET</option>
                 <option value="POST">POST</option>
@@ -116,7 +125,7 @@ export default function HttpComposer() {
                 value={request.url}
                 onChange={(e) => setRequest({ ...request, url: e.target.value })}
                 placeholder="Enter URL"
-                className="flex-1 px-3 py-2 border rounded-md"
+                className="flex-1 rounded-md border px-3 py-2"
               />
               <Button onClick={handleSend} disabled={loading}>
                 {loading ? 'Sending...' : 'Send'}
@@ -124,13 +133,13 @@ export default function HttpComposer() {
             </div>
 
             {/* Tabs */}
-            <div className="border-b mb-4">
+            <div className="mb-4 border-b">
               <nav className="flex space-x-4">
                 {['headers', 'body', 'auth'].map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab as typeof activeTab)}
-                    className={`py-2 px-4 border-b-2 font-medium text-sm ${
+                    className={`border-b-2 px-4 py-2 text-sm font-medium ${
                       activeTab === tab
                         ? 'border-blue-500 text-blue-600'
                         : 'border-transparent text-gray-500 hover:text-gray-700'
@@ -152,20 +161,16 @@ export default function HttpComposer() {
                       value={key}
                       onChange={(e) => updateHeader(e.target.value, value, key)}
                       placeholder="Header key"
-                      className="flex-1 px-3 py-2 border rounded-md"
+                      className="flex-1 rounded-md border px-3 py-2"
                     />
                     <input
                       type="text"
                       value={value}
                       onChange={(e) => updateHeader(key, e.target.value)}
                       placeholder="Header value"
-                      className="flex-1 px-3 py-2 border rounded-md"
+                      className="flex-1 rounded-md border px-3 py-2"
                     />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => removeHeader(key)}
-                    >
+                    <Button variant="outline" size="sm" onClick={() => removeHeader(key)}>
                       Remove
                     </Button>
                   </div>
@@ -182,8 +187,10 @@ export default function HttpComposer() {
                 <div className="flex gap-2">
                   <select
                     value={request.bodyType}
-                    onChange={(e) => setRequest({ ...request, bodyType: e.target.value as BodyType })}
-                    className="px-3 py-2 border rounded-md"
+                    onChange={(e) =>
+                      setRequest({ ...request, bodyType: e.target.value as BodyType })
+                    }
+                    className="rounded-md border px-3 py-2"
                   >
                     <option value="none">None</option>
                     <option value="json">JSON</option>
@@ -196,11 +203,9 @@ export default function HttpComposer() {
                     value={request.body}
                     onChange={(e) => setRequest({ ...request, body: e.target.value })}
                     placeholder={
-                      request.bodyType === 'json'
-                        ? '{\n  "key": "value"\n}'
-                        : 'Request body'
+                      request.bodyType === 'json' ? '{\n  "key": "value"\n}' : 'Request body'
                     }
-                    className="w-full h-40 px-3 py-2 border rounded-md font-mono text-sm"
+                    className="h-40 w-full rounded-md border px-3 py-2 font-mono text-sm"
                   />
                 )}
               </div>
@@ -211,11 +216,13 @@ export default function HttpComposer() {
               <div className="space-y-4">
                 <select
                   value={request.auth.type}
-                  onChange={(e) => setRequest({
-                    ...request,
-                    auth: { type: e.target.value as AuthType }
-                  })}
-                  className="px-3 py-2 border rounded-md"
+                  onChange={(e) =>
+                    setRequest({
+                      ...request,
+                      auth: { type: e.target.value as AuthType },
+                    })
+                  }
+                  className="rounded-md border px-3 py-2"
                 >
                   <option value="none">No Auth</option>
                   <option value="basic">Basic Auth</option>
@@ -229,27 +236,38 @@ export default function HttpComposer() {
                       type="text"
                       placeholder="Username"
                       value={request.auth.basic?.username || ''}
-                      onChange={(e) => setRequest({
-                        ...request,
-                        auth: {
-                          ...request.auth,
-                          basic: { ...request.auth.basic, username: e.target.value, password: request.auth.basic?.password || '' }
-                        }
-                      })}
-                      className="w-full px-3 py-2 border rounded-md"
+                      onChange={(e) =>
+                        setRequest({
+                          ...request,
+                          auth: {
+                            ...request.auth,
+                            basic: {
+                              ...request.auth.basic,
+                              username: e.target.value,
+                              password: request.auth.basic?.password || '',
+                            },
+                          },
+                        })
+                      }
+                      className="w-full rounded-md border px-3 py-2"
                     />
                     <input
                       type="password"
                       placeholder="Password"
                       value={request.auth.basic?.password || ''}
-                      onChange={(e) => setRequest({
-                        ...request,
-                        auth: {
-                          ...request.auth,
-                          basic: { username: request.auth.basic?.username || '', password: e.target.value }
-                        }
-                      })}
-                      className="w-full px-3 py-2 border rounded-md"
+                      onChange={(e) =>
+                        setRequest({
+                          ...request,
+                          auth: {
+                            ...request.auth,
+                            basic: {
+                              username: request.auth.basic?.username || '',
+                              password: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      className="w-full rounded-md border px-3 py-2"
                     />
                   </div>
                 )}
@@ -259,11 +277,13 @@ export default function HttpComposer() {
                     type="text"
                     placeholder="Bearer Token"
                     value={request.auth.bearer || ''}
-                    onChange={(e) => setRequest({
-                      ...request,
-                      auth: { ...request.auth, bearer: e.target.value }
-                    })}
-                    className="w-full px-3 py-2 border rounded-md"
+                    onChange={(e) =>
+                      setRequest({
+                        ...request,
+                        auth: { ...request.auth, bearer: e.target.value },
+                      })
+                    }
+                    className="w-full rounded-md border px-3 py-2"
                   />
                 )}
               </div>
@@ -282,31 +302,25 @@ export default function HttpComposer() {
                     <span className={`font-medium ${getStatusColor(response.status)}`}>
                       {response.status} {response.statusText}
                     </span>
-                    <span className="text-gray-600">
-                      {formatResponseTime(response.time)}
-                    </span>
-                    <span className="text-gray-600">
-                      {formatResponseSize(response.size)}
-                    </span>
+                    <span className="text-gray-600">{formatResponseTime(response.time)}</span>
+                    <span className="text-gray-600">{formatResponseSize(response.size)}</span>
                   </div>
                 )}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {error && (
-                <div className="text-red-600 mb-4">{error}</div>
-              )}
+              {error && <div className="mb-4 text-red-600">{error}</div>}
 
               {response && (
                 <>
                   {/* Response Tabs */}
-                  <div className="border-b mb-4">
+                  <div className="mb-4 border-b">
                     <nav className="flex space-x-4">
                       {['body', 'headers', 'curl'].map((tab) => (
                         <button
                           key={tab}
                           onClick={() => setResponseTab(tab as typeof responseTab)}
-                          className={`py-2 px-4 border-b-2 font-medium text-sm ${
+                          className={`border-b-2 px-4 py-2 text-sm font-medium ${
                             responseTab === tab
                               ? 'border-blue-500 text-blue-600'
                               : 'border-transparent text-gray-500 hover:text-gray-700'
@@ -320,8 +334,10 @@ export default function HttpComposer() {
 
                   {/* Response Body */}
                   {responseTab === 'body' && (
-                    <pre className="bg-gray-50 p-4 rounded-md overflow-auto text-sm max-h-96">
-                      {isValidJson(response.body) ? formatJsonResponse(response.body) : response.body}
+                    <pre className="max-h-96 overflow-auto rounded-md bg-gray-50 p-4 text-sm">
+                      {isValidJson(response.body)
+                        ? formatJsonResponse(response.body)
+                        : response.body}
                     </pre>
                   )}
 
@@ -330,7 +346,7 @@ export default function HttpComposer() {
                     <div className="space-y-2">
                       {Object.entries(response.headers).map(([key, value]) => (
                         <div key={key} className="flex gap-2 text-sm">
-                          <span className="font-medium w-1/3">{key}:</span>
+                          <span className="w-1/3 font-medium">{key}:</span>
                           <span className="flex-1">{value}</span>
                         </div>
                       ))}
@@ -340,17 +356,19 @@ export default function HttpComposer() {
                   {/* cURL Command */}
                   {responseTab === 'curl' && (
                     <div>
-                      <div className="flex justify-between items-center mb-2">
+                      <div className="mb-2 flex items-center justify-between">
                         <h4 className="font-medium">cURL Command</h4>
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => navigator.clipboard.writeText(generateCurlCommand(request))}
+                          onClick={() =>
+                            navigator.clipboard.writeText(generateCurlCommand(request))
+                          }
                         >
                           Copy
                         </Button>
                       </div>
-                      <pre className="bg-gray-50 p-4 rounded-md overflow-auto text-sm">
+                      <pre className="overflow-auto rounded-md bg-gray-50 p-4 text-sm">
                         {generateCurlCommand(request)}
                       </pre>
                     </div>

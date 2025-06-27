@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
 import { GraphQLQuery, GraphQLResponse, GraphQLSchema, EndpointConfig } from '../types';
 import {
   executeGraphQLQuery,
@@ -18,7 +20,7 @@ import {
 export default function GraphqlPlayground() {
   const [endpoint, setEndpoint] = useState<EndpointConfig>({
     url: 'https://countries.trevorblades.com/',
-    headers: {}
+    headers: {},
   });
 
   const [query, setQuery] = useState<GraphQLQuery>({
@@ -64,7 +66,7 @@ export default function GraphqlPlayground() {
       setResponse(result);
     } catch {
       setResponse({
-        errors: [{ message: 'Failed to execute query' }]
+        errors: [{ message: 'Failed to execute query' }],
       });
     } finally {
       setLoading(false);
@@ -78,7 +80,7 @@ export default function GraphqlPlayground() {
       setSchema(result);
     } catch {
       setSchema({
-        errors: [{ message: 'Failed to fetch schema' }]
+        errors: [{ message: 'Failed to fetch schema' }],
       });
     } finally {
       setSchemaLoading(false);
@@ -101,7 +103,7 @@ export default function GraphqlPlayground() {
   const addHeader = () => {
     setEndpoint({
       ...endpoint,
-      headers: { ...endpoint.headers, '': '' }
+      headers: { ...endpoint.headers, '': '' },
     });
   };
 
@@ -119,7 +121,7 @@ export default function GraphqlPlayground() {
   const prettify = () => {
     setQuery({
       ...query,
-      query: prettifyQuery(query.query)
+      query: prettifyQuery(query.query),
     });
   };
 
@@ -134,13 +136,13 @@ export default function GraphqlPlayground() {
             <CardTitle>Endpoint</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-2 mb-4">
+            <div className="mb-4 flex gap-2">
               <input
                 type="text"
                 value={endpoint.url}
                 onChange={(e) => setEndpoint({ ...endpoint, url: e.target.value })}
                 placeholder="GraphQL endpoint URL"
-                className="flex-1 px-3 py-2 border rounded-md"
+                className="flex-1 rounded-md border px-3 py-2"
               />
               <Button onClick={handleFetchSchema} disabled={schemaLoading}>
                 {schemaLoading ? 'Loading...' : 'Fetch Schema'}
@@ -172,13 +174,13 @@ export default function GraphqlPlayground() {
           </CardHeader>
           <CardContent>
             {/* Tabs */}
-            <div className="border-b mb-4">
+            <div className="mb-4 border-b">
               <nav className="flex space-x-4">
                 {['query', 'variables', 'headers'].map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab as typeof activeTab)}
-                    className={`py-2 px-4 border-b-2 font-medium text-sm ${
+                    className={`border-b-2 px-4 py-2 text-sm font-medium ${
                       activeTab === tab
                         ? 'border-blue-500 text-blue-600'
                         : 'border-transparent text-gray-500 hover:text-gray-700'
@@ -197,11 +199,9 @@ export default function GraphqlPlayground() {
                   value={query.query}
                   onChange={(e) => setQuery({ ...query, query: e.target.value })}
                   placeholder="Enter your GraphQL query..."
-                  className="w-full h-64 px-3 py-2 border rounded-md font-mono text-sm"
+                  className="h-64 w-full rounded-md border px-3 py-2 font-mono text-sm"
                 />
-                {queryError && (
-                  <div className="mt-2 text-red-600 text-sm">{queryError}</div>
-                )}
+                {queryError && <div className="mt-2 text-sm text-red-600">{queryError}</div>}
               </div>
             )}
 
@@ -211,11 +211,13 @@ export default function GraphqlPlayground() {
                 <textarea
                   value={query.variables}
                   onChange={(e) => setQuery({ ...query, variables: e.target.value })}
-                  placeholder="{\n  \"variable\": \"value\"\n}"
-                  className="w-full h-64 px-3 py-2 border rounded-md font-mono text-sm"
+                  placeholder={`{
+  "variable": "value"
+}`}
+                  className="h-64 w-full rounded-md border px-3 py-2 font-mono text-sm"
                 />
                 {variablesError && (
-                  <div className="mt-2 text-red-600 text-sm">{variablesError}</div>
+                  <div className="mt-2 text-sm text-red-600">{variablesError}</div>
                 )}
               </div>
             )}
@@ -230,20 +232,16 @@ export default function GraphqlPlayground() {
                       value={key}
                       onChange={(e) => updateHeader(e.target.value, value, key)}
                       placeholder="Header key"
-                      className="flex-1 px-3 py-2 border rounded-md"
+                      className="flex-1 rounded-md border px-3 py-2"
                     />
                     <input
                       type="text"
                       value={value}
                       onChange={(e) => updateHeader(key, e.target.value)}
                       placeholder="Header value"
-                      className="flex-1 px-3 py-2 border rounded-md"
+                      className="flex-1 rounded-md border px-3 py-2"
                     />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => removeHeader(key)}
-                    >
+                    <Button variant="outline" size="sm" onClick={() => removeHeader(key)}>
                       Remove
                     </Button>
                   </div>
@@ -264,13 +262,13 @@ export default function GraphqlPlayground() {
             </CardHeader>
             <CardContent>
               {/* Response Tabs */}
-              <div className="border-b mb-4">
+              <div className="mb-4 border-b">
                 <nav className="flex space-x-4">
                   {['response', 'schema', 'docs'].map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setResponseTab(tab as typeof responseTab)}
-                      className={`py-2 px-4 border-b-2 font-medium text-sm ${
+                      className={`border-b-2 px-4 py-2 text-sm font-medium ${
                         responseTab === tab
                           ? 'border-blue-500 text-blue-600'
                           : 'border-transparent text-gray-500 hover:text-gray-700'
@@ -286,16 +284,16 @@ export default function GraphqlPlayground() {
               {responseTab === 'response' && response && (
                 <div>
                   {response.errors && response.errors.length > 0 && (
-                    <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
-                      <h4 className="font-medium text-red-800 mb-2">Errors:</h4>
+                    <div className="mb-4 rounded-md border border-red-200 bg-red-50 p-4">
+                      <h4 className="mb-2 font-medium text-red-800">Errors:</h4>
                       {response.errors.map((error, index) => (
-                        <div key={index} className="text-red-700 text-sm">
+                        <div key={index} className="text-sm text-red-700">
                           {error.message}
                         </div>
                       ))}
                     </div>
                   )}
-                  <pre className="bg-gray-50 p-4 rounded-md overflow-auto text-sm max-h-96">
+                  <pre className="max-h-96 overflow-auto rounded-md bg-gray-50 p-4 text-sm">
                     {formatGraphQLResponse(response)}
                   </pre>
                 </div>
@@ -305,12 +303,12 @@ export default function GraphqlPlayground() {
               {responseTab === 'schema' && (
                 <div>
                   {schema ? (
-                    <pre className="bg-gray-50 p-4 rounded-md overflow-auto text-sm max-h-96">
+                    <pre className="max-h-96 overflow-auto rounded-md bg-gray-50 p-4 text-sm">
                       {JSON.stringify(schema, null, 2)}
                     </pre>
                   ) : (
-                    <div className="text-gray-500 text-center py-8">
-                      No schema loaded. Click "Fetch Schema" to load the schema.
+                    <div className="py-8 text-center text-gray-500">
+                      No schema loaded. Click Fetch Schema to load the schema.
                     </div>
                   )}
                 </div>
@@ -322,27 +320,31 @@ export default function GraphqlPlayground() {
                   {schema?.data?.__schema ? (
                     <div className="space-y-4">
                       <div>
-                        <h3 className="font-medium mb-2">Query Type</h3>
+                        <h3 className="mb-2 font-medium">Query Type</h3>
                         <p className="text-gray-600">{schema.data.__schema.queryType?.name}</p>
                       </div>
                       {schema.data.__schema.mutationType && (
                         <div>
-                          <h3 className="font-medium mb-2">Mutation Type</h3>
+                          <h3 className="mb-2 font-medium">Mutation Type</h3>
                           <p className="text-gray-600">{schema.data.__schema.mutationType.name}</p>
                         </div>
                       )}
                       {schema.data.__schema.subscriptionType && (
                         <div>
-                          <h3 className="font-medium mb-2">Subscription Type</h3>
-                          <p className="text-gray-600">{schema.data.__schema.subscriptionType.name}</p>
+                          <h3 className="mb-2 font-medium">Subscription Type</h3>
+                          <p className="text-gray-600">
+                            {schema.data.__schema.subscriptionType.name}
+                          </p>
                         </div>
                       )}
                       <div>
-                        <h3 className="font-medium mb-2">Types ({schema.data.__schema.types.length})</h3>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                        <h3 className="mb-2 font-medium">
+                          Types ({schema.data.__schema.types.length})
+                        </h3>
+                        <div className="grid grid-cols-2 gap-2 text-sm md:grid-cols-3">
                           {schema.data.__schema.types
-                            .filter(type => !type.name.startsWith('__'))
-                            .map(type => (
+                            .filter((type) => !type.name.startsWith('__'))
+                            .map((type) => (
                               <div key={type.name} className="text-gray-600">
                                 {type.name} ({type.kind})
                               </div>
@@ -351,7 +353,7 @@ export default function GraphqlPlayground() {
                       </div>
                     </div>
                   ) : (
-                    <div className="text-gray-500 text-center py-8">
+                    <div className="py-8 text-center text-gray-500">
                       No schema documentation available. Fetch the schema first.
                     </div>
                   )}

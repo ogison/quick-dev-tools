@@ -1,13 +1,21 @@
 'use client';
 
+import { AlertCircle, CheckCircle2, XCircle, Shield } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
+
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { decodeJwt, formatTimestamp, getTimeUntilExpiry, getClaimDescription, getAlgorithmInfo } from '../utils/jwt';
-import { AlertCircle, CheckCircle2, XCircle, Clock, Shield } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+
+import {
+  decodeJwt,
+  formatTimestamp,
+  getTimeUntilExpiry,
+  getClaimDescription,
+  getAlgorithmInfo,
+} from '../utils/jwt';
 
 export default function JwtDecoder() {
   const [input, setInput] = useState('');
@@ -49,15 +57,13 @@ export default function JwtDecoder() {
         <div className="space-y-1">
           <div>{formatTimestamp(value)}</div>
           {key === 'exp' && (
-            <div className="text-sm text-gray-500">
-              残り時間: {getTimeUntilExpiry(value)}
-            </div>
+            <div className="text-sm text-gray-500">残り時間: {getTimeUntilExpiry(value)}</div>
           )}
         </div>
       );
     } else if (typeof value === 'object') {
       displayValue = (
-        <pre className="text-sm bg-gray-50 p-2 rounded overflow-auto">
+        <pre className="overflow-auto rounded bg-gray-50 p-2 text-sm">
           {JSON.stringify(value, null, 2)}
         </pre>
       );
@@ -66,7 +72,7 @@ export default function JwtDecoder() {
     }
 
     return (
-      <div key={key} className="grid grid-cols-3 gap-4 py-2 border-b last:border-0">
+      <div key={key} className="grid grid-cols-3 gap-4 border-b py-2 last:border-0">
         <div className="font-mono text-sm">{key}</div>
         <div className="text-sm text-gray-600">{description}</div>
         <div className="text-sm">{displayValue}</div>
@@ -75,7 +81,7 @@ export default function JwtDecoder() {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-6">
+    <div className="mx-auto w-full max-w-6xl space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>JWT入力</CardTitle>
@@ -85,7 +91,7 @@ export default function JwtDecoder() {
             placeholder="JWTトークンを貼り付けてください..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="font-mono text-sm h-32"
+            className="h-32 font-mono text-sm"
           />
         </CardContent>
       </Card>
@@ -95,9 +101,7 @@ export default function JwtDecoder() {
           {decoded.error ? (
             <Alert className="border-red-200 bg-red-50">
               <XCircle className="h-4 w-4 text-red-600" />
-              <AlertDescription className="text-red-800">
-                {decoded.error}
-              </AlertDescription>
+              <AlertDescription className="text-red-800">{decoded.error}</AlertDescription>
             </Alert>
           ) : (
             <Tabs defaultValue="header" className="w-full">
@@ -119,9 +123,9 @@ export default function JwtDecoder() {
                           <Shield className="h-4 w-4" />
                           <span className="font-medium">アルゴリズム</span>
                         </div>
-                        <div className="pl-6 space-y-2">
+                        <div className="space-y-2 pl-6">
                           <div className="flex items-center gap-2">
-                            <code className="bg-gray-100 px-2 py-1 rounded">
+                            <code className="rounded bg-gray-100 px-2 py-1">
                               {decoded.header.alg}
                             </code>
                             {renderSecurityBadge(getAlgorithmInfo(decoded.header.alg).security)}
@@ -133,8 +137,8 @@ export default function JwtDecoder() {
                       </div>
                     )}
                     <div className="pt-4">
-                      <h4 className="font-medium mb-2">Raw Header</h4>
-                      <pre className="bg-gray-50 p-4 rounded overflow-auto text-sm">
+                      <h4 className="mb-2 font-medium">Raw Header</h4>
+                      <pre className="overflow-auto rounded bg-gray-50 p-4 text-sm">
                         {JSON.stringify(decoded.header, null, 2)}
                       </pre>
                     </div>
@@ -183,8 +187,8 @@ export default function JwtDecoder() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <h4 className="font-medium mb-2">署名値</h4>
-                      <code className="block bg-gray-50 p-4 rounded overflow-auto text-sm break-all">
+                      <h4 className="mb-2 font-medium">署名値</h4>
+                      <code className="block overflow-auto rounded bg-gray-50 p-4 text-sm break-all">
                         {decoded.signature}
                       </code>
                     </div>

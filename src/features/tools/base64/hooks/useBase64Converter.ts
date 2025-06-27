@@ -134,7 +134,7 @@ export const useBase64Converter = () => {
       } else {
         toast.error('クリップボードへのコピーがサポートされていません');
       }
-    } catch (err) {
+    } catch {
       toast.error('コピーに失敗しました');
     }
   };
@@ -251,7 +251,7 @@ export const useBase64Converter = () => {
         downloadAsFile(base64Output, filename, 'text/plain');
         toast.success('Base64ファイルをダウンロードしました');
       }
-    } catch (err) {
+    } catch {
       toast.error('ダウンロードに失敗しました');
     }
   };

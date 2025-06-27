@@ -1,18 +1,40 @@
 'use client';
 
+import { Upload, Download, RotateCcw, Image as ImageIcon, Trash2 } from 'lucide-react';
 import React, { useState, useRef } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Slider } from '@/components/ui/slider';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { compressImage, validateImageFile, formatFileSize, downloadBlob, generateThumbnail, createPreviewUrl, revokePreviewUrl, getOptimizationSuggestions, getSupportedFormats, CompressionOptions, CompressionResult, DEFAULT_COMPRESSION_OPTIONS } from '../utils/image';
-import { Upload, Download, RotateCcw, Image as ImageIcon, Trash2, Eye } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
+
+import {
+  compressImage,
+  validateImageFile,
+  formatFileSize,
+  downloadBlob,
+  generateThumbnail,
+  createPreviewUrl,
+  revokePreviewUrl,
+  getOptimizationSuggestions,
+  getSupportedFormats,
+  CompressionOptions,
+  CompressionResult,
+  DEFAULT_COMPRESSION_OPTIONS,
+} from '../utils/image';
+import Image from 'next/image';
 
 interface ProcessedImage {
   id: string;
@@ -32,12 +54,14 @@ export default function ImageCompressor() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (selectedFiles: FileList | null) => {
-    if (!selectedFiles) return;
+    if (!selectedFiles) {
+      return;
+    }
 
     const validFiles: File[] = [];
     const errors: string[] = [];
 
-    Array.from(selectedFiles).forEach(file => {
+    Array.from(selectedFiles).forEach((file) => {
       const validation = validateImageFile(file);
       if (validation.isValid) {
         validFiles.push(file);
@@ -50,7 +74,7 @@ export default function ImageCompressor() {
       alert('以下のファイルは処理できませんでした:\n' + errors.join('\n'));
     }
 
-    setFiles(prev => [...prev, ...validFiles]);
+    setFiles((prev) => [...prev, ...validFiles]);
   };
 
   const handleDrag = (e: React.DragEvent) => {
@@ -71,11 +95,13 @@ export default function ImageCompressor() {
   };
 
   const removeFile = (index: number) => {
-    setFiles(prev => prev.filter((_, i) => i !== index));
+    setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const processImages = async () => {
-    if (files.length === 0) return;
+    if (files.length === 0) {
+      return;
+    }
 
     setIsProcessing(true);
     setProgress(0);
@@ -83,12 +109,12 @@ export default function ImageCompressor() {
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      
+
       try {
         const result = await compressImage(file, options);
         const thumbnail = await generateThumbnail(file);
         const previewUrl = createPreviewUrl(result.compressedBlob);
-        
+
         newProcessedImages.push({
           id: `${file.name}-${Date.now()}-${i}`,
           file,
@@ -99,7 +125,7 @@ export default function ImageCompressor() {
       } catch (error) {
         console.error(`Failed to process ${file.name}:`, error);
       }
-      
+
       setProgress(((i + 1) / files.length) * 100);
     }
 
@@ -115,13 +141,13 @@ export default function ImageCompressor() {
   };
 
   const downloadAll = () => {
-    processedImages.forEach(processedImage => {
+    processedImages.forEach((processedImage) => {
       downloadImage(processedImage);
     });
   };
 
   const clearAll = () => {
-    processedImages.forEach(processedImage => {
+    processedImages.forEach((processedImage) => {
       revokePreviewUrl(processedImage.previewUrl);
     });
     setProcessedImages([]);
@@ -131,7 +157,7 @@ export default function ImageCompressor() {
   const supportedFormats = getSupportedFormats();
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-6">
+    <div className="mx-auto w-full max-w-7xl space-y-6">
       {/* Upload Area */}
       <Card>
         <CardHeader>
@@ -139,25 +165,20 @@ export default function ImageCompressor() {
         </CardHeader>
         <CardContent>
           <div
-            className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-              dragActive 
-                ? 'border-blue-500 bg-blue-50' 
-                : 'border-gray-300 hover:border-gray-400'
+            className={`rounded-lg border-2 border-dashed p-8 text-center transition-colors ${
+              dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
             }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
             onDrop={handleDrop}
           >
-            <ImageIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+            <ImageIcon className="mx-auto mb-4 h-12 w-12 text-gray-400" />
             <div className="space-y-2">
               <div className="text-lg font-medium">画像をドラッグ&ドロップ</div>
               <div className="text-gray-500">または</div>
-              <Button
-                variant="outline"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <Upload className="h-4 w-4 mr-2" />
+              <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+                <Upload className="mr-2 h-4 w-4" />
                 ファイルを選択
               </Button>
               <input
@@ -169,7 +190,7 @@ export default function ImageCompressor() {
                 className="hidden"
               />
             </div>
-            <div className="text-sm text-gray-500 mt-4">
+            <div className="mt-4 text-sm text-gray-500">
               JPEG, PNG, WebP, GIF, BMP対応 (最大50MB/枚)
             </div>
           </div>
@@ -177,7 +198,7 @@ export default function ImageCompressor() {
           {/* Selected Files */}
           {files.length > 0 && (
             <div className="mt-4">
-              <div className="flex items-center justify-between mb-2">
+              <div className="mb-2 flex items-center justify-between">
                 <h4 className="font-medium">選択されたファイル ({files.length})</h4>
                 <Button variant="outline" size="sm" onClick={() => setFiles([])}>
                   すべて削除
@@ -185,17 +206,16 @@ export default function ImageCompressor() {
               </div>
               <div className="space-y-2">
                 {files.map((file, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between rounded bg-gray-50 p-2"
+                  >
                     <div className="flex items-center gap-3">
                       <ImageIcon className="h-4 w-4" />
                       <span className="text-sm font-medium">{file.name}</span>
                       <Badge variant="outline">{formatFileSize(file.size)}</Badge>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeFile(index)}
-                    >
+                    <Button variant="ghost" size="sm" onClick={() => removeFile(index)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -212,15 +232,18 @@ export default function ImageCompressor() {
           <CardTitle>圧縮設定</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
               <Label htmlFor="format">出力フォーマット</Label>
-              <Select value={options.format} onValueChange={(value) => setOptions({...options, format: value as any})}>
+              <Select
+                value={options.format}
+                onValueChange={(value) => setOptions({ ...options, format: value as any })}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {supportedFormats.map(format => (
+                  {supportedFormats.map((format) => (
                     <SelectItem key={format.value} value={format.value}>
                       <div>
                         <div className="font-medium">{format.label}</div>
@@ -237,7 +260,7 @@ export default function ImageCompressor() {
               <div className="mt-2">
                 <Slider
                   value={[options.quality]}
-                  onValueChange={([value]) => setOptions({...options, quality: value})}
+                  onValueChange={([value]) => setOptions({ ...options, quality: value })}
                   min={0.1}
                   max={1}
                   step={0.05}
@@ -247,7 +270,7 @@ export default function ImageCompressor() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
               <Label htmlFor="maxWidth">最大幅 (px)</Label>
               <Input
@@ -255,7 +278,12 @@ export default function ImageCompressor() {
                 type="number"
                 placeholder="制限なし"
                 value={options.maxWidth || ''}
-                onChange={(e) => setOptions({...options, maxWidth: e.target.value ? parseInt(e.target.value) : undefined})}
+                onChange={(e) =>
+                  setOptions({
+                    ...options,
+                    maxWidth: e.target.value ? parseInt(e.target.value) : undefined,
+                  })
+                }
               />
             </div>
 
@@ -266,7 +294,12 @@ export default function ImageCompressor() {
                 type="number"
                 placeholder="制限なし"
                 value={options.maxHeight || ''}
-                onChange={(e) => setOptions({...options, maxHeight: e.target.value ? parseInt(e.target.value) : undefined})}
+                onChange={(e) =>
+                  setOptions({
+                    ...options,
+                    maxHeight: e.target.value ? parseInt(e.target.value) : undefined,
+                  })
+                }
               />
             </div>
           </div>
@@ -276,7 +309,9 @@ export default function ImageCompressor() {
               <Switch
                 id="maintainAspectRatio"
                 checked={options.maintainAspectRatio}
-                onCheckedChange={(checked) => setOptions({...options, maintainAspectRatio: checked})}
+                onCheckedChange={(checked) =>
+                  setOptions({ ...options, maintainAspectRatio: checked })
+                }
               />
               <Label htmlFor="maintainAspectRatio">アスペクト比を維持</Label>
             </div>
@@ -285,7 +320,7 @@ export default function ImageCompressor() {
               <Switch
                 id="removeMetadata"
                 checked={options.removeMetadata}
-                onCheckedChange={(checked) => setOptions({...options, removeMetadata: checked})}
+                onCheckedChange={(checked) => setOptions({ ...options, removeMetadata: checked })}
               />
               <Label htmlFor="removeMetadata">メタデータを除去</Label>
             </div>
@@ -300,7 +335,7 @@ export default function ImageCompressor() {
               {isProcessing ? '処理中...' : `圧縮実行 (${files.length}枚)`}
             </Button>
             <Button variant="outline" onClick={() => setOptions(DEFAULT_COMPRESSION_OPTIONS)}>
-              <RotateCcw className="h-4 w-4 mr-2" />
+              <RotateCcw className="mr-2 h-4 w-4" />
               リセット
             </Button>
           </div>
@@ -325,11 +360,11 @@ export default function ImageCompressor() {
               圧縮結果 ({processedImages.length}枚)
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" onClick={downloadAll}>
-                  <Download className="h-4 w-4 mr-2" />
+                  <Download className="mr-2 h-4 w-4" />
                   すべてダウンロード
                 </Button>
                 <Button variant="outline" size="sm" onClick={clearAll}>
-                  <Trash2 className="h-4 w-4 mr-2" />
+                  <Trash2 className="mr-2 h-4 w-4" />
                   すべて削除
                 </Button>
               </div>
@@ -339,29 +374,34 @@ export default function ImageCompressor() {
             <div className="space-y-6">
               {processedImages.map((processedImage) => {
                 const suggestions = getOptimizationSuggestions(processedImage.result);
-                
+
                 return (
-                  <div key={processedImage.id} className="border rounded-lg p-4">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div key={processedImage.id} className="rounded-lg border p-4">
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                       {/* Original */}
                       <div>
-                        <h4 className="font-medium mb-3 text-gray-700">元の画像</h4>
+                        <h4 className="mb-3 font-medium text-gray-700">元の画像</h4>
                         <div className="space-y-3">
-                          <div className="aspect-video bg-gray-100 rounded overflow-hidden">
-                            <img
+                          <div className="aspect-video overflow-hidden rounded bg-gray-100">
+                            <Image
                               src={processedImage.thumbnail}
                               alt="Original"
-                              className="w-full h-full object-contain"
+                              className="h-full w-full object-contain"
                             />
                           </div>
-                          <div className="text-sm space-y-1">
+                          <div className="space-y-1 text-sm">
                             <div className="flex justify-between">
                               <span>ファイル名:</span>
-                              <span className="font-mono">{processedImage.result.originalInfo.name}</span>
+                              <span className="font-mono">
+                                {processedImage.result.originalInfo.name}
+                              </span>
                             </div>
                             <div className="flex justify-between">
                               <span>サイズ:</span>
-                              <span>{processedImage.result.originalInfo.width} × {processedImage.result.originalInfo.height}</span>
+                              <span>
+                                {processedImage.result.originalInfo.width} ×{' '}
+                                {processedImage.result.originalInfo.height}
+                              </span>
                             </div>
                             <div className="flex justify-between">
                               <span>ファイルサイズ:</span>
@@ -377,23 +417,28 @@ export default function ImageCompressor() {
 
                       {/* Compressed */}
                       <div>
-                        <h4 className="font-medium mb-3 text-green-700">圧縮後</h4>
+                        <h4 className="mb-3 font-medium text-green-700">圧縮後</h4>
                         <div className="space-y-3">
-                          <div className="aspect-video bg-gray-100 rounded overflow-hidden">
+                          <div className="aspect-video overflow-hidden rounded bg-gray-100">
                             <img
                               src={processedImage.previewUrl}
                               alt="Compressed"
-                              className="w-full h-full object-contain"
+                              className="h-full w-full object-contain"
                             />
                           </div>
-                          <div className="text-sm space-y-1">
+                          <div className="space-y-1 text-sm">
                             <div className="flex justify-between">
                               <span>サイズ:</span>
-                              <span>{processedImage.result.compressedInfo.width} × {processedImage.result.compressedInfo.height}</span>
+                              <span>
+                                {processedImage.result.compressedInfo.width} ×{' '}
+                                {processedImage.result.compressedInfo.height}
+                              </span>
                             </div>
                             <div className="flex justify-between">
                               <span>ファイルサイズ:</span>
-                              <span>{formatFileSize(processedImage.result.compressedInfo.size)}</span>
+                              <span>
+                                {formatFileSize(processedImage.result.compressedInfo.size)}
+                              </span>
                             </div>
                             <div className="flex justify-between">
                               <span>フォーマット:</span>
@@ -407,7 +452,7 @@ export default function ImageCompressor() {
                             </div>
                           </div>
                           <Button onClick={() => downloadImage(processedImage)} className="w-full">
-                            <Download className="h-4 w-4 mr-2" />
+                            <Download className="mr-2 h-4 w-4" />
                             ダウンロード
                           </Button>
                         </div>
@@ -417,13 +462,11 @@ export default function ImageCompressor() {
                     {/* Suggestions */}
                     {suggestions.length > 0 && (
                       <div className="mt-4">
-                        <h5 className="font-medium mb-2">最適化のヒント</h5>
+                        <h5 className="mb-2 font-medium">最適化のヒント</h5>
                         <div className="space-y-1">
                           {suggestions.map((suggestion, index) => (
                             <Alert key={index} className="py-2">
-                              <AlertDescription className="text-sm">
-                                {suggestion}
-                              </AlertDescription>
+                              <AlertDescription className="text-sm">{suggestion}</AlertDescription>
                             </Alert>
                           ))}
                         </div>

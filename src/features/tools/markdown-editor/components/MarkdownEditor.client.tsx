@@ -1,12 +1,37 @@
 'use client';
 
+import {
+  Copy,
+  Download,
+  Upload,
+  Save,
+  Eye,
+  Edit3,
+  Bold,
+  Italic,
+  Link,
+  Code,
+  Image,
+  List,
+  Hash,
+  Table,
+  BarChart3,
+} from 'lucide-react';
 import React, { useState, useRef, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { parseMarkdown, countMarkdownStats, exportMarkdownAs, insertMarkdownSyntax, handleKeyboardShortcut, getMarkdownShortcuts } from '../utils/markdown-editor';
-import { Copy, Download, Upload, Save, Eye, Edit3, Bold, Italic, Link, Code, Image, List, Hash, Table, FileText, BarChart3 } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+
+import {
+  parseMarkdown,
+  countMarkdownStats,
+  exportMarkdownAs,
+  insertMarkdownSyntax,
+  handleKeyboardShortcut,
+  getMarkdownShortcuts,
+} from '../utils/markdown-editor';
 
 export default function MarkdownEditor() {
   const [content, setContent] = useState(`# Markdown Editor
@@ -62,8 +87,8 @@ function hello() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!textareaRef.current) return;
-      
+      if (!textareaRef.current) {return;}
+
       const textarea = textareaRef.current;
       const result = handleKeyboardShortcut(
         e,
@@ -71,11 +96,11 @@ function hello() {
         textarea.selectionStart,
         textarea.selectionEnd
       );
-      
+
       if (result) {
         e.preventDefault();
         setContent(result.newContent);
-        
+
         // Set cursor position after update
         setTimeout(() => {
           textarea.selectionStart = result.newStart;
@@ -90,14 +115,14 @@ function hello() {
   }, [content]);
 
   const insertSyntax = (type: string) => {
-    if (!textareaRef.current) return;
-    
+    if (!textareaRef.current) {return;}
+
     const textarea = textareaRef.current;
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
-    
+
     let result: { newContent: string; newStart: number; newEnd: number } | null = null;
-    
+
     switch (type) {
       case 'bold':
         result = insertMarkdownSyntax.bold(content, start, end);
@@ -136,10 +161,10 @@ function hello() {
         result = insertMarkdownSyntax.codeBlock(content, start, end);
         break;
     }
-    
+
     if (result) {
       setContent(result.newContent);
-      
+
       setTimeout(() => {
         textarea.selectionStart = result!.newStart;
         textarea.selectionEnd = result!.newEnd;
@@ -150,8 +175,8 @@ function hello() {
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-    
+    if (!file) {return;}
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const content = e.target?.result as string;
@@ -165,7 +190,7 @@ function hello() {
     let downloadContent = '';
     let mimeType = '';
     let extension = '';
-    
+
     switch (format) {
       case 'md':
         downloadContent = content;
@@ -183,7 +208,7 @@ function hello() {
         extension = 'txt';
         break;
     }
-    
+
     const blob = new Blob([downloadContent], { type: mimeType });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -211,14 +236,14 @@ function hello() {
   ];
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-4">
+    <div className="mx-auto w-full max-w-7xl space-y-4">
       {/* Toolbar */}
       <Card>
         <CardContent className="pt-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {/* View Mode */}
-              <div className="flex bg-gray-100 rounded-lg p-1">
+              <div className="flex rounded-lg bg-gray-100 p-1">
                 <Button
                   variant={viewMode === 'edit' ? 'default' : 'ghost'}
                   size="sm"
@@ -260,7 +285,7 @@ function hello() {
 
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
-                <Upload className="h-4 w-4 mr-2" />
+                <Upload className="mr-2 h-4 w-4" />
                 開く
               </Button>
               <input
@@ -270,14 +295,14 @@ function hello() {
                 onChange={handleFileUpload}
                 className="hidden"
               />
-              
+
               <Button variant="outline" size="sm" onClick={() => handleDownload('md')}>
-                <Save className="h-4 w-4 mr-2" />
+                <Save className="mr-2 h-4 w-4" />
                 保存
               </Button>
-              
+
               <Button variant="outline" size="sm" onClick={handleCopy}>
-                <Copy className="h-4 w-4 mr-2" />
+                <Copy className="mr-2 h-4 w-4" />
                 コピー
               </Button>
             </div>
@@ -297,7 +322,7 @@ function hello() {
                 ref={textareaRef}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                className="font-mono text-sm h-96 resize-none"
+                className="h-96 resize-none font-mono text-sm"
                 placeholder="Markdownを入力してください..."
               />
             </CardContent>
@@ -311,15 +336,15 @@ function hello() {
                 プレビュー
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" onClick={() => handleDownload('html')}>
-                    <Download className="h-4 w-4 mr-2" />
+                    <Download className="mr-2 h-4 w-4" />
                     HTML
                   </Button>
                 </div>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div 
-                className="prose max-w-none min-h-96 p-4 border rounded bg-white"
+              <div
+                className="prose min-h-96 max-w-none rounded border bg-white p-4"
                 dangerouslySetInnerHTML={{ __html: previewHtml }}
               />
             </CardContent>
@@ -336,7 +361,7 @@ function hello() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-600">{stats.words}</div>
               <div className="text-sm text-gray-600">単語数</div>
@@ -363,11 +388,11 @@ function hello() {
           <CardTitle>キーボードショートカット</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {getMarkdownShortcuts().map((shortcut, index) => (
-              <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+              <div key={index} className="flex items-center justify-between rounded bg-gray-50 p-2">
                 <span className="text-sm">{shortcut.description}</span>
-                <kbd className="px-2 py-1 bg-gray-200 rounded text-xs font-mono">
+                <kbd className="rounded bg-gray-200 px-2 py-1 font-mono text-xs">
                   {shortcut.key}
                 </kbd>
               </div>

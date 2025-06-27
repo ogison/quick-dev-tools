@@ -1,20 +1,32 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { computeDiff, computeDiffStats, generateUnifiedDiff, highlightInlineDiff, DiffResult } from '../utils/diff';
 import { Copy, Download, RotateCcw, ArrowUpDown, Plus, Minus, FileText } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
+
+import {
+  computeDiff,
+  computeDiffStats,
+  generateUnifiedDiff,
+  highlightInlineDiff,
+  DiffResult,
+} from '../utils/diff';
 
 export default function DiffChecker() {
   const [oldText, setOldText] = useState('');
   const [newText, setNewText] = useState('');
   const [diffResult, setDiffResult] = useState<DiffResult[]>([]);
-  const [stats, setStats] = useState({ additions: 0, deletions: 0, modifications: 0, totalLines: 0 });
+  const [stats, setStats] = useState({
+    additions: 0,
+    deletions: 0,
+    modifications: 0,
+    totalLines: 0,
+  });
   const [viewMode, setViewMode] = useState<'side-by-side' | 'unified' | 'inline'>('side-by-side');
   const [showLineNumbers, setShowLineNumbers] = useState(true);
 
@@ -73,40 +85,50 @@ export default function DiffChecker() {
   const renderSideBySide = () => (
     <div className="grid grid-cols-2 gap-4">
       <div>
-        <h4 className="font-medium mb-2 text-red-700">元のテキスト</h4>
-        <div className="border rounded p-4 bg-red-50 font-mono text-sm max-h-96 overflow-auto">
+        <h4 className="mb-2 font-medium text-red-700">元のテキスト</h4>
+        <div className="max-h-96 overflow-auto rounded border bg-red-50 p-4 font-mono text-sm">
           {diffResult.map((diff, index) => (
             <div key={index} className={`flex ${diff.type === 'insert' ? 'hidden' : ''}`}>
               {showLineNumbers && (
-                <span className="text-gray-400 mr-4 w-8 text-right">
+                <span className="mr-4 w-8 text-right text-gray-400">
                   {diff.oldLineNumber || ''}
                 </span>
               )}
-              <span className={`flex-1 ${
-                diff.type === 'delete' ? 'bg-red-200' : 
-                diff.type === 'modify' ? 'bg-yellow-200' : ''
-              }`}>
+              <span
+                className={`flex-1 ${
+                  diff.type === 'delete'
+                    ? 'bg-red-200'
+                    : diff.type === 'modify'
+                      ? 'bg-yellow-200'
+                      : ''
+                }`}
+              >
                 {diff.oldText || '\u00A0'}
               </span>
             </div>
           ))}
         </div>
       </div>
-      
+
       <div>
-        <h4 className="font-medium mb-2 text-green-700">新しいテキスト</h4>
-        <div className="border rounded p-4 bg-green-50 font-mono text-sm max-h-96 overflow-auto">
+        <h4 className="mb-2 font-medium text-green-700">新しいテキスト</h4>
+        <div className="max-h-96 overflow-auto rounded border bg-green-50 p-4 font-mono text-sm">
           {diffResult.map((diff, index) => (
             <div key={index} className={`flex ${diff.type === 'delete' ? 'hidden' : ''}`}>
               {showLineNumbers && (
-                <span className="text-gray-400 mr-4 w-8 text-right">
+                <span className="mr-4 w-8 text-right text-gray-400">
                   {diff.newLineNumber || ''}
                 </span>
               )}
-              <span className={`flex-1 ${
-                diff.type === 'insert' ? 'bg-green-200' : 
-                diff.type === 'modify' ? 'bg-yellow-200' : ''
-              }`}>
+              <span
+                className={`flex-1 ${
+                  diff.type === 'insert'
+                    ? 'bg-green-200'
+                    : diff.type === 'modify'
+                      ? 'bg-yellow-200'
+                      : ''
+                }`}
+              >
                 {diff.newText || '\u00A0'}
               </span>
             </div>
@@ -118,25 +140,25 @@ export default function DiffChecker() {
 
   const renderUnified = () => {
     const unifiedDiff = generateUnifiedDiff(oldText, newText, 'original.txt', 'modified.txt');
-    
+
     return (
       <div>
-        <h4 className="font-medium mb-2">統合差分表示</h4>
-        <div className="border rounded p-4 bg-gray-50 font-mono text-sm max-h-96 overflow-auto">
+        <h4 className="mb-2 font-medium">統合差分表示</h4>
+        <div className="max-h-96 overflow-auto rounded border bg-gray-50 p-4 font-mono text-sm">
           {unifiedDiff.split('\n').map((line, index) => {
             let bgColor = '';
             let icon = null;
-            
+
             if (line.startsWith('+')) {
               bgColor = 'bg-green-100';
-              icon = <Plus className="h-3 w-3 text-green-600 inline mr-2" />;
+              icon = <Plus className="mr-2 inline h-3 w-3 text-green-600" />;
             } else if (line.startsWith('-')) {
               bgColor = 'bg-red-100';
-              icon = <Minus className="h-3 w-3 text-red-600 inline mr-2" />;
+              icon = <Minus className="mr-2 inline h-3 w-3 text-red-600" />;
             } else if (line.startsWith('@@')) {
               bgColor = 'bg-blue-100';
             }
-            
+
             return (
               <div key={index} className={`${bgColor} px-2 py-1`}>
                 {icon}
@@ -151,14 +173,14 @@ export default function DiffChecker() {
 
   const renderInline = () => (
     <div>
-      <h4 className="font-medium mb-2">インライン差分表示</h4>
-      <div className="border rounded p-4 bg-gray-50 font-mono text-sm max-h-96 overflow-auto">
+      <h4 className="mb-2 font-medium">インライン差分表示</h4>
+      <div className="max-h-96 overflow-auto rounded border bg-gray-50 p-4 font-mono text-sm">
         {diffResult.map((diff, index) => {
           if (diff.type === 'equal') {
             return (
               <div key={index} className="py-1">
                 {showLineNumbers && (
-                  <span className="text-gray-400 mr-4">
+                  <span className="mr-4 text-gray-400">
                     {diff.oldLineNumber}-{diff.newLineNumber}
                   </span>
                 )}
@@ -170,21 +192,28 @@ export default function DiffChecker() {
             return (
               <div key={index} className="py-1">
                 {showLineNumbers && (
-                  <span className="text-gray-400 mr-4">
+                  <span className="mr-4 text-gray-400">
                     {diff.oldLineNumber}-{diff.newLineNumber}
                   </span>
                 )}
-                <div className="bg-red-100 mb-1" dangerouslySetInnerHTML={{ __html: '- ' + highlighted.old }} />
-                <div className="bg-green-100" dangerouslySetInnerHTML={{ __html: '+ ' + highlighted.new }} />
+                <div
+                  className="mb-1 bg-red-100"
+                  dangerouslySetInnerHTML={{ __html: '- ' + highlighted.old }}
+                />
+                <div
+                  className="bg-green-100"
+                  dangerouslySetInnerHTML={{ __html: '+ ' + highlighted.new }}
+                />
               </div>
             );
           } else {
             return (
-              <div key={index} className={`py-1 ${
-                diff.type === 'insert' ? 'bg-green-100' : 'bg-red-100'
-              }`}>
+              <div
+                key={index}
+                className={`py-1 ${diff.type === 'insert' ? 'bg-green-100' : 'bg-red-100'}`}
+              >
                 {showLineNumbers && (
-                  <span className="text-gray-400 mr-4">
+                  <span className="mr-4 text-gray-400">
                     {diff.type === 'insert' ? diff.newLineNumber : diff.oldLineNumber}
                   </span>
                 )}
@@ -199,7 +228,7 @@ export default function DiffChecker() {
   );
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-6">
+    <div className="mx-auto w-full max-w-7xl space-y-6">
       {/* Controls */}
       <Card>
         <CardHeader>
@@ -208,15 +237,15 @@ export default function DiffChecker() {
         <CardContent>
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" size="sm" onClick={loadSample}>
-              <FileText className="h-4 w-4 mr-2" />
+              <FileText className="mr-2 h-4 w-4" />
               サンプル
             </Button>
             <Button variant="outline" size="sm" onClick={handleSwap}>
-              <ArrowUpDown className="h-4 w-4 mr-2" />
+              <ArrowUpDown className="mr-2 h-4 w-4" />
               入れ替え
             </Button>
             <Button variant="outline" size="sm" onClick={handleReset}>
-              <RotateCcw className="h-4 w-4 mr-2" />
+              <RotateCcw className="mr-2 h-4 w-4" />
               リセット
             </Button>
           </div>
@@ -224,7 +253,7 @@ export default function DiffChecker() {
       </Card>
 
       {/* Input Areas */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>元のテキスト</CardTitle>
@@ -234,7 +263,7 @@ export default function DiffChecker() {
               placeholder="比較元のテキストを入力してください..."
               value={oldText}
               onChange={(e) => setOldText(e.target.value)}
-              className="font-mono text-sm h-64 resize-none"
+              className="h-64 resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -248,7 +277,7 @@ export default function DiffChecker() {
               placeholder="比較先のテキストを入力してください..."
               value={newText}
               onChange={(e) => setNewText(e.target.value)}
-              className="font-mono text-sm h-64 resize-none"
+              className="h-64 resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -280,9 +309,7 @@ export default function DiffChecker() {
                 </Badge>
               </div>
               <div className="flex items-center gap-2">
-                <Badge variant="outline">
-                  総行数: {stats.totalLines}行
-                </Badge>
+                <Badge variant="outline">総行数: {stats.totalLines}行</Badge>
               </div>
             </div>
           </CardContent>
@@ -334,20 +361,30 @@ export default function DiffChecker() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handleCopy(viewMode === 'unified' ? generateUnifiedDiff(oldText, newText) : `${oldText}\n---\n${newText}`)}
+                  onClick={() =>
+                    handleCopy(
+                      viewMode === 'unified'
+                        ? generateUnifiedDiff(oldText, newText)
+                        : `${oldText}\n---\n${newText}`
+                    )
+                  }
                 >
-                  <Copy className="h-4 w-4 mr-2" />
+                  <Copy className="mr-2 h-4 w-4" />
                   コピー
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handleDownload(
-                    viewMode === 'unified' ? generateUnifiedDiff(oldText, newText) : `${oldText}\n---\n${newText}`,
-                    'diff-result.txt'
-                  )}
+                  onClick={() =>
+                    handleDownload(
+                      viewMode === 'unified'
+                        ? generateUnifiedDiff(oldText, newText)
+                        : `${oldText}\n---\n${newText}`,
+                      'diff-result.txt'
+                    )
+                  }
                 >
-                  <Download className="h-4 w-4 mr-2" />
+                  <Download className="mr-2 h-4 w-4" />
                   ダウンロード
                 </Button>
               </div>

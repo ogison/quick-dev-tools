@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+
 import SqlFormatter from '@/features/tools/sql/components/SqlFormatter';
 
 export const metadata: Metadata = {
@@ -10,7 +11,7 @@ export default function SqlPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">SQL Formatter</h1>
+        <h1 className="mb-4 text-3xl font-bold text-gray-900">SQL Formatter</h1>
         <p className="text-lg text-gray-600">
           SQLクエリを美しく整形し、構文エラーの検出やクエリの解析を行います
         </p>

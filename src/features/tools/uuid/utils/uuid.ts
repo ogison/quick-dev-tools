@@ -18,18 +18,20 @@ export const generateUuidV1 = (): string => {
 
   // Convert timestamp to UUID timestamp format (100-nanosecond intervals since Oct 15, 1582)
   const uuidTimestamp = (timestamp + 12219292800000) * 10000;
-  
+
   const timeLow = (uuidTimestamp & 0xffffffff).toString(16).padStart(8, '0');
   const timeMid = ((uuidTimestamp >>> 32) & 0xffff).toString(16).padStart(4, '0');
-  const timeHiAndVersion = (((uuidTimestamp >>> 48) & 0x0fff) | 0x1000).toString(16).padStart(4, '0');
-  
+  const timeHiAndVersion = (((uuidTimestamp >>> 48) & 0x0fff) | 0x1000)
+    .toString(16)
+    .padStart(4, '0');
+
   const clockSeqHiAndReserved = (randomBytes[0] & 0x3f) | 0x80;
   const clockSeqLow = randomBytes[1];
-  
+
   const node = Array.from(randomBytes.slice(2, 8))
-    .map(b => b.toString(16).padStart(2, '0'))
+    .map((b) => b.toString(16).padStart(2, '0'))
     .join('');
-  
+
   return `${timeLow}-${timeMid}-${timeHiAndVersion}-${clockSeqHiAndReserved.toString(16).padStart(2, '0')}${clockSeqLow.toString(16).padStart(2, '0')}-${node}`;
 };
 
@@ -43,20 +45,23 @@ export const generateUuidV4 = (): string => {
   randomBytes[8] = (randomBytes[8] & 0x3f) | 0x80; // Variant 10
 
   const hex = Array.from(randomBytes)
-    .map(b => b.toString(16).padStart(2, '0'))
+    .map((b) => b.toString(16).padStart(2, '0'))
     .join('');
 
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20, 32)}`;
 };
 
-export const generateUuidV5 = (name: string, namespace: string = '6ba7b810-9dad-11d1-80b4-00c04fd430c8'): string => {
+export const generateUuidV5 = (
+  name: string,
+  namespace: string = '6ba7b810-9dad-11d1-80b4-00c04fd430c8'
+): string => {
   // UUID v5 implementation using SHA-1 (simplified)
   // In a real implementation, you would use a proper SHA-1 hash
   const input = namespace + name;
   const hash = simpleHash(input);
-  
+
   const hex = hash.slice(0, 32);
-  
+
   // Set version (5) bits
   const versionHex = (parseInt(hex.slice(12, 16), 16) & 0x0fff) | 0x5000;
   const variantHex = (parseInt(hex.slice(16, 20), 16) & 0x3fff) | 0x8000;
@@ -68,13 +73,13 @@ export const generateUuidV5 = (name: string, namespace: string = '6ba7b810-9dad-
 const simpleHash = (input: string): string => {
   let hash = 0;
   const str = input + Date.now().toString();
-  
+
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32-bit integer
   }
-  
+
   // Convert to hex and pad to 32 characters
   const hexHash = Math.abs(hash).toString(16);
   return (hexHash + Math.random().toString(16).slice(2)).slice(0, 32).padEnd(32, '0');
@@ -82,7 +87,7 @@ const simpleHash = (input: string): string => {
 
 export const generateMultipleUuids = (count: number, version: UuidVersion = 'v4'): string[] => {
   const uuids: string[] = [];
-  
+
   for (let i = 0; i < count; i++) {
     switch (version) {
       case 'v1':
@@ -98,7 +103,7 @@ export const generateMultipleUuids = (count: number, version: UuidVersion = 'v4'
         uuids.push(generateUuidV4());
     }
   }
-  
+
   return uuids;
 };
 
@@ -112,7 +117,7 @@ export const validateUuid = (uuid: string): UuidInfo => {
 
   // Remove hyphens and check length
   const cleanUuid = uuid.replace(/-/g, '');
-  
+
   if (cleanUuid.length !== 32) {
     return result;
   }
@@ -150,12 +155,12 @@ export const validateUuid = (uuid: string): UuidInfo => {
     const timeLow = parseInt(cleanUuid.slice(0, 8), 16);
     const timeMid = parseInt(cleanUuid.slice(8, 12), 16);
     const timeHi = parseInt(cleanUuid.slice(12, 16), 16) & 0x0fff;
-    
+
     // Reconstruct timestamp (this is approximate)
     const timestamp = (timeHi << 48) | (timeMid << 32) | timeLow;
-    const unixTimestamp = (timestamp / 10000) - 12219292800000;
+    const unixTimestamp = timestamp / 10000 - 12219292800000;
     result.timestamp = new Date(unixTimestamp).toISOString();
-    
+
     result.clockSequence = parseInt(cleanUuid.slice(16, 20), 16) & 0x3fff;
     result.node = cleanUuid.slice(20, 32).match(/.{2}/g)?.join(':') || '';
   }
@@ -163,7 +168,10 @@ export const validateUuid = (uuid: string): UuidInfo => {
   return result;
 };
 
-export const formatUuid = (uuid: string, format: 'uppercase' | 'lowercase' | 'brackets' | 'braces' | 'parentheses'): string => {
+export const formatUuid = (
+  uuid: string,
+  format: 'uppercase' | 'lowercase' | 'brackets' | 'braces' | 'parentheses'
+): string => {
   if (!validateUuid(uuid).isValid) {
     return uuid;
   }
@@ -191,14 +199,16 @@ export const formatUuid = (uuid: string, format: 'uppercase' | 'lowercase' | 'br
   return formatted;
 };
 
-export const getUuidStatistics = (uuids: string[]): { total: number; valid: number; versions: { [key: string]: number } } => {
+export const getUuidStatistics = (
+  uuids: string[]
+): { total: number; valid: number; versions: { [key: string]: number } } => {
   const stats = {
     total: uuids.length,
     valid: 0,
     versions: {} as { [key: string]: number },
   };
 
-  uuids.forEach(uuid => {
+  uuids.forEach((uuid) => {
     const info = validateUuid(uuid);
     if (info.isValid) {
       stats.valid++;

@@ -26,7 +26,7 @@ export interface DecodedJwt {
 export const decodeJwt = (token: string): DecodedJwt => {
   try {
     const parts = token.split('.');
-    
+
     if (parts.length !== 3) {
       return {
         header: {} as JwtHeader,
@@ -96,10 +96,10 @@ export const getTimeUntilExpiry = (exp: number): string => {
   const seconds = diff % 60;
 
   const parts = [];
-  if (days > 0) parts.push(`${days}日`);
-  if (hours > 0) parts.push(`${hours}時間`);
-  if (minutes > 0) parts.push(`${minutes}分`);
-  if (seconds > 0 || parts.length === 0) parts.push(`${seconds}秒`);
+  if (days > 0) {parts.push(`${days}日`);}
+  if (hours > 0) {parts.push(`${hours}時間`);}
+  if (minutes > 0) {parts.push(`${minutes}分`);}
+  if (seconds > 0 || parts.length === 0) {parts.push(`${seconds}秒`);}
 
   return parts.join(' ');
 };
@@ -122,8 +122,12 @@ export const getClaimDescription = (claim: string): string => {
   return descriptions[claim] || claim;
 };
 
-export const getAlgorithmInfo = (alg: string): { name: string; type: string; security: 'high' | 'medium' | 'low' | 'none' } => {
-  const algorithms: { [key: string]: { name: string; type: string; security: 'high' | 'medium' | 'low' | 'none' } } = {
+export const getAlgorithmInfo = (
+  alg: string
+): { name: string; type: string; security: 'high' | 'medium' | 'low' | 'none' } => {
+  const algorithms: {
+    [key: string]: { name: string; type: string; security: 'high' | 'medium' | 'low' | 'none' };
+  } = {
     HS256: { name: 'HMAC with SHA-256', type: 'HMAC', security: 'medium' },
     HS384: { name: 'HMAC with SHA-384', type: 'HMAC', security: 'high' },
     HS512: { name: 'HMAC with SHA-512', type: 'HMAC', security: 'high' },

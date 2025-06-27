@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 
 import { useQrGenerator } from '../hooks/useQrGenerator';
+import Image from 'next/image';
 
 const ERROR_CORRECTION_LEVELS = [
   { value: 'L', label: '低（L）' },
@@ -164,7 +165,7 @@ export default function QrGenerator() {
                   ) : qrDataURL ? (
                     <div className="space-y-4">
                       <div className="inline-block rounded-lg border-2 border-gray-200 p-4">
-                        <img
+                        <Image
                           src={qrDataURL}
                           alt="QRコード"
                           className="block"

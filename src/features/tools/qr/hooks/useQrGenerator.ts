@@ -165,7 +165,7 @@ export const useQrGenerator = () => {
       link.click();
 
       toast.success('QRコードをダウンロードしました');
-    } catch (error) {
+    } catch {
       toast.error('ダウンロードに失敗しました');
     }
   }, [text, size, errorCorrectionLevel, foregroundColor, backgroundColor, loadQRCodeLibrary]);

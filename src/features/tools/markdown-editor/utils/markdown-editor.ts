@@ -4,8 +4,8 @@ export {
   generateMarkdownToc,
   countMarkdownStats,
   exportMarkdownAs,
-  MarkdownPreviewOptions,
-  DEFAULT_MARKDOWN_OPTIONS
+  DEFAULT_MARKDOWN_OPTIONS,
+  type MarkdownPreviewOptions,
 } from '../../markdown/utils/markdown';
 
 // Additional editor-specific utilities
@@ -25,23 +25,33 @@ export const createInitialEditorState = (): EditorState => ({
   redoStack: [],
 });
 
-export const insertTextAtCursor = (content: string, insertion: string, position: number): { newContent: string; newPosition: number } => {
+export const insertTextAtCursor = (
+  content: string,
+  insertion: string,
+  position: number
+): { newContent: string; newPosition: number } => {
   const before = content.slice(0, position);
   const after = content.slice(position);
-  
+
   return {
     newContent: before + insertion + after,
     newPosition: position + insertion.length,
   };
 };
 
-export const wrapSelection = (content: string, start: number, end: number, prefix: string, suffix: string = prefix): { newContent: string; newStart: number; newEnd: number } => {
+export const wrapSelection = (
+  content: string,
+  start: number,
+  end: number,
+  prefix: string,
+  suffix: string = prefix
+): { newContent: string; newStart: number; newEnd: number } => {
   const before = content.slice(0, start);
   const selected = content.slice(start, end);
   const after = content.slice(end);
-  
+
   const newContent = before + prefix + selected + suffix + after;
-  
+
   return {
     newContent,
     newStart: start + prefix.length,
@@ -50,84 +60,86 @@ export const wrapSelection = (content: string, start: number, end: number, prefi
 };
 
 export const insertMarkdownSyntax = {
-  bold: (content: string, start: number, end: number) => 
-    wrapSelection(content, start, end, '**'),
-  
-  italic: (content: string, start: number, end: number) => 
-    wrapSelection(content, start, end, '*'),
-  
-  code: (content: string, start: number, end: number) => 
-    wrapSelection(content, start, end, '`'),
-  
-  strikethrough: (content: string, start: number, end: number) => 
+  bold: (content: string, start: number, end: number) => wrapSelection(content, start, end, '**'),
+
+  italic: (content: string, start: number, end: number) => wrapSelection(content, start, end, '*'),
+
+  code: (content: string, start: number, end: number) => wrapSelection(content, start, end, '`'),
+
+  strikethrough: (content: string, start: number, end: number) =>
     wrapSelection(content, start, end, '~~'),
-  
+
   link: (content: string, start: number, end: number, url = '') => {
     const selected = content.slice(start, end);
     const linkText = selected || 'リンクテキスト';
     const linkUrl = url || 'https://example.com';
     return wrapSelection(content, start, end, `[${linkText}](`, `${linkUrl})`);
   },
-  
+
   image: (content: string, start: number, end: number, url = '') => {
     const selected = content.slice(start, end);
     const altText = selected || '画像の説明';
     const imageUrl = url || 'https://via.placeholder.com/300x200';
     return wrapSelection(content, start, end, `![${altText}](`, `${imageUrl})`);
   },
-  
+
   header: (content: string, start: number, end: number, level = 1) => {
     const hashes = '#'.repeat(level);
     const lineStart = content.lastIndexOf('\n', start - 1) + 1;
     const lineEnd = content.indexOf('\n', end);
     const actualEnd = lineEnd === -1 ? content.length : lineEnd;
-    
+
     const line = content.slice(lineStart, actualEnd);
     const newLine = `${hashes} ${line.replace(/^#+\s*/, '')}`;
-    
+
     const before = content.slice(0, lineStart);
     const after = content.slice(actualEnd);
-    
+
     return {
       newContent: before + newLine + after,
       newStart: lineStart,
       newEnd: lineStart + newLine.length,
     };
   },
-  
+
   list: (content: string, start: number, end: number, ordered = false) => {
     const lines = content.split('\n');
     const startLine = content.slice(0, start).split('\n').length - 1;
     const endLine = content.slice(0, end).split('\n').length - 1;
-    
+
     for (let i = startLine; i <= endLine; i++) {
       if (lines[i] !== undefined) {
         const prefix = ordered ? `${i - startLine + 1}. ` : '- ';
         lines[i] = prefix + lines[i].replace(/^(\d+\.\s*|\-\s*|\*\s*|\+\s*)/, '');
       }
     }
-    
+
     return {
       newContent: lines.join('\n'),
       newStart: start,
       newEnd: end,
     };
   },
-  
+
   table: (content: string, position: number, rows = 3, cols = 3) => {
     const header = '| ' + Array(cols).fill('ヘッダー').join(' | ') + ' |';
     const separator = '| ' + Array(cols).fill('---').join(' | ') + ' |';
     const bodyRows = Array(rows - 1).fill('| ' + Array(cols).fill('セル').join(' | ') + ' |');
-    
+
     const table = [header, separator, ...bodyRows].join('\n');
-    
-    return insertTextAtCursor(content, '\n' + table + '\n', position);
+
+    const result = insertTextAtCursor(content, '\n' + table + '\n', position);
+    return {
+      newContent: result.newContent,
+      newStart: result.newPosition,
+      newEnd: result.newPosition,
+    };
   },
-  
+
   codeBlock: (content: string, start: number, end: number, language = '') => {
     const selected = content.slice(start, end);
     const codeBlock = `\`\`\`${language}\n${selected || 'コードをここに入力'}\n\`\`\``;
-    
+
     return {
       newContent: content.slice(0, start) + codeBlock + content.slice(end),
       newStart: start + 3 + language.length + 1,
@@ -155,9 +167,9 @@ export const handleKeyboardShortcut = (
 ): { newContent: string; newStart: number; newEnd: number } | null => {
   const { ctrlKey, metaKey, shiftKey, key } = e;
   const isModifier = ctrlKey || metaKey;
-  
-  if (!isModifier) return null;
-  
+
+  if (!isModifier) {return null;}
+
   switch (key.toLowerCase()) {
     case 'b':
       return insertMarkdownSyntax.bold(content, selectionStart, selectionEnd);
@@ -185,6 +197,6 @@ export const handleKeyboardShortcut = (
     default:
       return null;
   }
-  
+
   return null;
 };

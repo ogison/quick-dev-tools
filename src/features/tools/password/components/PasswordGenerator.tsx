@@ -158,7 +158,6 @@ export default function PasswordGenerator() {
     }
 
     let charset = '';
-    const similarChars = '0O1lI';
 
     if (options.includeUppercase) {
       charset += options.excludeSimilar ? 'ABCDEFGHJKMNPQRSTUVWXYZ' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';

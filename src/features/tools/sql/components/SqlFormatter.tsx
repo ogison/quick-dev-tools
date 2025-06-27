@@ -1,22 +1,39 @@
 'use client';
 
+import { Copy, Download, RotateCcw, CheckCircle2, XCircle, Database } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
+
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { formatSql, validateSql, extractTableNames, SqlFormatOptions, DEFAULT_SQL_OPTIONS } from '../utils/sql';
-import { Copy, Download, RotateCcw, CheckCircle2, XCircle, Database } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+
+import {
+  formatSql,
+  validateSql,
+  extractTableNames,
+  SqlFormatOptions,
+  DEFAULT_SQL_OPTIONS,
+} from '../utils/sql';
 
 export default function SqlFormatter() {
   const [input, setInput] = useState('');
   const [formatted, setFormatted] = useState('');
   const [options, setOptions] = useState<SqlFormatOptions>(DEFAULT_SQL_OPTIONS);
-  const [validation, setValidation] = useState<{ isValid: boolean; errors: string[] }>({ isValid: true, errors: [] });
+  const [validation, setValidation] = useState<{ isValid: boolean; errors: string[] }>({
+    isValid: true,
+    errors: [],
+  });
   const [tables, setTables] = useState<string[]>([]);
   const [error, setError] = useState('');
 
@@ -26,10 +43,10 @@ export default function SqlFormatter() {
         const result = formatSql(input, options);
         setFormatted(result);
         setError('');
-        
+
         const validationResult = validateSql(input);
         setValidation(validationResult);
-        
+
         const extractedTables = extractTableNames(input);
         setTables(extractedTables);
       } catch (err) {
@@ -76,30 +93,36 @@ export default function SqlFormatter() {
   const sampleQueries = [
     {
       name: 'Basic SELECT',
-      query: 'select users.id, users.name, orders.total from users left join orders on users.id = orders.user_id where users.active = 1 order by users.created_at desc limit 10'
+      query:
+        'select users.id, users.name, orders.total from users left join orders on users.id = orders.user_id where users.active = 1 order by users.created_at desc limit 10',
     },
     {
       name: 'Complex JOIN',
-      query: 'select u.name, p.title, c.name as category from users u inner join posts p on u.id = p.user_id left join categories c on p.category_id = c.id where u.status = "active" and p.published_at is not null order by p.created_at desc'
+      query:
+        'select u.name, p.title, c.name as category from users u inner join posts p on u.id = p.user_id left join categories c on p.category_id = c.id where u.status = "active" and p.published_at is not null order by p.created_at desc',
     },
     {
       name: 'Aggregate Query',
-      query: 'select category_id, count(*) as post_count, avg(view_count) as avg_views from posts where created_at >= "2023-01-01" group by category_id having count(*) > 5 order by post_count desc'
-    }
+      query:
+        'select category_id, count(*) as post_count, avg(view_count) as avg_views from posts where created_at >= "2023-01-01" group by category_id having count(*) > 5 order by post_count desc',
+    },
   ];
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-6">
+    <div className="mx-auto w-full max-w-7xl space-y-6">
       {/* Options Panel */}
       <Card>
         <CardHeader>
           <CardTitle>フォーマットオプション</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             <div>
               <Label htmlFor="dialect">データベース</Label>
-              <Select value={options.dialect} onValueChange={(value) => setOptions({...options, dialect: value as any})}>
+              <Select
+                value={options.dialect}
+                onValueChange={(value) => setOptions({ ...options, dialect: value as any })}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -115,7 +138,10 @@ export default function SqlFormatter() {
 
             <div>
               <Label htmlFor="keywordCase">キーワードケース</Label>
-              <Select value={options.keywordCase} onValueChange={(value) => setOptions({...options, keywordCase: value as any})}>
+              <Select
+                value={options.keywordCase}
+                onValueChange={(value) => setOptions({ ...options, keywordCase: value as any })}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -129,7 +155,10 @@ export default function SqlFormatter() {
 
             <div>
               <Label htmlFor="indentSize">インデント幅</Label>
-              <Select value={options.indentSize.toString()} onValueChange={(value) => setOptions({...options, indentSize: parseInt(value)})}>
+              <Select
+                value={options.indentSize.toString()}
+                onValueChange={(value) => setOptions({ ...options, indentSize: parseInt(value) })}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -143,7 +172,10 @@ export default function SqlFormatter() {
 
             <div>
               <Label htmlFor="commaPosition">カンマ位置</Label>
-              <Select value={options.commaPosition} onValueChange={(value) => setOptions({...options, commaPosition: value as any})}>
+              <Select
+                value={options.commaPosition}
+                onValueChange={(value) => setOptions({ ...options, commaPosition: value as any })}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -175,14 +207,14 @@ export default function SqlFormatter() {
               </Button>
             ))}
             <Button variant="outline" size="sm" onClick={handleReset}>
-              <RotateCcw className="h-4 w-4 mr-2" />
+              <RotateCcw className="mr-2 h-4 w-4" />
               リセット
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Input */}
         <Card>
           <CardHeader>
@@ -193,7 +225,7 @@ export default function SqlFormatter() {
               placeholder="SQLクエリを入力してください..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="font-mono text-sm h-96 resize-none"
+              className="h-96 resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -217,12 +249,10 @@ export default function SqlFormatter() {
             {error ? (
               <Alert className="border-red-200 bg-red-50">
                 <XCircle className="h-4 w-4 text-red-600" />
-                <AlertDescription className="text-red-800">
-                  {error}
-                </AlertDescription>
+                <AlertDescription className="text-red-800">{error}</AlertDescription>
               </Alert>
             ) : (
-              <pre className="bg-gray-50 p-4 rounded font-mono text-sm h-96 overflow-auto whitespace-pre-wrap">
+              <pre className="h-96 overflow-auto rounded bg-gray-50 p-4 font-mono text-sm whitespace-pre-wrap">
                 {formatted || 'フォーマット済みSQLがここに表示されます'}
               </pre>
             )}
@@ -252,16 +282,14 @@ export default function SqlFormatter() {
               </CardHeader>
               <CardContent>
                 {validation.isValid ? (
-                  <div className="text-green-800 bg-green-50 p-4 rounded">
+                  <div className="rounded bg-green-50 p-4 text-green-800">
                     構文エラーは検出されませんでした
                   </div>
                 ) : (
                   <div className="space-y-2">
                     {validation.errors.map((error, index) => (
                       <Alert key={index} className="border-red-200 bg-red-50">
-                        <AlertDescription className="text-red-800">
-                          {error}
-                        </AlertDescription>
+                        <AlertDescription className="text-red-800">{error}</AlertDescription>
                       </Alert>
                     ))}
                   </div>
@@ -281,7 +309,7 @@ export default function SqlFormatter() {
               <CardContent>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-medium mb-2">使用されているテーブル</h4>
+                    <h4 className="mb-2 font-medium">使用されているテーブル</h4>
                     {tables.length > 0 ? (
                       <div className="flex flex-wrap gap-2">
                         {tables.map((table, index) => (

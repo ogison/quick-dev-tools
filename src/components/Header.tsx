@@ -78,7 +78,7 @@ export default function Header() {
   useSearchShortcuts(openSearchModal);
 
   return (
-    <header className="bg-background sticky top-0 z-50 border-b">
+    <header className="bg-background sticky top-0 z-0 border-b">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo and Brand */}
@@ -87,18 +87,18 @@ export default function Header() {
               href="/"
               className="flex items-center space-x-3 transition-opacity hover:opacity-80"
             >
-              <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-lg">
+              <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-lg text-black">
                 <Settings className="text-primary-foreground h-5 w-5" />
               </div>
               <div>
-                <h2 className="font-bold">Tooly</h2>
-                <p className="text-muted-foreground hidden text-xs sm:block">開発者向けツール集</p>
+                <h2 className="font-bold text-black">Tooly</h2>
+                <p className="hidden text-xs text-black sm:block">開発者向けツール集</p>
               </div>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <NavigationMenu className="hidden lg:block">
+          <NavigationMenu className="hidden text-black lg:block">
             <NavigationMenuList>
               {navigationItems.slice(0, 6).map((item) => (
                 <NavigationMenuItem key={item.id}>
@@ -123,7 +123,7 @@ export default function Header() {
                       <ChevronDown className="ml-1 h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuContent align="end" className="w-48 bg-white text-black">
                     {navigationItems.slice(6).map((item) => (
                       <DropdownMenuItem key={item.id} asChild>
                         <Link href={item.href} className={isActive(item.href) ? 'bg-accent' : ''}>
@@ -141,7 +141,7 @@ export default function Header() {
           </NavigationMenu>
 
           {/* Search and Theme toggle and Mobile menu button */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-black">
             {/* Search Button */}
             <Button
               variant="ghost"
@@ -191,7 +191,7 @@ export default function Header() {
                 <Link key={item.id} href={item.href} onClick={() => setIsMobileMenuOpen(false)}>
                   <Button
                     variant={isActive(item.href) ? 'default' : 'ghost'}
-                    className="w-full justify-start"
+                    className="w-full justify-start text-black"
                   >
                     <div className="text-left">
                       <div className="font-medium">{item.name}</div>

@@ -13,7 +13,6 @@ import type { SearchBarProps } from './types';
 export default function SearchBar({
   placeholder = 'ツールを検索...',
   onSearch,
-  onSelectTool,
   showSuggestions = true,
   className = '',
 }: SearchBarProps) {

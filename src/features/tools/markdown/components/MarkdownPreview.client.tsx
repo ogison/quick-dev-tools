@@ -1,15 +1,24 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { parseMarkdown, generateMarkdownToc, countMarkdownStats, exportMarkdownAs, MarkdownPreviewOptions, DEFAULT_MARKDOWN_OPTIONS } from '../utils/markdown';
 import { Eye, Code2, Download, Copy, FileText, BarChart3, List } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+
+import {
+  parseMarkdown,
+  generateMarkdownToc,
+  countMarkdownStats,
+  exportMarkdownAs,
+  MarkdownPreviewOptions,
+  DEFAULT_MARKDOWN_OPTIONS,
+} from '../utils/markdown';
 
 export default function MarkdownPreview() {
   const [input, setInput] = useState('');
@@ -22,7 +31,7 @@ export default function MarkdownPreview() {
     if (input.trim()) {
       const tocData = generateMarkdownToc(input);
       setToc(tocData);
-      
+
       const statsData = countMarkdownStats(input);
       setStats(statsData);
     } else {
@@ -31,12 +40,14 @@ export default function MarkdownPreview() {
     }
   }, [input]);
 
-  const handleCopy = async (content: string, type: string) => {
+  const handleCopy = async (content: string, _: string) => {
     await navigator.clipboard.writeText(content);
   };
 
   const handleDownload = (format: 'html' | 'txt' | 'md') => {
-    if (!input.trim()) return;
+    if (!input.trim()) {
+      return;
+    }
 
     let content = '';
     let filename = '';
@@ -133,19 +144,19 @@ function hello() {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-6">
+    <div className="mx-auto w-full max-w-7xl space-y-6">
       {/* Options Panel */}
       <Card>
         <CardHeader>
           <CardTitle>プレビューオプション</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
             <div className="flex items-center space-x-2">
               <Switch
                 id="tables"
                 checked={options.enableTables}
-                onCheckedChange={(checked) => setOptions({...options, enableTables: checked})}
+                onCheckedChange={(checked) => setOptions({ ...options, enableTables: checked })}
               />
               <Label htmlFor="tables">テーブル</Label>
             </div>
@@ -153,7 +164,7 @@ function hello() {
               <Switch
                 id="emoji"
                 checked={options.enableEmoji}
-                onCheckedChange={(checked) => setOptions({...options, enableEmoji: checked})}
+                onCheckedChange={(checked) => setOptions({ ...options, enableEmoji: checked })}
               />
               <Label htmlFor="emoji">絵文字</Label>
             </div>
@@ -161,7 +172,7 @@ function hello() {
               <Switch
                 id="tasklists"
                 checked={options.enableTaskLists}
-                onCheckedChange={(checked) => setOptions({...options, enableTaskLists: checked})}
+                onCheckedChange={(checked) => setOptions({ ...options, enableTaskLists: checked })}
               />
               <Label htmlFor="tasklists">タスクリスト</Label>
             </div>
@@ -169,7 +180,9 @@ function hello() {
               <Switch
                 id="code"
                 checked={options.enableCodeHighlight}
-                onCheckedChange={(checked) => setOptions({...options, enableCodeHighlight: checked})}
+                onCheckedChange={(checked) =>
+                  setOptions({ ...options, enableCodeHighlight: checked })
+                }
               />
               <Label htmlFor="code">コードハイライト</Label>
             </div>
@@ -181,19 +194,11 @@ function hello() {
       <Card>
         <CardContent className="pt-6">
           <div className="flex flex-wrap gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setInput(sampleMarkdown)}
-            >
-              <FileText className="h-4 w-4 mr-2" />
+            <Button variant="outline" size="sm" onClick={() => setInput(sampleMarkdown)}>
+              <FileText className="mr-2 h-4 w-4" />
               サンプルを読み込み
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setInput('')}
-            >
+            <Button variant="outline" size="sm" onClick={() => setInput('')}>
               クリア
             </Button>
           </div>
@@ -242,7 +247,7 @@ function hello() {
                 placeholder="Markdownを入力してください..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                className="font-mono text-sm h-96 resize-none"
+                className="h-96 resize-none font-mono text-sm"
               />
             </CardContent>
           </Card>
@@ -260,7 +265,7 @@ function hello() {
                     onClick={() => handleDownload('html')}
                     disabled={!input.trim()}
                   >
-                    <Download className="h-4 w-4 mr-2" />
+                    <Download className="mr-2 h-4 w-4" />
                     HTML
                   </Button>
                   <Button
@@ -269,16 +274,14 @@ function hello() {
                     onClick={() => handleDownload('md')}
                     disabled={!input.trim()}
                   >
-                    <Download className="h-4 w-4 mr-2" />
+                    <Download className="mr-2 h-4 w-4" />
                     MD
                   </Button>
                 </div>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="bg-white border rounded-lg p-6 min-h-96">
-                {renderPreview()}
-              </div>
+              <div className="min-h-96 rounded-lg border bg-white p-6">{renderPreview()}</div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -295,9 +298,11 @@ function hello() {
                     <div
                       key={index}
                       className={`flex items-center space-x-2 ${
-                        item.level === 1 ? 'font-bold' : 
-                        item.level === 2 ? 'font-semibold ml-4' : 
-                        'ml-8 text-gray-600'
+                        item.level === 1
+                          ? 'font-bold'
+                          : item.level === 2
+                            ? 'ml-4 font-semibold'
+                            : 'ml-8 text-gray-600'
                       }`}
                     >
                       <Badge variant="outline" className="text-xs">
@@ -308,9 +313,7 @@ function hello() {
                   ))}
                 </div>
               ) : (
-                <div className="text-gray-500 text-center py-8">
-                  見出しが見つかりません
-                </div>
+                <div className="py-8 text-center text-gray-500">見出しが見つかりません</div>
               )}
             </CardContent>
           </Card>
@@ -322,7 +325,7 @@ function hello() {
               <CardTitle>文書統計</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-blue-600">{stats.words}</div>
                   <div className="text-sm text-gray-600">単語数</div>

@@ -4,13 +4,11 @@ export default function PrivacyPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="mb-8 text-3xl font-bold">プライバシーポリシー</h1>
-      
+
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>プライバシーポリシー</CardTitle>
-          <CardDescription>
-            最終更新日：2024年1月1日
-          </CardDescription>
+          <CardDescription>最終更新日：2024年1月1日</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="mb-4 text-gray-600">
@@ -39,7 +37,7 @@ export default function PrivacyPage() {
                 <li>お問い合わせ内容</li>
               </ul>
             </div>
-            
+
             <div>
               <h3 className="mb-2 font-semibold">1.2 利用情報</h3>
               <p className="text-gray-600">
@@ -60,9 +58,7 @@ export default function PrivacyPage() {
             <CardTitle>2. 情報の利用目的</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="mb-4 text-gray-600">
-              収集した情報は、以下の目的でのみ使用します：
-            </p>
+            <p className="mb-4 text-gray-600">収集した情報は、以下の目的でのみ使用します：</p>
             <ul className="list-inside list-disc space-y-1 text-gray-600">
               <li>お問い合わせへの返信</li>
               <li>サービスの改善と新機能の開発</li>

@@ -104,7 +104,7 @@ export default function SearchResults({
 
       {/* 検索結果リスト */}
       <div className="space-y-3">
-        {displayResults.map((result, index) => {
+        {displayResults.map((result) => {
           const { tool, score, matchedFields, highlightedName, highlightedDescription } = result;
 
           return (

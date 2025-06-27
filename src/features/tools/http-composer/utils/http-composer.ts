@@ -2,40 +2,40 @@ import { HttpRequest, HttpResponse, AuthConfig } from '../types';
 
 export async function sendHttpRequest(request: HttpRequest): Promise<HttpResponse> {
   const startTime = Date.now();
-  
+
   try {
     const headers = new Headers();
-    
+
     // Add custom headers
     Object.entries(request.headers).forEach(([key, value]) => {
       if (key && value) {
         headers.set(key, value);
       }
     });
-    
+
     // Add authentication
     addAuthHeaders(headers, request.auth);
-    
+
     // Prepare body
     let body: string | FormData | undefined;
     if (request.method !== 'GET' && request.method !== 'HEAD') {
       body = prepareRequestBody(request.body, request.bodyType, headers);
     }
-    
+
     const response = await fetch(request.url, {
       method: request.method,
       headers,
       body,
     });
-    
+
     const responseText = await response.text();
     const endTime = Date.now();
-    
+
     const responseHeaders: Record<string, string> = {};
     response.headers.forEach((value, key) => {
       responseHeaders[key] = value;
     });
-    
+
     return {
       status: response.status,
       statusText: response.statusText,
@@ -81,11 +81,7 @@ function addAuthHeaders(headers: Headers, auth: AuthConfig): void {
   }
 }
 
-function prepareRequestBody(
-  body: string,
-  bodyType: string,
-  headers: Headers
-): string | FormData {
+function prepareRequestBody(body: string, bodyType: string, headers: Headers): string | FormData {
   switch (bodyType) {
     case 'json':
       headers.set('Content-Type', 'application/json');
@@ -109,17 +105,17 @@ function prepareRequestBody(
 
 export function generateCurlCommand(request: HttpRequest): string {
   let curl = `curl -X ${request.method}`;
-  
+
   // Add URL
   curl += ` "${request.url}"`;
-  
+
   // Add headers
   Object.entries(request.headers).forEach(([key, value]) => {
     if (key && value) {
       curl += ` \\\n  -H "${key}: ${value}"`;
     }
   });
-  
+
   // Add auth
   switch (request.auth.type) {
     case 'basic':
@@ -138,7 +134,7 @@ export function generateCurlCommand(request: HttpRequest): string {
       }
       break;
   }
-  
+
   // Add body
   if (request.body && request.method !== 'GET' && request.method !== 'HEAD') {
     if (request.bodyType === 'json') {
@@ -148,7 +144,7 @@ export function generateCurlCommand(request: HttpRequest): string {
       curl += ` \\\n  -d '${request.body}'`;
     }
   }
-  
+
   return curl;
 }
 

@@ -2,7 +2,7 @@ export function formatJson(jsonString: string, indent: number = 2): string {
   try {
     const parsed = JSON.parse(jsonString);
     return JSON.stringify(parsed, null, indent);
-  } catch (error) {
+  } catch {
     throw new Error('Invalid JSON format');
   }
 }
@@ -11,7 +11,7 @@ export function minifyJson(jsonString: string): string {
   try {
     const parsed = JSON.parse(jsonString);
     return JSON.stringify(parsed);
-  } catch (error) {
+  } catch {
     throw new Error('Invalid JSON format');
   }
 }

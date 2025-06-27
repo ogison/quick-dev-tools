@@ -1,16 +1,42 @@
 'use client';
 
+import {
+  Copy,
+  Download,
+  RotateCcw,
+  ArrowRightLeft,
+  AlertCircle,
+  CheckCircle2,
+  FileText,
+} from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
+
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { csvToJson, jsonToCsv, detectDelimiter, validateCsv, validateJson, generateSampleData, CsvToJsonOptions, JsonToCsvOptions, DEFAULT_CSV_OPTIONS, DEFAULT_JSON_OPTIONS } from '../utils/csv-json';
-import { Copy, Download, RotateCcw, ArrowRightLeft, AlertCircle, CheckCircle2, FileText } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
+
+import {
+  csvToJson,
+  jsonToCsv,
+  detectDelimiter,
+  validateCsv,
+  validateJson,
+  generateSampleData,
+  CsvToJsonOptions,
+  JsonToCsvOptions,
+  DEFAULT_CSV_OPTIONS,
+  DEFAULT_JSON_OPTIONS,
+} from '../utils/csv-json';
 
 export default function CsvJsonConverter() {
   const [input, setInput] = useState('');
@@ -18,8 +44,10 @@ export default function CsvJsonConverter() {
   const [direction, setDirection] = useState<'csv-to-json' | 'json-to-csv'>('csv-to-json');
   const [csvOptions, setCsvOptions] = useState<CsvToJsonOptions>(DEFAULT_CSV_OPTIONS);
   const [jsonOptions, setJsonOptions] = useState<JsonToCsvOptions>(DEFAULT_JSON_OPTIONS);
-  const [validation, setValidation] = useState<{ isValid: boolean; errors: string[] }>({ isValid: true, errors: [] });
-  const [isConverting, setIsConverting] = useState(false);
+  const [validation, setValidation] = useState<{ isValid: boolean; errors: string[] }>({
+    isValid: true,
+    errors: [],
+  });
 
   useEffect(() => {
     if (input.trim()) {
@@ -31,13 +59,11 @@ export default function CsvJsonConverter() {
   }, [input, direction, csvOptions, jsonOptions]);
 
   const handleConvert = async () => {
-    setIsConverting(true);
-    
     try {
       if (direction === 'csv-to-json') {
         const validation = validateCsv(input, csvOptions);
         setValidation(validation);
-        
+
         if (validation.isValid) {
           const result = csvToJson(input, csvOptions);
           setOutput(JSON.stringify(result, null, 2));
@@ -47,7 +73,7 @@ export default function CsvJsonConverter() {
       } else {
         const validation = validateJson(input);
         setValidation(validation);
-        
+
         if (validation.isValid) {
           const data = JSON.parse(input);
           const result = jsonToCsv(data, jsonOptions);
@@ -59,18 +85,16 @@ export default function CsvJsonConverter() {
     } catch (error) {
       setValidation({
         isValid: false,
-        errors: [error instanceof Error ? error.message : 'Conversion failed']
+        errors: [error instanceof Error ? error.message : 'Conversion failed'],
       });
       setOutput('');
     }
-    
-    setIsConverting(false);
   };
 
   const handleSwapDirection = () => {
     const newDirection = direction === 'csv-to-json' ? 'json-to-csv' : 'csv-to-json';
     setDirection(newDirection);
-    
+
     // Swap input and output if both have content
     if (input.trim() && output.trim()) {
       setInput(output);
@@ -81,7 +105,7 @@ export default function CsvJsonConverter() {
   const handleDetectDelimiter = () => {
     if (input.trim()) {
       const detected = detectDelimiter(input);
-      setCsvOptions(prev => ({ ...prev, delimiter: detected }));
+      setCsvOptions((prev) => ({ ...prev, delimiter: detected }));
     }
   };
 
@@ -92,11 +116,13 @@ export default function CsvJsonConverter() {
   };
 
   const handleDownload = () => {
-    if (!output) return;
-    
+    if (!output) {
+      return;
+    }
+
     const extension = direction === 'csv-to-json' ? 'json' : 'csv';
     const mimeType = direction === 'csv-to-json' ? 'application/json' : 'text/csv';
-    
+
     const blob = new Blob([output], { type: mimeType });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -126,7 +152,10 @@ export default function CsvJsonConverter() {
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label htmlFor="delimiter">区切り文字</Label>
-          <Select value={csvOptions.delimiter} onValueChange={(value) => setCsvOptions({...csvOptions, delimiter: value})}>
+          <Select
+            value={csvOptions.delimiter}
+            onValueChange={(value) => setCsvOptions({ ...csvOptions, delimiter: value })}
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -144,31 +173,31 @@ export default function CsvJsonConverter() {
           </Button>
         </div>
       </div>
-      
+
       <div className="space-y-3">
         <div className="flex items-center space-x-2">
           <Switch
             id="hasHeader"
             checked={csvOptions.hasHeader}
-            onCheckedChange={(checked) => setCsvOptions({...csvOptions, hasHeader: checked})}
+            onCheckedChange={(checked) => setCsvOptions({ ...csvOptions, hasHeader: checked })}
           />
           <Label htmlFor="hasHeader">ヘッダー行あり</Label>
         </div>
-        
+
         <div className="flex items-center space-x-2">
           <Switch
             id="inferTypes"
             checked={csvOptions.inferTypes}
-            onCheckedChange={(checked) => setCsvOptions({...csvOptions, inferTypes: checked})}
+            onCheckedChange={(checked) => setCsvOptions({ ...csvOptions, inferTypes: checked })}
           />
           <Label htmlFor="inferTypes">データ型を自動推定</Label>
         </div>
-        
+
         <div className="flex items-center space-x-2">
           <Switch
             id="skipEmptyLines"
             checked={csvOptions.skipEmptyLines}
-            onCheckedChange={(checked) => setCsvOptions({...csvOptions, skipEmptyLines: checked})}
+            onCheckedChange={(checked) => setCsvOptions({ ...csvOptions, skipEmptyLines: checked })}
           />
           <Label htmlFor="skipEmptyLines">空行をスキップ</Label>
         </div>
@@ -181,7 +210,10 @@ export default function CsvJsonConverter() {
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label htmlFor="json-delimiter">区切り文字</Label>
-          <Select value={jsonOptions.delimiter} onValueChange={(value) => setJsonOptions({...jsonOptions, delimiter: value})}>
+          <Select
+            value={jsonOptions.delimiter}
+            onValueChange={(value) => setJsonOptions({ ...jsonOptions, delimiter: value })}
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -193,10 +225,15 @@ export default function CsvJsonConverter() {
             </SelectContent>
           </Select>
         </div>
-        
+
         <div>
           <Label htmlFor="handleArrays">配列の処理</Label>
-          <Select value={jsonOptions.handleArrays} onValueChange={(value) => setJsonOptions({...jsonOptions, handleArrays: value as any})}>
+          <Select
+            value={jsonOptions.handleArrays}
+            onValueChange={(value) =>
+              setJsonOptions({ ...jsonOptions, handleArrays: value as any })
+            }
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -208,30 +245,37 @@ export default function CsvJsonConverter() {
           </Select>
         </div>
       </div>
-      
+
       <div className="space-y-3">
         <div className="flex items-center space-x-2">
           <Switch
             id="includeHeader"
             checked={jsonOptions.includeHeader}
-            onCheckedChange={(checked) => setJsonOptions({...jsonOptions, includeHeader: checked})}
+            onCheckedChange={(checked) =>
+              setJsonOptions({ ...jsonOptions, includeHeader: checked })
+            }
           />
           <Label htmlFor="includeHeader">ヘッダー行を含める</Label>
         </div>
-        
+
         <div className="flex items-center space-x-2">
           <Switch
             id="flattenObjects"
             checked={jsonOptions.flattenObjects}
-            onCheckedChange={(checked) => setJsonOptions({...jsonOptions, flattenObjects: checked})}
+            onCheckedChange={(checked) =>
+              setJsonOptions({ ...jsonOptions, flattenObjects: checked })
+            }
           />
           <Label htmlFor="flattenObjects">ネストしたオブジェクトを展開</Label>
         </div>
       </div>
-      
+
       <div>
         <Label htmlFor="nullValue">null値の表現</Label>
-        <Select value={jsonOptions.nullValue} onValueChange={(value) => setJsonOptions({...jsonOptions, nullValue: value})}>
+        <Select
+          value={jsonOptions.nullValue}
+          onValueChange={(value) => setJsonOptions({ ...jsonOptions, nullValue: value })}
+        >
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
@@ -247,7 +291,7 @@ export default function CsvJsonConverter() {
   );
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-6">
+    <div className="mx-auto w-full max-w-7xl space-y-6">
       {/* Direction and Controls */}
       <Card>
         <CardHeader>
@@ -255,11 +299,11 @@ export default function CsvJsonConverter() {
             変換方向
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={handleLoadSample}>
-                <FileText className="h-4 w-4 mr-2" />
+                <FileText className="mr-2 h-4 w-4" />
                 サンプル
               </Button>
               <Button variant="outline" size="sm" onClick={handleReset}>
-                <RotateCcw className="h-4 w-4 mr-2" />
+                <RotateCcw className="mr-2 h-4 w-4" />
                 リセット
               </Button>
             </div>
@@ -268,11 +312,11 @@ export default function CsvJsonConverter() {
         <CardContent>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <span className="font-mono bg-gray-100 px-2 py-1 rounded">
+              <span className="rounded bg-gray-100 px-2 py-1 font-mono">
                 {direction === 'csv-to-json' ? 'CSV' : 'JSON'}
               </span>
               <ArrowRightLeft className="h-4 w-4" />
-              <span className="font-mono bg-gray-100 px-2 py-1 rounded">
+              <span className="rounded bg-gray-100 px-2 py-1 font-mono">
                 {direction === 'csv-to-json' ? 'JSON' : 'CSV'}
               </span>
             </div>
@@ -294,19 +338,17 @@ export default function CsvJsonConverter() {
       </Card>
 
       {/* Input/Output */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>
-              入力 ({direction === 'csv-to-json' ? 'CSV' : 'JSON'})
-            </CardTitle>
+            <CardTitle>入力 ({direction === 'csv-to-json' ? 'CSV' : 'JSON'})</CardTitle>
           </CardHeader>
           <CardContent>
             <Textarea
               placeholder={`${direction === 'csv-to-json' ? 'CSV' : 'JSON'}データを入力してください...`}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="font-mono text-sm h-96 resize-none"
+              className="h-96 resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -329,7 +371,7 @@ export default function CsvJsonConverter() {
             <Textarea
               value={output}
               readOnly
-              className="font-mono text-sm h-96 resize-none"
+              className="h-96 resize-none font-mono text-sm"
               placeholder="変換結果がここに表示されます"
             />
           </CardContent>
@@ -349,9 +391,7 @@ export default function CsvJsonConverter() {
             <div className="space-y-2">
               {validation.errors.map((error, index) => (
                 <Alert key={index} className="border-red-200 bg-red-50">
-                  <AlertDescription className="text-red-800">
-                    {error}
-                  </AlertDescription>
+                  <AlertDescription className="text-red-800">{error}</AlertDescription>
                 </Alert>
               ))}
             </div>

@@ -25,7 +25,6 @@ interface LineData {
 }
 
 const LINE_HEIGHT = 20;
-const CHAR_WIDTH = 8;
 const MAX_LINE_LENGTH = 1000;
 
 export function VirtualizedTextArea({

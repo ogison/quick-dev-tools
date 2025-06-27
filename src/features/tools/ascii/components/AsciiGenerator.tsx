@@ -1,15 +1,32 @@
 'use client';
 
+import { Copy, Download, Image, Type, Shapes, RotateCcw } from 'lucide-react';
 import React, { useState, useRef } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { generateTextArt, generateBorder, generatePattern, imageToAscii, getFontList, getPatternList, AsciiOptions, DEFAULT_ASCII_OPTIONS } from '../utils/ascii';
-import { Copy, Download, Image, Type, Shapes, RotateCcw } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+
+import {
+  generateTextArt,
+  generateBorder,
+  generatePattern,
+  imageToAscii,
+  getFontList,
+  getPatternList,
+  AsciiOptions,
+  DEFAULT_ASCII_OPTIONS,
+} from '../utils/ascii';
 
 export default function AsciiGenerator() {
   const [textInput, setTextInput] = useState('HELLO');
@@ -35,7 +52,7 @@ export default function AsciiGenerator() {
       const art = generateTextArt(textInput, options);
       const bordered = generateBorder(art, 'single');
       setAsciiOutput(bordered);
-    } catch (error) {
+    } catch {
       setAsciiOutput('Error generating ASCII art');
     }
   };
@@ -44,7 +61,7 @@ export default function AsciiGenerator() {
     try {
       const pattern = generatePattern(patternType, patternSize);
       setAsciiOutput(pattern);
-    } catch (error) {
+    } catch {
       setAsciiOutput('Error generating pattern');
     }
   };
@@ -60,13 +77,17 @@ export default function AsciiGenerator() {
   const processImage = (file: File) => {
     const reader = new FileReader();
     reader.onload = (e) => {
-      const img = new Image();
+      const img = document.createElement('img');
       img.onload = () => {
         const canvas = canvasRef.current;
-        if (!canvas) return;
+        if (!canvas) {
+          return;
+        }
 
         const ctx = canvas.getContext('2d');
-        if (!ctx) return;
+        if (!ctx) {
+          return;
+        }
 
         canvas.width = img.width;
         canvas.height = img.height;
@@ -88,7 +109,9 @@ export default function AsciiGenerator() {
   };
 
   const handleDownload = () => {
-    if (!asciiOutput) return;
+    if (!asciiOutput) {
+      return;
+    }
 
     const blob = new Blob([asciiOutput], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -114,7 +137,7 @@ export default function AsciiGenerator() {
   const sampleTexts = ['HELLO', 'ASCII', 'WORLD', '123', 'DEMO'];
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-6">
+    <div className="mx-auto w-full max-w-6xl space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="text" className="flex items-center gap-2">
@@ -148,15 +171,18 @@ export default function AsciiGenerator() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
                   <Label htmlFor="font">フォント</Label>
-                  <Select value={options.font} onValueChange={(value) => setOptions({...options, font: value})}>
+                  <Select
+                    value={options.font}
+                    onValueChange={(value) => setOptions({ ...options, font: value })}
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {getFontList().map(font => (
+                      {getFontList().map((font) => (
                         <SelectItem key={font} value={font}>
                           {font}
                         </SelectItem>
@@ -167,7 +193,10 @@ export default function AsciiGenerator() {
 
                 <div>
                   <Label htmlFor="style">スタイル</Label>
-                  <Select value={options.style} onValueChange={(value) => setOptions({...options, style: value as any})}>
+                  <Select
+                    value={options.style}
+                    onValueChange={(value) => setOptions({ ...options, style: value as any })}
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -184,7 +213,7 @@ export default function AsciiGenerator() {
               <div>
                 <Label className="mb-2 block">サンプルテキスト</Label>
                 <div className="flex flex-wrap gap-2">
-                  {sampleTexts.map(sample => (
+                  {sampleTexts.map((sample) => (
                     <Button
                       key={sample}
                       variant="outline"
@@ -195,7 +224,7 @@ export default function AsciiGenerator() {
                     </Button>
                   ))}
                   <Button variant="outline" size="sm" onClick={handleReset}>
-                    <RotateCcw className="h-4 w-4 mr-2" />
+                    <RotateCcw className="mr-2 h-4 w-4" />
                     リセット
                   </Button>
                 </div>
@@ -229,14 +258,14 @@ export default function AsciiGenerator() {
                   min="20"
                   max="200"
                   value={options.width}
-                  onChange={(e) => setOptions({...options, width: parseInt(e.target.value) || 80})}
+                  onChange={(e) =>
+                    setOptions({ ...options, width: parseInt(e.target.value) || 80 })
+                  }
                 />
               </div>
 
               {imageFile && (
-                <div className="text-sm text-green-600">
-                  アップロード済み: {imageFile.name}
-                </div>
+                <div className="text-sm text-green-600">アップロード済み: {imageFile.name}</div>
               )}
             </CardContent>
           </Card>
@@ -248,15 +277,18 @@ export default function AsciiGenerator() {
               <CardTitle>パターン生成</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
                   <Label htmlFor="pattern">パターンタイプ</Label>
-                  <Select value={patternType} onValueChange={(value) => setPatternType(value as any)}>
+                  <Select
+                    value={patternType}
+                    onValueChange={(value) => setPatternType(value as any)}
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {getPatternList().map(pattern => (
+                      {getPatternList().map((pattern) => (
                         <SelectItem key={pattern.value} value={pattern.value}>
                           {pattern.name}
                         </SelectItem>
@@ -289,11 +321,11 @@ export default function AsciiGenerator() {
             ASCII アート出力
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={handleCopy} disabled={!asciiOutput}>
-                <Copy className="h-4 w-4 mr-2" />
+                <Copy className="mr-2 h-4 w-4" />
                 コピー
               </Button>
               <Button variant="outline" size="sm" onClick={handleDownload} disabled={!asciiOutput}>
-                <Download className="h-4 w-4 mr-2" />
+                <Download className="mr-2 h-4 w-4" />
                 ダウンロード
               </Button>
             </div>
@@ -303,7 +335,7 @@ export default function AsciiGenerator() {
           <Textarea
             value={asciiOutput}
             readOnly
-            className="font-mono text-xs h-96 resize-none"
+            className="h-96 resize-none font-mono text-xs"
             placeholder="ASCII アートがここに表示されます"
           />
         </CardContent>

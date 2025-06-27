@@ -154,8 +154,8 @@ export function validateGraphQLQuery(query: string): { isValid: boolean; error?:
   // Basic validation - check for required GraphQL syntax
   const trimmedQuery = query.trim();
   const validStarters = ['query', 'mutation', 'subscription', '{'];
-  const hasValidStart = validStarters.some(starter => 
-    trimmedQuery.startsWith(starter) || trimmedQuery.startsWith(`${starter} `)
+  const hasValidStart = validStarters.some(
+    (starter) => trimmedQuery.startsWith(starter) || trimmedQuery.startsWith(`${starter} `)
   );
 
   if (!hasValidStart) {
@@ -165,8 +165,12 @@ export function validateGraphQLQuery(query: string): { isValid: boolean; error?:
   // Check for balanced braces
   let braceCount = 0;
   for (const char of query) {
-    if (char === '{') braceCount++;
-    if (char === '}') braceCount--;
+    if (char === '{') {
+      braceCount++;
+    }
+    if (char === '}') {
+      braceCount--;
+    }
   }
 
   if (braceCount !== 0) {
@@ -184,7 +188,7 @@ export function validateVariables(variables: string): { isValid: boolean; error?
   try {
     JSON.parse(variables);
     return { isValid: true };
-  } catch (error) {
+  } catch {
     return { isValid: false, error: 'Invalid JSON in variables' };
   }
 }
@@ -236,7 +240,9 @@ export function prettifyQuery(query: string): string {
 
   for (const line of lines) {
     const trimmed = line.trim();
-    if (!trimmed) continue;
+    if (!trimmed) {
+      continue;
+    }
 
     if (trimmed.includes('}')) {
       indentLevel = Math.max(0, indentLevel - 1);

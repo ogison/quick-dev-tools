@@ -1,24 +1,42 @@
 'use client';
 
+import { Copy, Download, RotateCcw, CheckCircle2, XCircle, FileText, Database } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { formatXml, validateXml, xmlToJson, minifyXml, extractXmlInfo, XmlFormatOptions, DEFAULT_XML_OPTIONS } from '../utils/xml';
-import { Copy, Download, RotateCcw, CheckCircle2, XCircle, FileText, Database } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
+
+import {
+  formatXml,
+  validateXml,
+  xmlToJson,
+  minifyXml,
+  extractXmlInfo,
+  XmlFormatOptions,
+  DEFAULT_XML_OPTIONS,
+} from '../utils/xml';
 
 export default function XmlFormatter() {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [mode, setMode] = useState<'format' | 'minify' | 'validate' | 'to-json'>('format');
   const [options, setOptions] = useState<XmlFormatOptions>(DEFAULT_XML_OPTIONS);
-  const [validation, setValidation] = useState<{ isValid: boolean; errors: any[] }>({ isValid: true, errors: [] });
+  const [validation, setValidation] = useState<{ isValid: boolean; errors: any[] }>({
+    isValid: true,
+    errors: [],
+  });
   const [xmlInfo, setXmlInfo] = useState<any>(null);
   const [error, setError] = useState('');
 
@@ -36,34 +54,33 @@ export default function XmlFormatter() {
   const processXml = () => {
     try {
       setError('');
-      
+
       switch (mode) {
         case 'format':
           const formatted = formatXml(input, options);
           setOutput(formatted);
           break;
-          
+
         case 'minify':
           const minified = minifyXml(input);
           setOutput(minified);
           break;
-          
+
         case 'validate':
           const validationResult = validateXml(input);
           setValidation(validationResult);
           setOutput(validationResult.isValid ? 'XML is valid!' : 'XML has errors (see below)');
           break;
-          
+
         case 'to-json':
           const jsonResult = xmlToJson(input);
           setOutput(JSON.stringify(jsonResult, null, 2));
           break;
       }
-      
+
       // Extract XML info for all modes
       const info = extractXmlInfo(input);
       setXmlInfo(info);
-      
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Processing failed');
       setOutput('');
@@ -77,11 +94,11 @@ export default function XmlFormatter() {
   };
 
   const handleDownload = () => {
-    if (!output) return;
-    
+    if (!output) {return;}
+
     const extension = mode === 'to-json' ? 'json' : 'xml';
     const mimeType = mode === 'to-json' ? 'application/json' : 'application/xml';
-    
+
     const blob = new Blob([output], { type: mimeType });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -128,15 +145,15 @@ export default function XmlFormatter() {
   ];
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-6">
+    <div className="mx-auto w-full max-w-7xl space-y-6">
       {/* Mode and Options */}
       <Card>
         <CardHeader>
           <CardTitle>処理モード</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {modeOptions.map(option => (
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+            {modeOptions.map((option) => (
               <Button
                 key={option.value}
                 variant={mode === option.value ? 'default' : 'outline'}
@@ -144,16 +161,19 @@ export default function XmlFormatter() {
                 className="h-auto flex-col py-3"
               >
                 <div className="font-medium">{option.label}</div>
-                <div className="text-xs text-gray-500 mt-1">{option.description}</div>
+                <div className="mt-1 text-xs text-gray-500">{option.description}</div>
               </Button>
             ))}
           </div>
 
           {mode === 'format' && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t">
+            <div className="grid grid-cols-2 gap-4 border-t pt-4 md:grid-cols-4">
               <div>
                 <Label htmlFor="indentSize">インデント</Label>
-                <Select value={options.indentSize.toString()} onValueChange={(value) => setOptions({...options, indentSize: parseInt(value)})}>
+                <Select
+                  value={options.indentSize.toString()}
+                  onValueChange={(value) => setOptions({ ...options, indentSize: parseInt(value) })}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -169,7 +189,7 @@ export default function XmlFormatter() {
                 <Switch
                   id="sortAttributes"
                   checked={options.sortAttributes}
-                  onCheckedChange={(checked) => setOptions({...options, sortAttributes: checked})}
+                  onCheckedChange={(checked) => setOptions({ ...options, sortAttributes: checked })}
                 />
                 <Label htmlFor="sortAttributes">属性をソート</Label>
               </div>
@@ -178,7 +198,9 @@ export default function XmlFormatter() {
                 <Switch
                   id="preserveComments"
                   checked={options.preserveComments}
-                  onCheckedChange={(checked) => setOptions({...options, preserveComments: checked})}
+                  onCheckedChange={(checked) =>
+                    setOptions({ ...options, preserveComments: checked })
+                  }
                 />
                 <Label htmlFor="preserveComments">コメント保持</Label>
               </div>
@@ -187,7 +209,9 @@ export default function XmlFormatter() {
                 <Switch
                   id="preserveWhitespace"
                   checked={options.preserveWhitespace}
-                  onCheckedChange={(checked) => setOptions({...options, preserveWhitespace: checked})}
+                  onCheckedChange={(checked) =>
+                    setOptions({ ...options, preserveWhitespace: checked })
+                  }
                 />
                 <Label htmlFor="preserveWhitespace">空白保持</Label>
               </div>
@@ -201,11 +225,11 @@ export default function XmlFormatter() {
         <CardContent className="pt-6">
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={loadSample}>
-              <FileText className="h-4 w-4 mr-2" />
+              <FileText className="mr-2 h-4 w-4" />
               サンプル
             </Button>
             <Button variant="outline" size="sm" onClick={handleReset}>
-              <RotateCcw className="h-4 w-4 mr-2" />
+              <RotateCcw className="mr-2 h-4 w-4" />
               リセット
             </Button>
           </div>
@@ -213,7 +237,7 @@ export default function XmlFormatter() {
       </Card>
 
       {/* Input/Output */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>XML入力</CardTitle>
@@ -223,7 +247,7 @@ export default function XmlFormatter() {
               placeholder="XMLコンテンツを入力してください..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="font-mono text-sm h-96 resize-none"
+              className="h-96 resize-none font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -246,15 +270,13 @@ export default function XmlFormatter() {
             {error ? (
               <Alert className="border-red-200 bg-red-50">
                 <XCircle className="h-4 w-4 text-red-600" />
-                <AlertDescription className="text-red-800">
-                  {error}
-                </AlertDescription>
+                <AlertDescription className="text-red-800">{error}</AlertDescription>
               </Alert>
             ) : (
               <Textarea
                 value={output}
                 readOnly
-                className="font-mono text-sm h-96 resize-none"
+                className="h-96 resize-none font-mono text-sm"
                 placeholder="処理結果がここに表示されます"
               />
             )}
@@ -295,7 +317,7 @@ export default function XmlFormatter() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
               {xmlInfo.version && (
                 <div>
                   <div className="text-sm font-medium">バージョン</div>
@@ -324,7 +346,7 @@ export default function XmlFormatter() {
               </div>
               {xmlInfo.namespaces.length > 0 && (
                 <div className="col-span-2">
-                  <div className="text-sm font-medium mb-2">名前空間</div>
+                  <div className="mb-2 text-sm font-medium">名前空間</div>
                   <div className="flex flex-wrap gap-2">
                     {xmlInfo.namespaces.map((ns: string, index: number) => (
                       <Badge key={index} variant="secondary">

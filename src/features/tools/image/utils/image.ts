@@ -32,12 +32,15 @@ export const DEFAULT_COMPRESSION_OPTIONS: CompressionOptions = {
   removeMetadata: true,
 };
 
-export const compressImage = async (file: File, options: CompressionOptions): Promise<CompressionResult> => {
+export const compressImage = async (
+  file: File,
+  options: CompressionOptions
+): Promise<CompressionResult> => {
   return new Promise((resolve, reject) => {
-    const img = new Image();
+    const img = document.createElement('img');
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    
+
     if (!ctx) {
       reject(new Error('Canvas context not supported'));
       return;
@@ -69,7 +72,7 @@ export const compressImage = async (file: File, options: CompressionOptions): Pr
 
       // Draw and compress
       ctx.drawImage(img, 0, 0, width, height);
-      
+
       canvas.toBlob(
         (blob) => {
           if (!blob) {
@@ -143,8 +146,12 @@ const calculateDimensions = (
       height = maxHeight;
     }
   } else {
-    if (maxWidth) width = Math.min(width, maxWidth);
-    if (maxHeight) height = Math.min(height, maxHeight);
+    if (maxWidth) {
+      width = Math.min(width, maxWidth);
+    }
+    if (maxHeight) {
+      height = Math.min(height, maxHeight);
+    }
   }
 
   return { width: Math.round(width), height: Math.round(height) };
@@ -152,8 +159,8 @@ const calculateDimensions = (
 
 export const getImageInfo = async (file: File): Promise<ImageInfo> => {
   return new Promise((resolve, reject) => {
-    const img = new Image();
-    
+    const img = document.createElement('img');
+
     img.onload = () => {
       resolve({
         name: file.name,
@@ -177,7 +184,7 @@ export const getImageInfo = async (file: File): Promise<ImageInfo> => {
 
 export const validateImageFile = (file: File): { isValid: boolean; error?: string } => {
   const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp'];
-  
+
   if (!validTypes.includes(file.type)) {
     return {
       isValid: false,
@@ -197,12 +204,14 @@ export const validateImageFile = (file: File): { isValid: boolean; error?: strin
 };
 
 export const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return '0 B';
-  
+  if (bytes === 0) {
+    return '0 B';
+  }
+
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
 };
 
@@ -219,28 +228,22 @@ export const downloadBlob = (blob: Blob, filename: string) => {
 
 export const generateThumbnail = async (file: File, size = 150): Promise<string> => {
   return new Promise((resolve, reject) => {
-    const img = new Image();
+    const img = document.createElement('img');
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    
+
     if (!ctx) {
       reject(new Error('Canvas context not supported'));
       return;
     }
 
     img.onload = () => {
-      const { width, height } = calculateDimensions(
-        img.width,
-        img.height,
-        size,
-        size,
-        true
-      );
+      const { width, height } = calculateDimensions(img.width, img.height, size, size, true);
 
       canvas.width = width;
       canvas.height = height;
       ctx.drawImage(img, 0, 0, width, height);
-      
+
       resolve(canvas.toDataURL('image/jpeg', 0.8));
       URL.revokeObjectURL(img.src);
     };
@@ -264,7 +267,7 @@ export const revokePreviewUrl = (url: string) => {
 
 export const getOptimizationSuggestions = (result: CompressionResult): string[] => {
   const suggestions: string[] = [];
-  const { originalInfo, compressedInfo, compressionRatio } = result;
+  const { originalInfo, compressionRatio } = result;
 
   if (compressionRatio < 10) {
     suggestions.push('品質設定を下げることで、さらなる圧縮が可能です');
@@ -290,7 +293,11 @@ const hasTransparency = (file: File): boolean => {
   return file.type === 'image/png';
 };
 
-export const getSupportedFormats = (): Array<{ value: string; label: string; description: string }> => {
+export const getSupportedFormats = (): Array<{
+  value: string;
+  label: string;
+  description: string;
+}> => {
   return [
     {
       value: 'webp',

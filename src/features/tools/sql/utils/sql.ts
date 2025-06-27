@@ -15,22 +15,102 @@ export const DEFAULT_SQL_OPTIONS: SqlFormatOptions = {
 };
 
 const SQL_KEYWORDS = new Set([
-  'SELECT', 'FROM', 'WHERE', 'JOIN', 'INNER', 'LEFT', 'RIGHT', 'FULL', 'OUTER',
-  'ON', 'GROUP', 'BY', 'HAVING', 'ORDER', 'LIMIT', 'OFFSET', 'INSERT', 'INTO',
-  'VALUES', 'UPDATE', 'SET', 'DELETE', 'CREATE', 'ALTER', 'DROP', 'TABLE',
-  'INDEX', 'VIEW', 'DATABASE', 'SCHEMA', 'PRIMARY', 'KEY', 'FOREIGN', 'REFERENCES',
-  'CONSTRAINT', 'UNIQUE', 'NOT', 'NULL', 'DEFAULT', 'AUTO_INCREMENT', 'IDENTITY',
-  'CHECK', 'UNION', 'ALL', 'DISTINCT', 'AS', 'CASE', 'WHEN', 'THEN', 'ELSE',
-  'END', 'IF', 'EXISTS', 'BETWEEN', 'IN', 'LIKE', 'IS', 'AND', 'OR', 'XOR',
-  'CAST', 'CONVERT', 'COUNT', 'SUM', 'AVG', 'MIN', 'MAX', 'SUBSTRING',
-  'CONCAT', 'COALESCE', 'ISNULL', 'NULLIF', 'YEAR', 'MONTH', 'DAY', 'NOW',
-  'CURRENT_TIMESTAMP', 'CURRENT_DATE', 'CURRENT_TIME', 'DATEADD', 'DATEDIFF',
-  'WITH', 'RECURSIVE', 'OVER', 'PARTITION', 'ROW_NUMBER', 'RANK', 'DENSE_RANK',
-  'LEAD', 'LAG', 'FIRST_VALUE', 'LAST_VALUE'
+  'SELECT',
+  'FROM',
+  'WHERE',
+  'JOIN',
+  'INNER',
+  'LEFT',
+  'RIGHT',
+  'FULL',
+  'OUTER',
+  'ON',
+  'GROUP',
+  'BY',
+  'HAVING',
+  'ORDER',
+  'LIMIT',
+  'OFFSET',
+  'INSERT',
+  'INTO',
+  'VALUES',
+  'UPDATE',
+  'SET',
+  'DELETE',
+  'CREATE',
+  'ALTER',
+  'DROP',
+  'TABLE',
+  'INDEX',
+  'VIEW',
+  'DATABASE',
+  'SCHEMA',
+  'PRIMARY',
+  'KEY',
+  'FOREIGN',
+  'REFERENCES',
+  'CONSTRAINT',
+  'UNIQUE',
+  'NOT',
+  'NULL',
+  'DEFAULT',
+  'AUTO_INCREMENT',
+  'IDENTITY',
+  'CHECK',
+  'UNION',
+  'ALL',
+  'DISTINCT',
+  'AS',
+  'CASE',
+  'WHEN',
+  'THEN',
+  'ELSE',
+  'END',
+  'IF',
+  'EXISTS',
+  'BETWEEN',
+  'IN',
+  'LIKE',
+  'IS',
+  'AND',
+  'OR',
+  'XOR',
+  'CAST',
+  'CONVERT',
+  'COUNT',
+  'SUM',
+  'AVG',
+  'MIN',
+  'MAX',
+  'SUBSTRING',
+  'CONCAT',
+  'COALESCE',
+  'ISNULL',
+  'NULLIF',
+  'YEAR',
+  'MONTH',
+  'DAY',
+  'NOW',
+  'CURRENT_TIMESTAMP',
+  'CURRENT_DATE',
+  'CURRENT_TIME',
+  'DATEADD',
+  'DATEDIFF',
+  'WITH',
+  'RECURSIVE',
+  'OVER',
+  'PARTITION',
+  'ROW_NUMBER',
+  'RANK',
+  'DENSE_RANK',
+  'LEAD',
+  'LAG',
+  'FIRST_VALUE',
+  'LAST_VALUE',
 ]);
 
 export const formatSql = (sql: string, options: SqlFormatOptions = DEFAULT_SQL_OPTIONS): string => {
-  if (!sql.trim()) return '';
+  if (!sql.trim()) {return '';}
 
   try {
     let formatted = sql;
@@ -50,8 +130,8 @@ export const formatSql = (sql: string, options: SqlFormatOptions = DEFAULT_SQL_O
     // Clean up extra spaces and normalize line breaks
     formatted = formatted
       .split('\n')
-      .map(line => line.trim())
-      .filter(line => line.length > 0)
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0)
       .join('\n');
 
     return formatted;
@@ -62,35 +142,37 @@ export const formatSql = (sql: string, options: SqlFormatOptions = DEFAULT_SQL_O
 
 const formatKeywords = (sql: string, keywordCase: 'upper' | 'lower' | 'camel'): string => {
   const words = sql.split(/(\s+|[(),;])/);
-  
-  return words.map(word => {
-    const upperWord = word.toUpperCase();
-    if (SQL_KEYWORDS.has(upperWord)) {
-      switch (keywordCase) {
-        case 'upper':
-          return upperWord;
-        case 'lower':
-          return word.toLowerCase();
-        case 'camel':
-          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-        default:
-          return word;
+
+  return words
+    .map((word) => {
+      const upperWord = word.toUpperCase();
+      if (SQL_KEYWORDS.has(upperWord)) {
+        switch (keywordCase) {
+          case 'upper':
+            return upperWord;
+          case 'lower':
+            return word.toLowerCase();
+          case 'camel':
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+          default:
+            return word;
+        }
       }
-    }
-    return word;
-  }).join('');
+      return word;
+    })
+    .join('');
 };
 
 const addLineBreaks = (sql: string, options: SqlFormatOptions): string => {
   const indent = ' '.repeat(options.indentSize);
-  
+
   // Major clauses that should start on new lines
   const majorClauses = ['SELECT', 'FROM', 'WHERE', 'GROUP BY', 'HAVING', 'ORDER BY', 'LIMIT'];
-  
+
   let formatted = sql;
-  
+
   // Add line breaks before major clauses
-  majorClauses.forEach(clause => {
+  majorClauses.forEach((clause) => {
     const regex = new RegExp(`\\b${clause}\\b`, 'gi');
     formatted = formatted.replace(regex, '\n' + clause);
   });
@@ -100,23 +182,25 @@ const addLineBreaks = (sql: string, options: SqlFormatOptions): string => {
 
   // Add indentation
   const lines = formatted.split('\n');
-  let indentLevel = 0;
-  
-  return lines.map(line => {
-    const trimmedLine = line.trim();
-    if (!trimmedLine) return '';
-    
-    // Adjust indentation for certain patterns
-    if (trimmedLine.match(/\b(JOIN|AND|OR)\b/i)) {
-      return indent + trimmedLine;
-    }
-    
-    if (trimmedLine.match(/\b(WHERE|GROUP BY|HAVING|ORDER BY)\b/i)) {
-      return trimmedLine;
-    }
-    
-    return (indentLevel > 0 ? indent : '') + trimmedLine;
-  }).join('\n');
+  const indentLevel = 0;
+
+  return lines
+    .map((line) => {
+      const trimmedLine = line.trim();
+      if (!trimmedLine) {return '';}
+
+      // Adjust indentation for certain patterns
+      if (trimmedLine.match(/\b(JOIN|AND|OR)\b/i)) {
+        return indent + trimmedLine;
+      }
+
+      if (trimmedLine.match(/\b(WHERE|GROUP BY|HAVING|ORDER BY)\b/i)) {
+        return trimmedLine;
+      }
+
+      return (indentLevel > 0 ? indent : '') + trimmedLine;
+    })
+    .join('\n');
 };
 
 const formatCommas = (sql: string, commaPosition: 'before' | 'after'): string => {
@@ -128,7 +212,7 @@ const formatCommas = (sql: string, commaPosition: 'before' | 'after'): string =>
 
 export const validateSql = (sql: string): { isValid: boolean; errors: string[] } => {
   const errors: string[] = [];
-  
+
   if (!sql.trim()) {
     return { isValid: true, errors: [] };
   }
@@ -136,7 +220,7 @@ export const validateSql = (sql: string): { isValid: boolean; errors: string[] }
   // Basic syntax validation
   const openParens = (sql.match(/\(/g) || []).length;
   const closeParens = (sql.match(/\)/g) || []).length;
-  
+
   if (openParens !== closeParens) {
     errors.push('Unmatched parentheses');
   }
@@ -144,37 +228,40 @@ export const validateSql = (sql: string): { isValid: boolean; errors: string[] }
   // Check for unclosed quotes
   const singleQuotes = (sql.match(/'/g) || []).length;
   const doubleQuotes = (sql.match(/"/g) || []).length;
-  
+
   if (singleQuotes % 2 !== 0) {
     errors.push('Unclosed single quote');
   }
-  
+
   if (doubleQuotes % 2 !== 0) {
     errors.push('Unclosed double quote');
   }
 
   // Check for common SQL patterns
   const upperSql = sql.toUpperCase();
-  
+
   if (upperSql.includes('SELECT') && !upperSql.includes('FROM') && !upperSql.includes('DUAL')) {
     errors.push('SELECT statement without FROM clause');
   }
 
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   };
 };
 
 export const highlightSqlSyntax = (sql: string): string => {
-  if (!sql) return '';
+  if (!sql) {return '';}
 
   let highlighted = sql;
 
   // Highlight keywords
-  SQL_KEYWORDS.forEach(keyword => {
+  SQL_KEYWORDS.forEach((keyword) => {
     const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
-    highlighted = highlighted.replace(regex, `<span class="text-blue-600 font-semibold">${keyword}</span>`);
+    highlighted = highlighted.replace(
+      regex,
+      `<span class="text-blue-600 font-semibold">${keyword}</span>`
+    );
   });
 
   // Highlight strings
@@ -186,7 +273,10 @@ export const highlightSqlSyntax = (sql: string): string => {
 
   // Highlight comments
   highlighted = highlighted.replace(/--.*$/gm, '<span class="text-gray-500 italic">$&</span>');
-  highlighted = highlighted.replace(/\/\*[\s\S]*?\*\//g, '<span class="text-gray-500 italic">$&</span>');
+  highlighted = highlighted.replace(
+    /\/\*[\s\S]*?\*\//g,
+    '<span class="text-gray-500 italic">$&</span>'
+  );
 
   return highlighted;
 };
@@ -200,9 +290,9 @@ export const extractTableNames = (sql: string): string[] => {
   const joinMatch = upperSql.match(/JOIN\s+([A-Z_][A-Z0-9_]*)/g);
   const intoMatch = upperSql.match(/INTO\s+([A-Z_][A-Z0-9_]*)/g);
 
-  [fromMatch, joinMatch, intoMatch].forEach(matches => {
+  [fromMatch, joinMatch, intoMatch].forEach((matches) => {
     if (matches) {
-      matches.forEach(match => {
+      matches.forEach((match) => {
         const tableName = match.split(/\s+/)[1];
         if (tableName && !tables.includes(tableName)) {
           tables.push(tableName);

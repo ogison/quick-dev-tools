@@ -20,8 +20,8 @@ export const buildCronExpression = (fields: CronField): string => {
 
 export const parseCronExpression = (cron: string): CronField | null => {
   const parts = cron.trim().split(/\s+/);
-  if (parts.length !== 5) return null;
-  
+  if (parts.length !== 5) {return null;}
+
   return {
     minute: parts[0],
     hour: parts[1],
@@ -34,15 +34,15 @@ export const parseCronExpression = (cron: string): CronField | null => {
 export const getNextExecutions = (cron: string, count: number = 5): Date[] => {
   const executions: Date[] = [];
   const now = new Date();
-  
+
   try {
     const fields = parseCronExpression(cron);
-    if (!fields) return [];
-    
+    if (!fields) {return [];}
+
     let current = new Date(now);
     current.setSeconds(0, 0);
     current.setMinutes(current.getMinutes() + 1);
-    
+
     for (let i = 0; i < count && executions.length < count; i++) {
       const next = findNextExecution(current, fields);
       if (next) {
@@ -55,13 +55,13 @@ export const getNextExecutions = (cron: string, count: number = 5): Date[] => {
   } catch (error) {
     console.error('Error calculating next executions:', error);
   }
-  
+
   return executions;
 };
 
 const findNextExecution = (from: Date, fields: CronField): Date | null => {
   const current = new Date(from);
-  
+
   // Simple implementation - in production, use a proper cron library
   for (let i = 0; i < 1000; i++) {
     if (matchesCron(current, fields)) {
@@ -69,7 +69,7 @@ const findNextExecution = (from: Date, fields: CronField): Date | null => {
     }
     current.setMinutes(current.getMinutes() + 1);
   }
-  
+
   return null;
 };
 
@@ -79,7 +79,7 @@ const matchesCron = (date: Date, fields: CronField): boolean => {
   const dayOfMonth = date.getDate();
   const month = date.getMonth() + 1;
   const dayOfWeek = date.getDay();
-  
+
   return (
     matchesField(minute, fields.minute, 0, 59) &&
     matchesField(hour, fields.hour, 0, 23) &&
@@ -90,13 +90,13 @@ const matchesCron = (date: Date, fields: CronField): boolean => {
 };
 
 const matchesField = (value: number, field: string, min: number, max: number): boolean => {
-  if (field === '*') return true;
-  if (field === '?') return true;
-  
+  if (field === '*') {return true;}
+  if (field === '?') {return true;}
+
   if (field.includes(',')) {
-    return field.split(',').some(part => matchesField(value, part.trim(), min, max));
+    return field.split(',').some((part) => matchesField(value, part.trim(), min, max));
   }
-  
+
   if (field.includes('/')) {
     const [range, step] = field.split('/');
     const stepValue = parseInt(step);
@@ -104,22 +104,22 @@ const matchesField = (value: number, field: string, min: number, max: number): b
       return value % stepValue === 0;
     }
   }
-  
+
   if (field.includes('-')) {
-    const [start, end] = field.split('-').map(n => parseInt(n));
+    const [start, end] = field.split('-').map((n) => parseInt(n));
     return value >= start && value <= end;
   }
-  
+
   const numValue = parseInt(field);
   return !isNaN(numValue) && value === numValue;
 };
 
 export const describeCronExpression = (cron: string): string => {
   const fields = parseCronExpression(cron);
-  if (!fields) return 'Invalid cron expression';
-  
+  if (!fields) {return 'Invalid cron expression';}
+
   const parts: string[] = [];
-  
+
   // Minute
   if (fields.minute === '*') {
     parts.push('毎分');
@@ -128,14 +128,14 @@ export const describeCronExpression = (cron: string): string => {
   } else {
     parts.push(`${fields.minute}分に`);
   }
-  
+
   // Hour
   if (fields.hour === '*') {
     parts.push('毎時');
   } else {
     parts.push(`${fields.hour}時`);
   }
-  
+
   // Day
   if (fields.dayOfMonth === '*' && fields.dayOfWeek === '*') {
     parts.push('毎日');
@@ -148,11 +148,11 @@ export const describeCronExpression = (cron: string): string => {
       parts.push(`${days[dayNum]}曜日`);
     }
   }
-  
+
   // Month
   if (fields.month !== '*') {
     parts.push(`${fields.month}月`);
   }
-  
+
   return parts.join(' ');
 };
