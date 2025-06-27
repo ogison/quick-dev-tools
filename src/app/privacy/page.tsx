@@ -8,7 +8,7 @@ export default function PrivacyPage() {
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>プライバシーポリシー</CardTitle>
-          <CardDescription>最終更新日：2024年1月1日</CardDescription>
+          <CardDescription>最終更新日：2025年6月25日</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="mb-4 text-gray-600">
