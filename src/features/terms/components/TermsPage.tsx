@@ -1,8 +1,9 @@
 'use client';
 
-import { FileText, Home, ChevronDown, ChevronRight } from 'lucide-react';
-import Link from 'next/link';
+import { FileText, ChevronDown, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
+
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -264,19 +265,12 @@ export default function TermsPage() {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 transition-colors dark:bg-gray-900 dark:text-white">
       <div className="mx-auto max-w-7xl px-4 py-12">
-        <nav className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-          <ol className="list-reset flex">
-            <li>
-              <Link href="/home" className="text-blue-600 hover:underline">
-                <Home className="inline h-4 w-4" />
-              </Link>
-            </li>
-            <li>
-              <span className="mx-2">/</span>
-            </li>
-            <li className="font-medium text-gray-900 dark:text-white">利用規約</li>
-          </ol>
-        </nav>
+        <Breadcrumb
+          items={[
+            { label: 'Home', href: '/' },
+            { label: '利用規約', isCurrentPage: true },
+          ]}
+        />
 
         <div className="mb-12 text-left">
           <h1 className="mb-4 text-5xl font-bold">利用規約</h1>
@@ -306,7 +300,7 @@ export default function TermsPage() {
                     onClick={expandAllSections}
                     variant="outline"
                     size="sm"
-                    className="border-gray-300 text-sm hover:border-gray-400 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"
+                    className="text-sm"
                   >
                     すべて展開
                   </Button>
@@ -314,7 +308,7 @@ export default function TermsPage() {
                     onClick={collapseAllSections}
                     variant="outline"
                     size="sm"
-                    className="border-gray-300 text-sm hover:border-gray-400 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"
+                    className="text-sm"
                   >
                     すべて折りたたみ
                   </Button>
@@ -354,20 +348,10 @@ export default function TermsPage() {
 
               <TabsContent value="faq" className="space-y-6">
                 <div className="mb-6 flex gap-2">
-                  <Button
-                    onClick={expandAllFAQs}
-                    variant="outline"
-                    size="sm"
-                    className="border-gray-300 text-sm hover:border-gray-400 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"
-                  >
+                  <Button onClick={expandAllFAQs} variant="outline" size="sm" className="text-sm">
                     すべて展開
                   </Button>
-                  <Button
-                    onClick={collapseAllFAQs}
-                    variant="outline"
-                    size="sm"
-                    className="border-gray-300 text-sm hover:border-gray-400 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"
-                  >
+                  <Button onClick={collapseAllFAQs} variant="outline" size="sm" className="text-sm">
                     すべて折りたたみ
                   </Button>
                 </div>

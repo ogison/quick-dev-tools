@@ -1,4 +1,4 @@
-export type FormatType = 'auto' | 'json' | 'yaml' | 'xml' | 'sql' | 'css' | 'html';
+export type FormatType = 'auto' | 'json' | 'yaml' | 'xml' | 'sql' | 'css' | 'html' | 'basic';
 
 interface FormatOptions {
   indentSize?: number;
@@ -78,6 +78,8 @@ export function formatCode(input: string, type: FormatType, options: FormatOptio
       return formatCSS(input, indent);
     case 'html':
       return formatHTML(input, indent);
+    case 'basic':
+      return formatBasic(input, indent);
     default:
       throw new Error(`Unsupported format type: ${type}`);
   }
@@ -238,4 +240,34 @@ function formatCSS(input: string, indent: string): string {
 function formatHTML(input: string, indent: string): string {
   // Use XML formatter for HTML
   return formatXML(input, indent);
+}
+
+function formatBasic(input: string, indent: string): string {
+  const lines = input.split('\n');
+  const formatted: string[] = [];
+  let indentLevel = 0;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      formatted.push('');
+      continue;
+    }
+
+    // Decrease indent for closing brackets
+    if (trimmed.startsWith('}') || trimmed.startsWith(']') || trimmed.startsWith(')')) {
+      indentLevel = Math.max(0, indentLevel - 1);
+    }
+
+    // Add proper indentation
+    const indentedLine = indent.repeat(indentLevel) + trimmed;
+    formatted.push(indentedLine);
+
+    // Increase indent for opening brackets
+    if (trimmed.endsWith('{') || trimmed.endsWith('[') || trimmed.endsWith('(')) {
+      indentLevel++;
+    }
+  }
+
+  return formatted.join('\n');
 }
