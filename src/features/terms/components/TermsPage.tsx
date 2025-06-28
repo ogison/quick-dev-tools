@@ -306,7 +306,7 @@ export default function TermsPage() {
                     onClick={expandAllSections}
                     variant="outline"
                     size="sm"
-                    className="border-gray-300 text-sm hover:border-gray-400 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"
+                    className="border-gray-300 text-sm text-black hover:border-gray-400 hover:bg-gray-100 dark:border-gray-600 dark:text-black dark:hover:border-gray-500 dark:hover:bg-gray-800"
                   >
                     すべて展開
                   </Button>
@@ -314,7 +314,7 @@ export default function TermsPage() {
                     onClick={collapseAllSections}
                     variant="outline"
                     size="sm"
-                    className="border-gray-300 text-sm hover:border-gray-400 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"
+                    className="border-gray-300 text-sm text-black hover:border-gray-400 hover:bg-gray-100 dark:border-gray-600 dark:text-black dark:hover:border-gray-500 dark:hover:bg-gray-800"
                   >
                     すべて折りたたみ
                   </Button>

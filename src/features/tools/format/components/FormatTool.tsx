@@ -13,8 +13,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import { formatCode, detectFormatType, FormatType } from '../utils/formatter';
 import Link from 'next/link';
+
+import { formatCode, detectFormatType, FormatType } from '../utils/formatter';
 
 // サンプルデータ
 const SAMPLE_DATA = {
@@ -100,11 +101,14 @@ export default function FormatTool() {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [error, setError] = useState('');
-  const [formatType, setFormatType] = useState<FormatType>('auto');
+  const [formatType] = useState<FormatType>('auto');
   const [indentSize, setIndentSize] = useState(2);
   const [useTab, setUseTab] = useState(false);
   const [copied, setCopied] = useState(false);
   const [detectedType, setDetectedType] = useState<FormatType | null>(null);
+  const [isBasicFormatUsed, setIsBasicFormatUsed] = useState(false);
+  const [inputHistory, setInputHistory] = useState<string[]>(['']);
+  const [historyIndex, setHistoryIndex] = useState(0);
 
   // Auto-detect format type when input changes
   useEffect(() => {
@@ -117,11 +121,17 @@ export default function FormatTool() {
   const handleFormat = useCallback(() => {
     try {
       setError('');
+      setIsBasicFormatUsed(false);
       const typeToUse = formatType === 'auto' ? detectFormatType(input) : formatType;
+
       if (!typeToUse || typeToUse === 'auto') {
-        setError('フォーマットタイプを検出できませんでした。手動で選択してください。');
+        // フォールバック処理：基本的な整形を実行
+        const formatted = formatCode(input, 'basic', { indentSize, useTab });
+        setOutput(formatted);
+        setIsBasicFormatUsed(true);
         return;
       }
+
       const formatted = formatCode(input, typeToUse, { indentSize, useTab });
       setOutput(formatted);
     } catch (err) {
@@ -130,20 +140,53 @@ export default function FormatTool() {
     }
   }, [input, formatType, indentSize, useTab]);
 
+  const handleInputChange = useCallback(
+    (value: string) => {
+      setInput(value);
+
+      // 履歴に追加（最後の入力と異なる場合のみ）
+      const lastHistory = inputHistory[historyIndex];
+      if (value !== lastHistory) {
+        const newHistory = [...inputHistory.slice(0, historyIndex + 1), value];
+        // 履歴の最大サイズを50に制限
+        const trimmedHistory = newHistory.length > 50 ? newHistory.slice(-50) : newHistory;
+        setInputHistory(trimmedHistory);
+        setHistoryIndex(trimmedHistory.length - 1);
+      }
+    },
+    [inputHistory, historyIndex]
+  );
+
+  const handleUndo = useCallback(() => {
+    if (historyIndex > 0) {
+      const newIndex = historyIndex - 1;
+      setHistoryIndex(newIndex);
+      setInput(inputHistory[newIndex]);
+      setOutput('');
+      setError('');
+      setIsBasicFormatUsed(false);
+    }
+  }, [historyIndex, inputHistory]);
+
   const handleClear = () => {
     setInput('');
     setOutput('');
     setError('');
     setDetectedType(null);
+    setIsBasicFormatUsed(false);
+    setInputHistory(['']);
+    setHistoryIndex(0);
   };
 
   const handleLoadSample = (sampleKey: keyof typeof SAMPLE_DATA) => {
     const shouldLoad = !input || window.confirm('現在の入力内容が削除されます。続行しますか？');
     if (shouldLoad) {
-      setInput(SAMPLE_DATA[sampleKey].value);
+      const sampleValue = SAMPLE_DATA[sampleKey].value;
+      handleInputChange(sampleValue);
       setOutput('');
       setError('');
       setDetectedType(null);
+      setIsBasicFormatUsed(false);
     }
   };
 
@@ -177,28 +220,21 @@ export default function FormatTool() {
     URL.revokeObjectURL(url);
   };
 
-  // Keyboard shortcut
+  // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
         e.preventDefault();
         handleFormat();
+      } else if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
+        e.preventDefault();
+        handleUndo();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleFormat]);
-
-  const formatOptions = [
-    { value: 'auto', label: '自動検出', icon: '🔍' },
-    { value: 'json', label: 'JSON', icon: '{ }' },
-    { value: 'yaml', label: 'YAML', icon: '📋' },
-    { value: 'xml', label: 'XML', icon: '< >' },
-    { value: 'sql', label: 'SQL', icon: '📊' },
-    { value: 'css', label: 'CSS', icon: '🎨' },
-    { value: 'html', label: 'HTML', icon: '🌐' },
-  ];
+  }, [handleFormat, handleUndo]);
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 transition-colors dark:bg-gray-900 dark:text-white">
@@ -214,9 +250,9 @@ export default function FormatTool() {
               <span className="mx-2">/</span>
             </li>
             <li>
-              <a href="#" className="text-blue-600 hover:underline">
+              <Link href="/tools" className="text-blue-600 hover:underline">
                 Tools
-              </a>
+              </Link>
             </li>
             <li>
               <span className="mx-2">/</span>
@@ -275,13 +311,14 @@ export default function FormatTool() {
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
-                        Cmd/Ctrl + Enter でフォーマット
-                      </span>
+                      <div className="flex flex-col items-end text-xs text-gray-500 dark:text-gray-400">
+                        <span>Cmd/Ctrl + Enter でフォーマット</span>
+                        <span>Cmd/Ctrl + Z でアンドゥ</span>
+                      </div>
                     </div>
                     <textarea
                       value={input}
-                      onChange={(e) => setInput(e.target.value)}
+                      onChange={(e) => handleInputChange(e.target.value)}
                       placeholder="フォーマットしたいコードをここに入力..."
                       className="h-[450px] w-full rounded-lg border border-gray-300 bg-white p-4 font-mono text-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:placeholder-gray-500"
                       aria-label="Code input area"
@@ -315,9 +352,15 @@ export default function FormatTool() {
                         出力
                       </label>
                       {output && !error && (
-                        <span className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400">
+                        <span
+                          className={`flex items-center gap-1 text-xs ${
+                            isBasicFormatUsed
+                              ? 'text-yellow-600 dark:text-yellow-400'
+                              : 'text-green-600 dark:text-green-400'
+                          }`}
+                        >
                           <Check className="h-3 w-3" />
-                          フォーマット完了
+                          {isBasicFormatUsed ? '基本整形完了' : 'フォーマット完了'}
                         </span>
                       )}
                     </div>
@@ -330,7 +373,9 @@ export default function FormatTool() {
                           error
                             ? 'border-red-300 bg-red-50 text-red-800 placeholder-red-600 dark:border-red-700 dark:bg-red-900/20 dark:text-red-400 dark:placeholder-red-500'
                             : output
-                              ? 'border-green-300 bg-green-50 dark:border-green-700 dark:bg-green-900/20'
+                              ? isBasicFormatUsed
+                                ? 'border-yellow-300 bg-yellow-50 dark:border-yellow-700 dark:bg-yellow-900/20'
+                                : 'border-green-300 bg-green-50 dark:border-green-700 dark:bg-green-900/20'
                               : 'border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-900'
                         } dark:text-gray-100`}
                         aria-label="Formatted output"
@@ -340,9 +385,14 @@ export default function FormatTool() {
                           ⚠️ {error}
                         </div>
                       )}
+                      {isBasicFormatUsed && !error && (
+                        <div className="absolute -bottom-12 left-0 text-sm text-yellow-600 dark:text-yellow-400">
+                          ⚠️ フォーマットタイプを検出できませんでしたが、基本的な整形を行いました
+                        </div>
+                      )}
                     </div>
                     {output && !error && (
-                      <div className="flex gap-3 pt-2">
+                      <div className={`flex gap-3 ${isBasicFormatUsed ? 'pt-8' : 'pt-2'}`}>
                         <Button
                           onClick={handleCopy}
                           variant="outline"
