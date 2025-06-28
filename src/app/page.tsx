@@ -109,7 +109,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="py-20">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="mb-4 text-5xl font-bold">Tooly</h1>
+          <h1 className="mb-4 text-5xl font-bold">QuickDevTools</h1>
           <p className="mx-auto max-w-2xl text-lg text-gray-600 dark:text-gray-400">
             開発者のためのツールコレクション
           </p>
