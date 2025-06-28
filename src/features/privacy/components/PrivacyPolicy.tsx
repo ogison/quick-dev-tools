@@ -1,7 +1,8 @@
 'use client';
 
-import { Home, Shield } from 'lucide-react';
-import Link from 'next/link';
+import { Shield } from 'lucide-react';
+
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,19 +13,12 @@ export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 transition-colors dark:bg-gray-900 dark:text-white">
       <div className="mx-auto max-w-7xl px-4 py-12">
-        <nav className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-          <ol className="list-reset flex">
-            <li>
-              <Link href="/home" className="text-blue-600 hover:underline">
-                <Home className="inline h-4 w-4" />
-              </Link>
-            </li>
-            <li>
-              <span className="mx-2">/</span>
-            </li>
-            <li className="font-medium text-gray-900 dark:text-white">プライバシーポリシー</li>
-          </ol>
-        </nav>
+        <Breadcrumb
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'プライバシーポリシー', isCurrentPage: true },
+          ]}
+        />
 
         <div className="mb-12 text-left">
           <h1 className="mb-4 text-5xl font-bold">プライバシーポリシー</h1>

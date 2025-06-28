@@ -7,7 +7,7 @@ export default function HomePage() {
   const tools = getFeaturedTools();
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 transition-colors dark:bg-gray-900 dark:text-white">
+    <div className="text-foreground bg-main-background min-h-screen transition-colors">
       {/* Hero Section */}
       <section className="py-20">
         <div className="container mx-auto px-4 text-center">
@@ -26,16 +26,16 @@ export default function HomePage() {
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {tools.map((tool) => (
               <Link key={tool.id} href={tool.href} className="group">
-                <Card className="overflow-hidden border-gray-200 bg-white transition-all duration-200 hover:scale-105 hover:shadow-lg cursor-pointer dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-gray-900/25">
+                <Card className="cursor-pointer overflow-hidden border-gray-200 bg-white transition-all duration-200 hover:scale-105 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-gray-900/25">
                   <div className="aspect-[4/3] w-full">{tool.icon}</div>
                   <CardContent className="p-6">
-                    <h3 className="mb-2 text-xl font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    <h3 className="mb-2 text-xl font-semibold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
                       {tool.title}
                     </h3>
                     <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
                       {tool.description}
                     </p>
-                    <div className="text-sm font-medium text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
+                    <div className="text-sm font-medium text-blue-600 transition-colors group-hover:text-blue-700 dark:text-blue-400 dark:group-hover:text-blue-300">
                       Open →
                     </div>
                   </CardContent>
