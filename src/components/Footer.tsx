@@ -7,7 +7,9 @@ export function Footer() {
         <div className="flex items-center justify-between">
           {/* Left side - Logo and links */}
           <div className="flex items-center space-x-6">
-            <span className="text-lg font-medium text-gray-700 dark:text-gray-300">Tooly</span>
+            <span className="text-lg font-medium text-gray-700 dark:text-gray-300">
+              QuickDevTools
+            </span>
             <nav className="flex items-center space-x-6">
               <a
                 href="/privacy"
@@ -39,7 +41,7 @@ export function Footer() {
         </div>
       </div>
       <div className="mt-4 pt-4 text-center text-gray-400">
-        <p>&copy; 2025 Tooly All rights reserved.</p>
+        <p>&copy; 2025 QuickDevTools All rights reserved.</p>
       </div>
     </footer>
   );
