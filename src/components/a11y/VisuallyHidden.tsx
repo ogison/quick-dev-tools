@@ -8,8 +8,6 @@ interface VisuallyHiddenProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 export const VisuallyHidden = React.forwardRef<HTMLSpanElement, VisuallyHiddenProps>(
   ({ asChild = false, className, ...props }, ref) => {
-    const Comp = asChild ? React.Fragment : 'span';
-
     if (asChild) {
       return <>{props.children}</>;
     }

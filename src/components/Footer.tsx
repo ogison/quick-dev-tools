@@ -1,86 +1,45 @@
-import { Button } from './ui/button';
+import { X } from 'lucide-react';
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 py-12 text-white">
+    <footer className="border-t border-gray-200 bg-white py-4 dark:border-gray-700 dark:bg-gray-900">
       <div className="container mx-auto px-4">
-        <div className="grid gap-8 md:grid-cols-4">
-          <div className="md:col-span-2">
-            <h3 className="mb-4 text-xl font-bold">開発者ツール集</h3>
-            <p className="mb-4 text-gray-300">
-              開発者の生産性向上のために作られた、無料で使える高品質なWebツールコレクションです。
-            </p>
-            <div className="flex space-x-4">
-              <Button
-                variant="outline"
-                size="icon"
-                className="border-gray-600 text-white hover:bg-gray-700"
+        <div className="flex items-center justify-between">
+          {/* Left side - Logo and links */}
+          <div className="flex items-center space-x-6">
+            <span className="text-lg font-medium text-gray-700 dark:text-gray-300">Tooly</span>
+            <nav className="flex items-center space-x-6">
+              <a
+                href="/privacy"
+                className="text-sm text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
               >
-                <span>📧</span>
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="border-gray-600 text-white hover:bg-gray-700"
+                プライバシー
+              </a>
+              <a
+                href="/terms"
+                className="text-sm text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
               >
-                <span>🐙</span>
-              </Button>
-            </div>
+                利用規約
+              </a>
+            </nav>
           </div>
-          <div>
-            <h4 className="mb-3 font-semibold">ツール</h4>
-            <ul className="space-y-2 text-sm text-gray-300">
-              <li>
-                <a href="#" className="transition-colors hover:text-white">
-                  JSON整形
-                </a>
-              </li>
-              <li>
-                <a href="#" className="transition-colors hover:text-white">
-                  Base64変換
-                </a>
-              </li>
-              <li>
-                <a href="#" className="transition-colors hover:text-white">
-                  ハッシュ生成
-                </a>
-              </li>
-              <li>
-                <a href="#" className="transition-colors hover:text-white">
-                  QRコード
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="mb-3 font-semibold">サポート</h4>
-            <ul className="space-y-2 text-sm text-gray-300">
-              <li>
-                <a href="#" className="transition-colors hover:text-white">
-                  使い方
-                </a>
-              </li>
-              <li>
-                <a href="#" className="transition-colors hover:text-white">
-                  FAQ
-                </a>
-              </li>
-              <li>
-                <a href="#" className="transition-colors hover:text-white">
-                  お問い合わせ
-                </a>
-              </li>
-              <li>
-                <a href="#" className="transition-colors hover:text-white">
-                  プライバシー
-                </a>
-              </li>
-            </ul>
+
+          {/* Right side - Help, X, and language */}
+          <div className="flex items-center space-x-4">
+            <a
+              href="https://x.com/ogison999"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="X (Twitter)で最新情報をチェック"
+              className="text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+            >
+              <X className="h-4 w-4" />
+            </a>
           </div>
         </div>
-        <div className="mt-8 border-t border-gray-700 pt-8 text-center text-gray-400">
-          <p>&copy; 2024 開発者ツール集. Built with Next.js and Tailwind CSS.</p>
-        </div>
+      </div>
+      <div className="mt-4 pt-4 text-center text-gray-400">
+        <p>&copy; 2025 Tooly All rights reserved.</p>
       </div>
     </footer>
   );

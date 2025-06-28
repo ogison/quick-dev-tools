@@ -1,6 +1,15 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/home',
+        permanent: true, // or false if temporary
+      },
+    ];
+  },
   eslint: {
     // 開発時のESLintエラーを警告レベルに下げる
     ignoreDuringBuilds: false,
