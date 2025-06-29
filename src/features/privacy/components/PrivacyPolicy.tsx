@@ -2,7 +2,7 @@
 
 import { Shield } from 'lucide-react';
 
-import { Breadcrumb } from '@/components/ui/breadcrumb';
+import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,28 +11,23 @@ import { PRIVACY_POLICY_SECTIONS, POLICY_METADATA } from '../constants/policy-co
 
 export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 transition-colors dark:bg-gray-900 dark:text-white">
-      <div className="mx-auto max-w-7xl px-4 py-12">
-        <Breadcrumb
-          items={[
-            { label: 'Home', href: '/' },
-            { label: 'プライバシーポリシー', isCurrentPage: true },
-          ]}
-        />
+    <CommonLayoutWithHeader
+      title="プライバシーポリシー"
+      description="個人情報の取り扱いとデータ保護に関する方針について説明しています。"
+      breadcrumbs={[
+        { label: 'Home', href: '/' },
+        { label: 'プライバシーポリシー', isCurrentPage: true },
+      ]}
+    >
+      <div className="mb-4">
+        <p className="text-sm text-gray-500 dark:text-gray-500">
+          最終更新日：{POLICY_METADATA.lastUpdated}
+        </p>
+      </div>
 
-        <div className="mb-12 text-left">
-          <h1 className="mb-4 text-5xl font-bold">プライバシーポリシー</h1>
-          <p className="max-w-2xl text-lg text-gray-600 dark:text-gray-400">
-            個人情報の取り扱いとデータ保護に関する方針について説明しています。
-          </p>
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-500">
-            最終更新日：{POLICY_METADATA.lastUpdated}
-          </p>
-        </div>
-
-        <div className="space-y-6">
-          {/* 概要セクション */}
-          <Card className="border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
+      <div className="space-y-6">
+        {/* 概要セクション */}
+        <Card className="border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
             <CardHeader>
               <div className="flex items-center gap-3">
                 <Shield className="h-6 w-6 text-blue-600" />
@@ -41,16 +36,16 @@ export default function PrivacyPolicy() {
                   <CardDescription>{POLICY_METADATA.lastUpdated}</CardDescription>
                 </div>
               </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 dark:text-gray-400">
-                {PRIVACY_POLICY_SECTIONS[0].content.text}
-              </p>
-            </CardContent>
-          </Card>
+          </CardHeader>
+          <CardContent>
+            <p className="text-gray-600 dark:text-gray-400">
+              {PRIVACY_POLICY_SECTIONS[0].content.text}
+            </p>
+          </CardContent>
+        </Card>
 
-          {/* その他のセクション */}
-          {PRIVACY_POLICY_SECTIONS.slice(1).map((section) => (
+        {/* その他のセクション */}
+        {PRIVACY_POLICY_SECTIONS.slice(1).map((section) => (
             <Card
               key={section.id}
               className="border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800"
@@ -119,10 +114,10 @@ export default function PrivacyPolicy() {
                 )}
               </CardContent>
             </Card>
-          ))}
+        ))}
 
-          {/* 追加情報カード */}
-          <Card className="border-blue-200 bg-blue-50 shadow-lg dark:border-blue-800 dark:bg-blue-900/20">
+        {/* 追加情報カード */}
+        <Card className="border-blue-200 bg-blue-50 shadow-lg dark:border-blue-800 dark:bg-blue-900/20">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-blue-900 dark:text-blue-100">
                 <Shield className="h-5 w-5" />
@@ -137,8 +132,7 @@ export default function PrivacyPolicy() {
               </p>
             </CardContent>
           </Card>
-        </div>
       </div>
-    </div>
+    </CommonLayoutWithHeader>
   );
 }

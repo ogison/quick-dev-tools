@@ -60,8 +60,8 @@ export const TOOLS: Tool[] = [
   },
   {
     id: 'timestamp',
-    title: 'Unix Timestamp Converter',
-    description: 'Convert Unix timestamps to human-readable dates and vice versa.',
+    title: 'UNIX時間変換',
+    description: 'UNIX時間⇔日付時刻を変換させるツールです。',
     href: '/tools/timestamp',
     category: 'converter',
     featured: true,
@@ -90,8 +90,8 @@ export const TOOLS: Tool[] = [
   },
   {
     id: 'url-encoder',
-    title: 'URL Encoder',
-    description: 'Encode and decode URLs.',
+    title: 'URL Encoder/Decoder',
+    description: 'URLエンコードとデコードを行うツールです。',
     href: '/tools/url-encoder',
     category: 'encoder',
     featured: true,

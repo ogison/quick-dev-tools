@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 
 import { Check, Mail, MessageSquare, Send, User, AlertCircle } from 'lucide-react';
 
-import { Breadcrumb } from '@/components/ui/breadcrumb';
+import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -128,45 +128,43 @@ export default function ContactForm() {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-gray-50 text-gray-900 transition-colors dark:bg-gray-900 dark:text-white">
-        <div className="mx-auto max-w-4xl px-4 py-12">
-          <Card className="border-green-200 bg-green-50 shadow-lg dark:border-green-700 dark:bg-green-900/20">
-            <CardContent className="p-12 text-center">
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/50">
-                <Check className="h-8 w-8 text-green-600 dark:text-green-400" />
-              </div>
-              <h2 className="mb-4 text-2xl font-bold text-green-800 dark:text-green-300">
-                お問い合わせありがとうございます
-              </h2>
-              <Button
-                onClick={() => setIsSubmitted(false)}
-                className="bg-green-600 text-white hover:bg-green-700"
-              >
-                新しいお問い合わせ
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <CommonLayoutWithHeader
+        title="お問い合わせ"
+        description="ご質問やご意見がございましたら、お気軽にお問い合わせください。"
+        breadcrumbs={[
+          { label: 'Home', href: '/' },
+          { label: 'お問い合わせ', isCurrentPage: true },
+        ]}
+      >
+        <Card className="border-green-200 bg-green-50 shadow-lg dark:border-green-700 dark:bg-green-900/20">
+          <CardContent className="p-12 text-center">
+            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/50">
+              <Check className="h-8 w-8 text-green-600 dark:text-green-400" />
+            </div>
+            <h2 className="mb-4 text-2xl font-bold text-green-800 dark:text-green-300">
+              お問い合わせありがとうございます
+            </h2>
+            <Button
+              onClick={() => setIsSubmitted(false)}
+              className="bg-green-600 text-white hover:bg-green-700"
+            >
+              新しいお問い合わせ
+            </Button>
+          </CardContent>
+        </Card>
+      </CommonLayoutWithHeader>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 transition-colors dark:bg-gray-900 dark:text-white">
-      <div className="mx-auto max-w-4xl px-4 py-12">
-        <Breadcrumb
-          items={[
-            { label: 'Home', href: '/' },
-            { label: 'お問い合わせ', isCurrentPage: true },
-          ]}
-        />
-
-        <div className="mb-12 text-left">
-          <h1 className="mb-4 text-5xl font-bold">お問い合わせ</h1>
-          <p className="max-w-2xl text-lg text-gray-600 dark:text-gray-400">
-            ご質問やご意見がございましたら、お気軽にお問い合わせください。
-          </p>
-        </div>
+    <CommonLayoutWithHeader
+      title="お問い合わせ"
+      description="ご質問やご意見がございましたら、お気軽にお問い合わせください。"
+      breadcrumbs={[
+        { label: 'Home', href: '/' },
+        { label: 'お問い合わせ', isCurrentPage: true },
+      ]}
+    >
 
         <Card className="border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
           <CardContent className="p-8">
@@ -302,7 +300,6 @@ export default function ContactForm() {
             </form>
           </CardContent>
         </Card>
-      </div>
-    </div>
+    </CommonLayoutWithHeader>
   );
 }
