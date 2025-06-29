@@ -26,16 +26,16 @@ export default function HomePage() {
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {tools.map((tool) => (
               <Link key={tool.id} href={tool.href} className="group">
-                <Card className="cursor-pointer overflow-hidden border-gray-200 bg-white transition-all duration-200 hover:scale-105 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-gray-900/25">
-                  <div className="aspect-[4/3] w-full">{tool.icon}</div>
-                  <CardContent className="p-6">
+                <Card className="h-[420px] cursor-pointer overflow-hidden border-gray-200 bg-white transition-all duration-200 hover:scale-105 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-gray-900/25 flex flex-col">
+                  <div className="h-48 w-full flex-shrink-0">{tool.icon}</div>
+                  <CardContent className="p-6 flex flex-col flex-grow">
                     <h3 className="mb-2 text-xl font-semibold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
                       {tool.title}
                     </h3>
-                    <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+                    <p className="mb-4 text-sm text-gray-600 dark:text-gray-400 flex-grow">
                       {tool.description}
                     </p>
-                    <div className="text-sm font-medium text-blue-600 transition-colors group-hover:text-blue-700 dark:text-blue-400 dark:group-hover:text-blue-300">
+                    <div className="text-sm font-medium text-blue-600 transition-colors group-hover:text-blue-700 dark:text-blue-400 dark:group-hover:text-blue-300 mt-auto">
                       Open →
                     </div>
                   </CardContent>

@@ -3,7 +3,7 @@
 import { FileText, ChevronDown, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 
-import { Breadcrumb } from '@/components/ui/breadcrumb';
+import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -263,31 +263,24 @@ export default function TermsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 transition-colors dark:bg-gray-900 dark:text-white">
-      <div className="mx-auto max-w-7xl px-4 py-12">
-        <Breadcrumb
-          items={[
-            { label: 'Home', href: '/' },
-            { label: '利用規約', isCurrentPage: true },
-          ]}
-        />
+    <CommonLayoutWithHeader
+      title="利用規約"
+      description="QuickDevToolsの利用規約とよくある質問をご確認ください。"
+      breadcrumbs={[
+        { label: 'Home', href: '/' },
+        { label: '利用規約', isCurrentPage: true },
+      ]}
+    >
 
-        <div className="mb-12 text-left">
-          <h1 className="mb-4 text-5xl font-bold">利用規約</h1>
-          <p className="max-w-2xl text-lg text-gray-600 dark:text-gray-400">
-            QuickDevToolsの利用規約とよくある質問をご確認ください。
-          </p>
-        </div>
+      <Card className="border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
+        <CardContent className="p-8">
+          <Tabs defaultValue="terms" className="w-full">
+            <TabsList className="mx-auto mb-8 grid w-full max-w-md grid-cols-2 text-black dark:text-white">
+              <TabsTrigger value="terms">利用規約</TabsTrigger>
+              <TabsTrigger value="faq">よくある質問</TabsTrigger>
+            </TabsList>
 
-        <Card className="border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
-          <CardContent className="p-8">
-            <Tabs defaultValue="terms" className="w-full">
-              <TabsList className="mx-auto mb-8 grid w-full max-w-md grid-cols-2 text-black dark:text-white">
-                <TabsTrigger value="terms">利用規約</TabsTrigger>
-                <TabsTrigger value="faq">よくある質問</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="terms" className="space-y-6">
+            <TabsContent value="terms" className="space-y-6">
                 <div className="mb-6 rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
                   <p className="text-sm text-blue-800 dark:text-blue-200">
                     <FileText className="mr-2 inline h-4 w-4" />
@@ -344,9 +337,9 @@ export default function TermsPage() {
                     お問い合わせフォーム
                   </a>
                 </div>
-              </TabsContent>
+            </TabsContent>
 
-              <TabsContent value="faq" className="space-y-6">
+            <TabsContent value="faq" className="space-y-6">
                 <div className="mb-6 flex gap-2">
                   <Button onClick={expandAllFAQs} variant="outline" size="sm" className="text-sm">
                     すべて展開
@@ -378,11 +371,10 @@ export default function TermsPage() {
                     お問い合わせフォーム
                   </a>
                 </div>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+    </CommonLayoutWithHeader>
   );
 }

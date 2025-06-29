@@ -5,7 +5,7 @@ export default function ContactPage() {
 }
 
 export const metadata = {
-  title: 'お問い合わせ | Engineer Tools',
+  title: 'お問い合わせ | QuickDevTools',
   description:
     'Engineer Toolsへのお問い合わせフォームです。ご質問やご意見をお気軽にお寄せください。',
 };
