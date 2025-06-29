@@ -81,6 +81,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" suppressHydrationWarning>
+      <head>
+        <meta
+          name="google-site-verification"
+          content="kGf0matDnhBKNGaFptGUpEggZz8BX5vWs4-uz3r6_wE"
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
       >
