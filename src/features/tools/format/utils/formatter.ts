@@ -140,16 +140,33 @@ function formatXML(input: string, indent: string): string {
     }
 
     if (part.startsWith('</')) {
+      // 閉じタグ
       level--;
       formatted += indent.repeat(Math.max(0, level)) + part + '\n';
     } else if (part.startsWith('<') && !part.startsWith('<?')) {
+      // 開きタグまたは宣言
       formatted += indent.repeat(level) + part;
-      if (!part.endsWith('/>') && !part.includes('</')) {
+      if (part.endsWith('/>')) {
+        // 自己終了タグの場合は改行を追加
+        formatted += '\n';
+      } else if (!part.includes('</')) {
+        // 通常の開きタグの場合
         level++;
         formatted += '\n';
       }
     } else if (part.trim()) {
-      formatted += part.trim() + '\n';
+      // テキストコンテンツ
+      // テキストの前後の改行を調整
+      const trimmed = part.trim();
+      if (trimmed) {
+        // 最後の文字が改行でない場合、現在のインデントレベルでテキストを配置
+        if (formatted.endsWith('\n')) {
+          formatted += indent.repeat(level) + trimmed + '\n';
+        } else {
+          // インライン要素の場合
+          formatted += trimmed;
+        }
+      }
     }
   }
 

@@ -19,9 +19,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://quick-dev-tools.vercel.app'),
   title: {
     default: 'QuickDevTools 開発者ツール集 | プロフェッショナルな無料開発ツール',
-    template: '%s | 開発者ツール集',
+    template: '%s | QuickDevTools',
   },
   description:
     'JSON整形、Base64エンコード、URLエンコード、ハッシュ生成など、開発効率を最大化する無料ツールコレクション。ブラウザ上で安全・高速に動作します。',
@@ -35,26 +36,31 @@ export const metadata: Metadata = {
     '開発ツール',
     'プログラミング',
     'デベロッパーツール',
+    'QuickDevTools',
   ],
-  authors: [{ name: '開発者ツール集' }],
-  creator: '開発者ツール集',
-  publisher: '開発者ツール集',
+  authors: [{ name: 'QuickDevTools' }],
+  creator: 'QuickDevTools',
+  publisher: 'QuickDevTools',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
+  alternates: {
+    canonical: 'https://quick-dev-tools.vercel.app',
+  },
   openGraph: {
     type: 'website',
     locale: 'ja_JP',
-    title: '開発者ツール集 | プロフェッショナルな無料開発ツール',
+    url: 'https://quick-dev-tools.vercel.app',
+    title: 'QuickDevTools 開発者ツール集 | プロフェッショナルな無料開発ツール',
     description:
       'JSON整形、Base64エンコード、URLエンコード、ハッシュ生成など、開発効率を最大化する無料ツールコレクション。',
-    siteName: '開発者ツール集',
+    siteName: 'QuickDevTools',
   },
   twitter: {
     card: 'summary_large_image',
-    title: '開発者ツール集 | プロフェッショナルな無料開発ツール',
+    title: 'QuickDevTools 開発者ツール集 | プロフェッショナルな無料開発ツール',
     description:
       'JSON整形、Base64エンコード、URLエンコード、ハッシュ生成など、開発効率を最大化する無料ツールコレクション。',
   },
@@ -70,8 +76,19 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: 'your-google-verification-code',
+    google: 'kGf0matDnhBKNGaFptGUpEggZz8BX5vWs4-uz3r6_wE',
   },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
+      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
@@ -82,9 +99,35 @@ export default function RootLayout({
   return (
     <html lang="ja" suppressHydrationWarning>
       <head>
-        <meta
-          name="google-site-verification"
-          content="kGf0matDnhBKNGaFptGUpEggZz8BX5vWs4-uz3r6_wE"
+        <meta name="theme-color" content="#3b82f6" />
+        <meta name="msapplication-TileColor" content="#3b82f6" />
+        <meta name="msapplication-config" content="/browserconfig.xml" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="QuickDevTools" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: 'QuickDevTools',
+              alternateName: '開発者ツール集',
+              url: 'https://quick-dev-tools.vercel.app',
+              description:
+                'JSON整形、Base64エンコード、URLエンコード、ハッシュ生成など、開発効率を最大化する無料ツールコレクション。',
+              potentialAction: {
+                '@type': 'SearchAction',
+                target: {
+                  '@type': 'EntryPoint',
+                  urlTemplate:
+                    'https://quick-dev-tools.vercel.app/search?q={search_term_string}',
+                },
+                'query-input': 'required name=search_term_string',
+              },
+            }),
+          }}
         />
       </head>
       <body
