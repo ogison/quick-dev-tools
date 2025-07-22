@@ -112,6 +112,47 @@ export const TOOLS: Tool[] = [
       </div>
     ),
   },
+  {
+    id: 'character-count',
+    title: '文字数カウント',
+    description: 'テキストの文字数、単語数、バイト数を詳細にカウントします。',
+    href: '/tools/character-count',
+    category: 'utility',
+    featured: true,
+    icon: (
+      <div className="relative h-48 w-full overflow-hidden rounded-lg bg-gradient-to-br from-purple-900 to-indigo-900 p-6">
+        <div className="flex h-full items-center justify-center">
+          <div className="relative">
+            {/* Counter display */}
+            <div className="rounded-lg bg-black/30 p-4 font-mono text-white">
+              <div className="mb-2 text-center text-xs opacity-60">TEXT COUNTER</div>
+              <div className="space-y-1 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-purple-300">文字数:</span>
+                  <span className="text-white">1,234</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-purple-300">単語数:</span>
+                  <span className="text-white">567</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-purple-300">行数:</span>
+                  <span className="text-white">89</span>
+                </div>
+              </div>
+            </div>
+            {/* Floating numbers animation effect */}
+            <div className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-purple-400/70 flex items-center justify-center text-xs font-bold text-white">
+              3
+            </div>
+            <div className="absolute -bottom-1 -left-1 h-4 w-4 rounded-full bg-indigo-400/60 flex items-center justify-center text-xs font-bold text-white">
+              7
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+  },
 ];
 
 // カテゴリ定義
