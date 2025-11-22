@@ -91,7 +91,7 @@ export function countCharacters(text: string): CharacterCountResult {
 }
 
 function countWords(text: string): number {
-  if (!text.trim()) return 0;
+  if (!text.trim()) {return 0;}
   
   // Japanese text handling
   const japaneseRegex = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/;

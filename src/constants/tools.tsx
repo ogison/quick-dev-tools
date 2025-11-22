@@ -185,6 +185,53 @@ export const TOOLS: Tool[] = [
       </div>
     ),
   },
+  {
+    id: 'markdown-preview',
+    title: 'Markdownプレビュー',
+    description: 'Markdownをリアルタイムでプレビュー。GitHub Flavored Markdown対応、HTMLエクスポート可能。',
+    href: '/tools/markdown-preview',
+    category: 'format',
+    featured: true,
+    icon: (
+      <div className="relative h-48 w-full overflow-hidden rounded-lg bg-gradient-to-br from-slate-800 to-slate-900 p-6">
+        <div className="flex h-full items-center justify-center">
+          <div className="relative w-full">
+            {/* Markdown preview display */}
+            <div className="rounded-lg bg-black/30 p-4 text-white">
+              <div className="mb-2 text-center text-xs opacity-60">MARKDOWN PREVIEW</div>
+              <div className="space-y-1 text-xs">
+                <div className="flex items-center gap-1">
+                  <span className="text-blue-400">#</span>
+                  <span className="text-slate-300">Heading</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-green-400">-</span>
+                  <span className="text-slate-400">List item</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-purple-400">**</span>
+                  <span className="text-slate-300">Bold</span>
+                  <span className="text-purple-400">**</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-yellow-400">`</span>
+                  <span className="font-mono text-slate-300">code</span>
+                  <span className="text-yellow-400">`</span>
+                </div>
+              </div>
+            </div>
+            {/* Decorative elements */}
+            <div className="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-slate-500/70 flex items-center justify-center text-xs font-bold text-white">
+              MD
+            </div>
+            <div className="absolute -bottom-1 -left-1 h-6 w-6 rounded-full bg-blue-500/60 flex items-center justify-center text-xs font-bold text-white">
+              ⚡
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+  },
 ];
 
 // カテゴリ定義

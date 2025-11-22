@@ -3,7 +3,6 @@
 import { Shield } from 'lucide-react';
 
 import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 

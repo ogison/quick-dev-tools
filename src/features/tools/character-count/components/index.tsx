@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { Check, Copy, Trash2, Info, Clock, Hash, Type, FileText } from 'lucide-react';
+import { useState, useEffect } from 'react';
+
+import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
 
 import { 
   countCharacters, 
