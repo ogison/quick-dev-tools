@@ -153,6 +153,38 @@ export const TOOLS: Tool[] = [
       </div>
     ),
   },
+  {
+    id: 'uuid-generator',
+    title: 'UUID生成ツール',
+    description: 'UUID v1、v4、Nil UUIDを簡単に生成できるツールです。',
+    href: '/tools/uuid-generator',
+    category: 'generator',
+    featured: true,
+    icon: (
+      <div className="relative h-48 w-full overflow-hidden rounded-lg bg-gradient-to-br from-blue-900 to-teal-900 p-6">
+        <div className="flex h-full items-center justify-center">
+          <div className="relative">
+            {/* UUID display */}
+            <div className="rounded-lg bg-black/30 p-4 font-mono text-white">
+              <div className="mb-2 text-center text-xs opacity-60">UUID GENERATOR</div>
+              <div className="space-y-2 text-xs">
+                <div className="text-blue-300">a3bb189e-8bf9-3888-9912</div>
+                <div className="text-teal-300">550e8400-e29b-41d4-a716</div>
+                <div className="text-blue-200">6ba7b810-9dad-11d1-80b4</div>
+              </div>
+            </div>
+            {/* Decorative elements */}
+            <div className="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-blue-400/70 flex items-center justify-center text-xs font-bold text-white">
+              v4
+            </div>
+            <div className="absolute -bottom-1 -left-1 h-6 w-6 rounded-full bg-teal-400/60 flex items-center justify-center text-xs font-bold text-white">
+              v1
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+  },
 ];
 
 // カテゴリ定義
