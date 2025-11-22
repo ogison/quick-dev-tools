@@ -1,30 +1,18 @@
 'use client';
 
-import { Check, Copy, Download, RefreshCw, Trash2, ChevronDown } from 'lucide-react';
+import { Check, Copy, Download, RefreshCw, Trash2 } from 'lucide-react';
 import { useState, useCallback } from 'react';
 
 import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
 import {
-  generateUUIDv4,
-  generateUUIDv1,
-  generateNilUUID,
   generateMultipleUUIDs,
   formatUUID,
   removeHyphens,
-  addHyphens,
-  isValidUUID,
-  getUUIDVersion,
 } from '../utils/uuid-generator';
 
 type UUIDVersion = 'v1' | 'v4' | 'nil';
