@@ -4,7 +4,6 @@ import { FileText, ChevronDown, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 
 import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';

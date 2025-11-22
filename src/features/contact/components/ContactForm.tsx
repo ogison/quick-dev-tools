@@ -1,11 +1,10 @@
 'use client';
 
+import { Check, Mail, MessageSquare, Send, User, AlertCircle } from 'lucide-react';
 import { useState, useCallback } from 'react';
 
-import { Check, Mail, MessageSquare, Send, User, AlertCircle } from 'lucide-react';
 
 import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 

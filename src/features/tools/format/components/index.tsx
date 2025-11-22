@@ -1,9 +1,10 @@
 'use client';
 
 import { Check, Copy, Download, FileCode2, Trash2, ChevronDown, Info } from 'lucide-react';
-import { useState, useEffect, useCallback } from 'react';
 import { useTheme } from 'next-themes';
+import { useState, useEffect, useCallback } from 'react';
 
+import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -15,7 +16,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
 
 import { formatCode, detectFormatType, FormatType } from '../utils/formatter';
 
