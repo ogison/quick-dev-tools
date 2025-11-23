@@ -1,5 +1,3 @@
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { DefaultSkipLinks } from '@/components/a11y/SkipLink';
@@ -26,27 +24,21 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  // Providing all messages to the client
-  // side is the easiest way to get started
-  const messages = await getMessages();
-
   return (
-    <NextIntlClientProvider messages={messages}>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
-        storageKey="engineer-tools-theme"
-      >
-        <DefaultSkipLinks />
-        <Header />
-        <main id="main-content" className="flex-grow">
-          {children}
-        </main>
-        <Footer />
-        <PerformanceMonitor />
-      </ThemeProvider>
-    </NextIntlClientProvider>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+      storageKey="engineer-tools-theme"
+    >
+      <DefaultSkipLinks />
+      <Header />
+      <main id="main-content" className="flex-grow">
+        {children}
+      </main>
+      <Footer />
+      <PerformanceMonitor />
+    </ThemeProvider>
   );
 }
