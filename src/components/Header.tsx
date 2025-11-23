@@ -15,7 +15,7 @@ export default function Header() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 text-xl font-bold">
+          <Link href="/home" className="flex items-center gap-2 text-xl font-bold">
             <Home className="h-5 w-5" />
             QuickDevTools
           </Link>
