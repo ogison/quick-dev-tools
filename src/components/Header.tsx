@@ -2,6 +2,7 @@
 
 import { Home, Mail } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+
 import { Link } from '@/i18n/routing';
 
 export default function Header() {

@@ -2,7 +2,9 @@
 
 import { X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+
 import { Link } from '@/i18n/routing';
+
 import { LanguageSwitcher } from './LanguageSwitcher';
 
 export function Footer() {
