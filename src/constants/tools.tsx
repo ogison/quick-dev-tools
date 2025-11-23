@@ -13,28 +13,28 @@ export interface Tool {
 // Translation keys for tools
 export const TOOL_TRANSLATION_KEYS = {
   format: {
-    titleKey: 'tools.format.title',
-    descriptionKey: 'tools.format.description',
+    titleKey: 'format.title',
+    descriptionKey: 'format.description',
   },
   timestamp: {
-    titleKey: 'tools.timestamp.title',
-    descriptionKey: 'tools.timestamp.description',
+    titleKey: 'timestamp.title',
+    descriptionKey: 'timestamp.description',
   },
   'url-encoder': {
-    titleKey: 'tools.urlEncoder.title',
-    descriptionKey: 'tools.urlEncoder.description',
+    titleKey: 'urlEncoder.title',
+    descriptionKey: 'urlEncoder.description',
   },
   'character-count': {
-    titleKey: 'tools.characterCount.title',
-    descriptionKey: 'tools.characterCount.description',
+    titleKey: 'characterCount.title',
+    descriptionKey: 'characterCount.description',
   },
   'uuid-generator': {
-    titleKey: 'tools.uuidGenerator.title',
-    descriptionKey: 'tools.uuidGenerator.description',
+    titleKey: 'uuidGenerator.title',
+    descriptionKey: 'uuidGenerator.description',
   },
   'markdown-preview': {
-    titleKey: 'tools.markdownPreview.title',
-    descriptionKey: 'tools.markdownPreview.description',
+    titleKey: 'markdownPreview.title',
+    descriptionKey: 'markdownPreview.description',
   },
 } as const;
 
@@ -272,11 +272,11 @@ export const TOOL_CATEGORIES = {
 } as const;
 
 export const CATEGORY_TRANSLATION_KEYS = {
-  format: 'tools.categories.format',
-  converter: 'tools.categories.converter',
-  encoder: 'tools.categories.encoder',
-  generator: 'tools.categories.generator',
-  utility: 'tools.categories.utility',
+  format: 'categories.format',
+  converter: 'categories.converter',
+  encoder: 'categories.encoder',
+  generator: 'categories.generator',
+  utility: 'categories.utility',
 } as const;
 
 // フィーチャードツールを取得
