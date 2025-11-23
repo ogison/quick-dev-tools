@@ -32,7 +32,7 @@ export function LanguageSwitcher() {
             : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
         }`}
       >
-        日本語
+        ja
       </button>
       <span className="text-gray-400">/</span>
       <button
@@ -44,7 +44,7 @@ export function LanguageSwitcher() {
             : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
         }`}
       >
-        English
+        en
       </button>
     </div>
   );
