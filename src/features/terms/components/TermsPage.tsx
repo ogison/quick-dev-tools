@@ -7,6 +7,7 @@ import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Link } from '@/i18n/routing';
 
 // 利用規約の各セクション
 const TERMS_SECTIONS = [
@@ -329,12 +330,12 @@ export default function TermsPage() {
                   <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
                     本利用規約に関するご質問やご不明な点がございましたら、以下よりお問い合わせください：
                   </p>
-                  <a
+                  <Link
                     href="/contact"
                     className="inline-block rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
                   >
                     お問い合わせフォーム
-                  </a>
+                  </Link>
                 </div>
             </TabsContent>
 
@@ -363,12 +364,12 @@ export default function TermsPage() {
                   <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
                     他にご質問がございましたら、お気軽にお問い合わせください：
                   </p>
-                  <a
+                  <Link
                     href="/contact"
                     className="inline-block rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
                   >
                     お問い合わせフォーム
-                  </a>
+                  </Link>
                 </div>
             </TabsContent>
           </Tabs>

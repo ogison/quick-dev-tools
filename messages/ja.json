@@ -1,0 +1,151 @@
+{
+  "common": {
+    "contact": "お問い合わせ",
+    "privacy": "プライバシー",
+    "terms": "利用規約",
+    "twitter_label": "X (Twitter)で最新情報をチェック"
+  },
+  "metadata": {
+    "title": "QuickDevTools 開発者ツール集 | プロフェッショナルな無料開発ツール",
+    "description": "開発者向けの便利なツール集。JSON整形、Base64エンコード、URLエンコード、タイムスタンプ変換、Diff比較、QRコード生成、カラーピッカー、正規表現テスター、ハッシュ生成、文字数カウント、UUID生成、Markdownプレビューなど、すべてブラウザ内で完結。データはローカル処理で安全、無料で利用可能。",
+    "keywords": "開発者ツール, JSON整形, Base64エンコード, URLエンコード, デコード, タイムスタンプ変換, UNIX時間, Diff, QRコード生成, カラーピッカー, 正規表現テスター, ハッシュ生成, MD5, SHA-256, 文字数カウント, UUID生成, Markdownプレビュー, 無料ツール, オンラインツール",
+    "alternateName": "開発者ツール集"
+  },
+  "home": {
+    "hero": "開発者のためのツールコレクション"
+  },
+  "tools": {
+    "title": "Tools",
+    "description": "開発作業を効率化するツールの一覧です。用途に応じてお選びください。",
+    "selectCategory": "カテゴリを選択",
+    "allCategories": "すべてのカテゴリ",
+    "toolsFound": " 個のツールが見つかりました",
+    "searchResults": "の検索結果",
+    "notFound": "ツールが見つかりませんでした",
+    "notFoundDescription": "検索条件を変更するか、カテゴリフィルタを調整してください。",
+    "resetFilters": "フィルタをリセット",
+    "newToolsTitle": "新しいツールをお探しですか？",
+    "newToolsDescription": "すべてのツールはブラウザ内で動作し、データがサーバーに送信されることはありません。",
+    "format": {
+      "title": "なんでもフォーマッター",
+      "description": "JSON, YAML, SQL, XMLなどのフォーマットを整形します。"
+    },
+    "timestamp": {
+      "title": "UNIX時間変換",
+      "description": "UNIX時間⇔日付時刻を変換させるツールです。"
+    },
+    "urlEncoder": {
+      "title": "URL Encoder/Decoder",
+      "description": "URLエンコードとデコードを行うツールです。"
+    },
+    "characterCount": {
+      "title": "文字数カウント",
+      "description": "テキストの文字数、単語数、バイト数を詳細にカウントします。"
+    },
+    "uuidGenerator": {
+      "title": "UUID生成ツール",
+      "description": "UUID v1、v4、Nil UUIDを簡単に生成できるツールです。"
+    },
+    "markdownPreview": {
+      "title": "Markdownプレビュー",
+      "description": "Markdownをリアルタイムでプレビュー。GitHub Flavored Markdown対応、HTMLエクスポート可能。"
+    },
+    "categories": {
+      "format": "フォーマッター",
+      "converter": "コンバーター",
+      "encoder": "エンコーダー",
+      "generator": "ジェネレーター",
+      "utility": "ユーティリティ"
+    }
+  },
+  "characterCountTool": {
+    "textInput": "テキスト入力",
+    "countResults": "カウント結果",
+    "characters": "文字数",
+    "words": "単語数",
+    "lines": "行数",
+    "japaneseSample": "日本語サンプル",
+    "englishSample": "英語サンプル",
+    "codeSample": "プログラムコード",
+    "copied": "コピーしました",
+    "copyStats": "統計をコピー",
+    "detailedAnalysis": "詳細分析",
+    "japaneseAnalysis": "日本語文字分析",
+    "hiragana": "ひらがな",
+    "katakana": "カタカナ",
+    "kanji": "漢字",
+    "howToUse": "使い方"
+  },
+  "formatTool": {
+    "input": "入力",
+    "output": "出力",
+    "formatSettings": "フォーマット設定",
+    "indentSize": "インデントサイズ",
+    "sample": "サンプル",
+    "executeFormat": "フォーマット実行",
+    "basicFormatComplete": "基本整形完了",
+    "formatComplete": "フォーマット完了",
+    "copied": "コピーしました",
+    "formatError": "フォーマットエラーが発生しました",
+    "detectionFailed": "フォーマットタイプを検出できませんでしたが、基本的な整形を行いました",
+    "useTab": "タブを使用",
+    "useTabDescription": "デフォルトはスペースです",
+    "howToUse": "使い方",
+    "supportedFormats": "対応フォーマット",
+    "webTechnology": "Web技術",
+    "dataFormat": "データ形式",
+    "indentSettings": "インデント設定について",
+    "samples": {
+      "json": "JSON サンプル",
+      "yaml": "YAML サンプル",
+      "xml": "XML サンプル",
+      "sql": "SQL サンプル",
+      "html": "HTML サンプル",
+      "css": "CSS サンプル"
+    }
+  },
+  "timestampTool": {
+    "epochTime": "エポック時間 (1970-01-01)",
+    "y2k": "2000年問題",
+    "currentTime": "現在時刻",
+    "y2038": "2038年問題",
+    "enterUnixTime": "Unix時間を入力してください",
+    "enterValidNumber": "有効な数値を入力してください",
+    "conversionError": "変換エラーが発生しました"
+  },
+  "uuidGeneratorTool": {
+    "generator": "ジェネレーター",
+    "settings": "設定"
+  },
+  "contact": {
+    "title": "お問い合わせ",
+    "description": "ご質問やご意見がございましたら、お気軽にお問い合わせください。",
+    "name": "お名前",
+    "email": "メールアドレス",
+    "subject": "件名",
+    "message": "メッセージ",
+    "namePlaceholder": "山田太郎",
+    "subjectPlaceholder": "お問い合わせの件名をご入力ください",
+    "messagePlaceholder": "お問い合わせ内容を詳しくご記入ください（10文字以上）",
+    "nameRequired": "お名前は必須項目です",
+    "emailRequired": "メールアドレスは必須項目です",
+    "emailInvalid": "有効なメールアドレスを入力してください",
+    "subjectRequired": "件名は必須項目です",
+    "messageRequired": "メッセージは必須項目です",
+    "messageMinLength": "メッセージは10文字以上で入力してください",
+    "characterCount": "現在の文字数: {count}文字",
+    "thankYou": "お問い合わせありがとうございます",
+    "submit": "送信",
+    "submitting": "送信中...",
+    "newInquiry": "新しいお問い合わせ",
+    "clear": "クリア",
+    "confirmClear": "フォームの内容をクリアします。よろしいですか？"
+  },
+  "privacy": {
+    "title": "プライバシーポリシー",
+    "description": "個人情報の取り扱いとデータ保護に関する方針について説明しています。"
+  },
+  "terms": {
+    "title": "利用規約"
+  }
+}

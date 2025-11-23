@@ -1,7 +1,13 @@
+'use client';
+
 import { Home, Mail } from 'lucide-react';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+
+import { Link } from '@/i18n/routing';
 
 export default function Header() {
+  const t = useTranslations('common');
+
   return (
     <header
       className={`sticky top-0 z-50 border-b border-gray-200 bg-white text-black backdrop-blur-sm dark:border-gray-800 dark:bg-gray-900/80 dark:text-white`}
@@ -21,7 +27,7 @@ export default function Header() {
               className="flex items-center gap-2 text-sm font-medium text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
             >
               <Mail className="h-4 w-4" />
-              お問い合わせ
+              {t('contact')}
             </Link>
           </nav>
         </div>

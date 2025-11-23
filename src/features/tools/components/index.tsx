@@ -1,7 +1,7 @@
 'use client';
 
 import { Search } from 'lucide-react';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
@@ -20,11 +20,20 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { TOOLS, TOOL_CATEGORIES, searchTools, getToolsByCategory } from '@/constants/tools';
+import {
+  TOOLS,
+  TOOL_CATEGORIES,
+  TOOL_TRANSLATION_KEYS,
+  CATEGORY_TRANSLATION_KEYS,
+  searchTools,
+  getToolsByCategory
+} from '@/constants/tools';
+import { Link } from '@/i18n/routing';
 
 export default function ToolsDirectory() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const t = useTranslations('tools');
 
   // フィルタリングされたツールを取得
   const getFilteredTools = () => {
@@ -48,10 +57,22 @@ export default function ToolsDirectory() {
   const filteredTools = getFilteredTools();
   const categories = Object.entries(TOOL_CATEGORIES);
 
+  // Get translated tool data
+  const getToolTranslation = (toolId: string) => {
+    const key = TOOL_TRANSLATION_KEYS[toolId as keyof typeof TOOL_TRANSLATION_KEYS];
+    if (!key) {
+      return null;
+    }
+    return {
+      title: t(key.titleKey as 'title'),
+      description: t(key.descriptionKey as 'description'),
+    };
+  };
+
   return (
     <CommonLayoutWithHeader
-      title="Tools"
-      description="開発作業を効率化するツールの一覧です。用途に応じてお選びください。"
+      title={t('title')}
+      description={t('description')}
       breadcrumbs={[
         { label: 'Home', href: '/' },
         { label: 'Tools', isCurrentPage: true },
@@ -78,13 +99,13 @@ export default function ToolsDirectory() {
       <div className="px-4 py-2">
         <Select value={selectedCategory} onValueChange={setSelectedCategory}>
           <SelectTrigger className="w-[240px]">
-            <SelectValue placeholder="カテゴリを選択" />
+            <SelectValue placeholder={t('selectCategory')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">すべてのカテゴリ</SelectItem>
-            {categories.map(([key, label]) => (
+            <SelectItem value="all">{t('allCategories')}</SelectItem>
+            {categories.map(([key]) => (
               <SelectItem key={key} value={key}>
-                {label}
+                {t(CATEGORY_TRANSLATION_KEYS[key as keyof typeof CATEGORY_TRANSLATION_KEYS] as 'title')}
               </SelectItem>
             ))}
           </SelectContent>
@@ -94,10 +115,10 @@ export default function ToolsDirectory() {
       {/* 結果カウンター */}
       <div className="px-4 py-2">
         <p className="text-sm text-[#49749c]">
-          {filteredTools.length} 個のツールが見つかりました
+          {filteredTools.length}{t('toolsFound')}
           {searchQuery && (
             <span className="ml-2">
-              「<span className="font-medium">{searchQuery}</span>」の検索結果
+              {t('searchResults')} &ldquo;<span className="font-medium">{searchQuery}</span>&rdquo;
             </span>
           )}
         </p>
@@ -117,35 +138,38 @@ export default function ToolsDirectory() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredTools.map((tool) => (
-                  <TableRow
-                    key={tool.id}
-                    className="border-t border-t-[#cedce8] hover:bg-slate-100/50"
-                  >
-                    <TableCell className="h-[72px] font-normal text-[#0d151c]">
-                      {tool.title}
-                    </TableCell>
-                    <TableCell className="h-[72px] font-normal text-[#49749c]">
-                      {tool.description}
-                    </TableCell>
-                    <TableCell className="h-[72px] font-normal">
-                      {tool.category && (
-                        <button className="flex h-8 w-full max-w-[100px] min-w-[60px] cursor-pointer items-center justify-center overflow-hidden rounded-full bg-[#e7edf4] px-3 text-xs leading-normal font-medium text-[#0d151c]">
-                          <span className="truncate">
-                            {TOOL_CATEGORIES[tool.category as keyof typeof TOOL_CATEGORIES]}
-                          </span>
-                        </button>
-                      )}
-                    </TableCell>
-                    <TableCell className="h-[72px] font-normal">
-                      <Link href={tool.href}>
-                        <button className="flex h-8 w-full max-w-[80px] min-w-[60px] cursor-pointer items-center justify-center overflow-hidden rounded-full bg-[#0b80ee] px-3 text-xs leading-normal font-bold text-slate-50 transition-colors hover:bg-[#0970d3]">
-                          <span className="truncate">開く</span>
-                        </button>
-                      </Link>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {filteredTools.map((tool) => {
+                  const translated = getToolTranslation(tool.id);
+                  return (
+                    <TableRow
+                      key={tool.id}
+                      className="border-t border-t-[#cedce8] hover:bg-slate-100/50"
+                    >
+                      <TableCell className="h-[72px] font-normal text-[#0d151c]">
+                        {translated?.title || tool.title}
+                      </TableCell>
+                      <TableCell className="h-[72px] font-normal text-[#49749c]">
+                        {translated?.description || tool.description}
+                      </TableCell>
+                      <TableCell className="h-[72px] font-normal">
+                        {tool.category && (
+                          <button className="flex h-8 w-full max-w-[100px] min-w-[60px] cursor-pointer items-center justify-center overflow-hidden rounded-full bg-[#e7edf4] px-3 text-xs leading-normal font-medium text-[#0d151c]">
+                            <span className="truncate">
+                              {t(CATEGORY_TRANSLATION_KEYS[tool.category as keyof typeof CATEGORY_TRANSLATION_KEYS] as 'title')}
+                            </span>
+                          </button>
+                        )}
+                      </TableCell>
+                      <TableCell className="h-[72px] font-normal">
+                        <Link href={tool.href}>
+                          <button className="flex h-8 w-full max-w-[80px] min-w-[60px] cursor-pointer items-center justify-center overflow-hidden rounded-full bg-[#0b80ee] px-3 text-xs leading-normal font-bold text-slate-50 transition-colors hover:bg-[#0970d3]">
+                            <span className="truncate">Open</span>
+                          </button>
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </div>
@@ -153,10 +177,10 @@ export default function ToolsDirectory() {
           <div className="rounded-xl border border-[#cedce8] bg-white p-12 text-center">
             <Search className="mx-auto mb-4 h-12 w-12 text-[#49749c]" />
             <h3 className="mb-2 text-lg font-semibold text-[#0d151c]">
-              ツールが見つかりませんでした
+              {t('notFound')}
             </h3>
             <p className="text-[#49749c]">
-              検索条件を変更するか、カテゴリフィルタを調整してください。
+              {t('notFoundDescription')}
             </p>
             <button
               onClick={() => {
@@ -165,7 +189,7 @@ export default function ToolsDirectory() {
               }}
               className="mt-4 flex h-8 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-[#e7edf4] px-4 text-sm leading-normal font-medium text-[#0d151c] transition-colors hover:bg-[#d1dce6]"
             >
-              フィルタをリセット
+              {t('resetFilters')}
             </button>
           </div>
         )}
@@ -174,10 +198,9 @@ export default function ToolsDirectory() {
       {/* 追加情報カード */}
       <div className="mt-8 px-4">
         <div className="rounded-xl border border-[#0b80ee]/20 bg-[#0b80ee]/5 p-6">
-          <h3 className="mb-2 font-semibold text-[#0b80ee]">新しいツールをお探しですか？</h3>
+          <h3 className="mb-2 font-semibold text-[#0b80ee]">{t('newToolsTitle')}</h3>
           <p className="text-[#49749c]">
-            すべてのツールはブラウザ内で動作し、データがサーバーに送信されることはありません。
-            安全で高速なローカル処理をお楽しみください。
+            {t('newToolsDescription')}
           </p>
         </div>
       </div>

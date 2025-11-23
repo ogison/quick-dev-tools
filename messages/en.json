@@ -1,0 +1,151 @@
+{
+  "common": {
+    "contact": "Contact",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "twitter_label": "Check latest updates on X (Twitter)"
+  },
+  "metadata": {
+    "title": "QuickDevTools - Professional Free Developer Tools",
+    "description": "Comprehensive toolkit for developers. Format JSON, encode Base64, URL encoding/decoding, timestamp conversion, diff comparison, QR code generation, color picker, regex tester, hash generation, character counter, UUID generation, Markdown preview, and more. All tools run in your browser with local processing for security. Free to use.",
+    "keywords": "developer tools, JSON formatter, Base64 encoder, URL encoder, decoder, timestamp converter, UNIX time, diff, QR code generator, color picker, regex tester, hash generator, MD5, SHA-256, character counter, UUID generator, Markdown preview, free tools, online tools",
+    "alternateName": "Developer Tools Collection"
+  },
+  "home": {
+    "hero": "Tool Collection for Developers"
+  },
+  "tools": {
+    "title": "Tools",
+    "description": "A collection of tools to streamline your development workflow. Choose the one that fits your needs.",
+    "selectCategory": "Select Category",
+    "allCategories": "All Categories",
+    "toolsFound": " tools found",
+    "searchResults": " search results for",
+    "notFound": "No tools found",
+    "notFoundDescription": "Try changing your search criteria or adjusting the category filters.",
+    "resetFilters": "Reset Filters",
+    "newToolsTitle": "Looking for new tools?",
+    "newToolsDescription": "All tools run in your browser and no data is sent to any server.",
+    "format": {
+      "title": "Universal Formatter",
+      "description": "Format and beautify JSON, YAML, SQL, XML, and more."
+    },
+    "timestamp": {
+      "title": "UNIX Timestamp Converter",
+      "description": "Convert between UNIX timestamps and human-readable date/time."
+    },
+    "urlEncoder": {
+      "title": "URL Encoder/Decoder",
+      "description": "Encode and decode URL strings with ease."
+    },
+    "characterCount": {
+      "title": "Character Counter",
+      "description": "Count characters, words, and bytes in your text with detailed analysis."
+    },
+    "uuidGenerator": {
+      "title": "UUID Generator",
+      "description": "Easily generate UUID v1, v4, and Nil UUIDs."
+    },
+    "markdownPreview": {
+      "title": "Markdown Preview",
+      "description": "Preview Markdown in real-time. Supports GitHub Flavored Markdown and HTML export."
+    },
+    "categories": {
+      "format": "Formatters",
+      "converter": "Converters",
+      "encoder": "Encoders",
+      "generator": "Generators",
+      "utility": "Utilities"
+    }
+  },
+  "characterCountTool": {
+    "textInput": "Text Input",
+    "countResults": "Count Results",
+    "characters": "Characters",
+    "words": "Words",
+    "lines": "Lines",
+    "japaneseSample": "Japanese Sample",
+    "englishSample": "English Sample",
+    "codeSample": "Code Sample",
+    "copied": "Copied",
+    "copyStats": "Copy Statistics",
+    "detailedAnalysis": "Detailed Analysis",
+    "japaneseAnalysis": "Japanese Character Analysis",
+    "hiragana": "Hiragana",
+    "katakana": "Katakana",
+    "kanji": "Kanji",
+    "howToUse": "How to Use"
+  },
+  "formatTool": {
+    "input": "Input",
+    "output": "Output",
+    "formatSettings": "Format Settings",
+    "indentSize": "Indent Size",
+    "sample": "Sample",
+    "executeFormat": "Format",
+    "basicFormatComplete": "Basic formatting complete",
+    "formatComplete": "Formatting complete",
+    "copied": "Copied",
+    "formatError": "A formatting error occurred",
+    "detectionFailed": "Could not detect format type, but basic formatting was applied",
+    "useTab": "Use Tabs",
+    "useTabDescription": "Default is spaces",
+    "howToUse": "How to Use",
+    "supportedFormats": "Supported Formats",
+    "webTechnology": "Web Technologies",
+    "dataFormat": "Data Formats",
+    "indentSettings": "About Indent Settings",
+    "samples": {
+      "json": "JSON Sample",
+      "yaml": "YAML Sample",
+      "xml": "XML Sample",
+      "sql": "SQL Sample",
+      "html": "HTML Sample",
+      "css": "CSS Sample"
+    }
+  },
+  "timestampTool": {
+    "epochTime": "Epoch Time (1970-01-01)",
+    "y2k": "Y2K Problem",
+    "currentTime": "Current Time",
+    "y2038": "Y2038 Problem",
+    "enterUnixTime": "Please enter UNIX timestamp",
+    "enterValidNumber": "Please enter a valid number",
+    "conversionError": "Conversion error occurred"
+  },
+  "uuidGeneratorTool": {
+    "generator": "Generator",
+    "settings": "Settings"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "description": "If you have any questions or feedback, please feel free to contact us.",
+    "name": "Name",
+    "email": "Email Address",
+    "subject": "Subject",
+    "message": "Message",
+    "namePlaceholder": "John Doe",
+    "subjectPlaceholder": "Enter your inquiry subject",
+    "messagePlaceholder": "Please describe your inquiry in detail (minimum 10 characters)",
+    "nameRequired": "Name is required",
+    "emailRequired": "Email address is required",
+    "emailInvalid": "Please enter a valid email address",
+    "subjectRequired": "Subject is required",
+    "messageRequired": "Message is required",
+    "messageMinLength": "Message must be at least 10 characters",
+    "characterCount": "Current character count: {count}",
+    "thankYou": "Thank you for your inquiry",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "newInquiry": "New Inquiry",
+    "clear": "Clear",
+    "confirmClear": "Are you sure you want to clear the form?"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "description": "Information about our policies regarding the handling of personal information and data protection."
+  },
+  "terms": {
+    "title": "Terms of Service"
+  }
+}

@@ -5,6 +5,7 @@ import { Shield } from 'lucide-react';
 import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Link } from '@/i18n/routing';
 
 import { PRIVACY_POLICY_SECTIONS, POLICY_METADATA } from '../constants/policy-content';
 
@@ -104,10 +105,10 @@ export default function PrivacyPolicy() {
                       asChild
                       className="bg-blue-600 text-white shadow-md hover:bg-blue-700 hover:shadow-lg"
                     >
-                      <a href="/contact">
+                      <Link href="/contact">
                         <Shield className="mr-2 h-4 w-4" />
                         お問い合わせフォーム
-                      </a>
+                      </Link>
                     </Button>
                   </div>
                 )}

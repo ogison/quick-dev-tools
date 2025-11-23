@@ -1,12 +1,11 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages, getTranslations } from 'next-intl/server';
+
+import { routing } from '@/i18n/routing';
 
 import './globals.css';
-import { DefaultSkipLinks } from '@/components/a11y/SkipLink';
-import { Footer } from '@/components/Footer';
-import Header from '@/components/Header';
-import { ThemeProvider } from '@/components/providers/ThemeProvider';
-import { PerformanceMonitor } from '@/components/shared/PerformanceMonitor';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -18,86 +17,94 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL('https://quick-dev-tools.vercel.app'),
-  title: {
-    default: 'QuickDevTools 開発者ツール集 | プロフェッショナルな無料開発ツール',
-    template: '%s | QuickDevTools',
-  },
-  description:
-    'JSON整形、Base64エンコード、URLエンコード、ハッシュ生成など、開発効率を最大化する無料ツールコレクション。ブラウザ上で安全・高速に動作します。',
-  keywords: [
-    'JSON整形',
-    'Base64エンコード',
-    'URLエンコード',
-    'ハッシュ生成',
-    'QRコード生成',
-    '正規表現テスト',
-    '開発ツール',
-    'プログラミング',
-    'デベロッパーツール',
-    'QuickDevTools',
-  ],
-  authors: [{ name: 'QuickDevTools' }],
-  creator: 'QuickDevTools',
-  publisher: 'QuickDevTools',
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  alternates: {
-    canonical: 'https://quick-dev-tools.vercel.app',
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'ja_JP',
-    url: 'https://quick-dev-tools.vercel.app',
-    title: 'QuickDevTools 開発者ツール集 | プロフェッショナルな無料開発ツール',
-    description:
-      'JSON整形、Base64エンコード、URLエンコード、ハッシュ生成など、開発効率を最大化する無料ツールコレクション。',
-    siteName: 'QuickDevTools',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'QuickDevTools 開発者ツール集 | プロフェッショナルな無料開発ツール',
-    description:
-      'JSON整形、Base64エンコード、URLエンコード、ハッシュ生成など、開発効率を最大化する無料ツールコレクション。',
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'metadata' });
+
+  return {
+    metadataBase: new URL('https://quick-dev-tools.vercel.app'),
+    title: {
+      default: t('title'),
+      template: '%s | QuickDevTools',
+    },
+    description: t('description'),
+    keywords: t('keywords'),
+    authors: [{ name: 'QuickDevTools' }],
+    creator: 'QuickDevTools',
+    publisher: 'QuickDevTools',
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+    alternates: {
+      canonical: 'https://quick-dev-tools.vercel.app',
+      languages: {
+        ja: '/ja',
+        en: '/en',
+      },
+    },
+    openGraph: {
+      type: 'website',
+      locale: locale === 'ja' ? 'ja_JP' : 'en_US',
+      url: 'https://quick-dev-tools.vercel.app',
+      title: t('title'),
+      description: t('description'),
+      siteName: 'QuickDevTools',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t('title'),
+      description: t('description'),
+    },
+    robots: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
-  },
-  verification: {
-    google: 'kGf0matDnhBKNGaFptGUpEggZz8BX5vWs4-uz3r6_wE',
-  },
-  icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
-      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-    ],
-    apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
-  },
-  manifest: '/manifest.json',
-};
+    verification: {
+      google: 'kGf0matDnhBKNGaFptGUpEggZz8BX5vWs4-uz3r6_wE',
+    },
+    icons: {
+      icon: [
+        { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
+        { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+        { url: '/favicon.svg', type: 'image/svg+xml' },
+      ],
+      apple: [
+        { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+      ],
+    },
+    manifest: '/manifest.json',
+  };
+}
 
-export default function RootLayout({
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }>) {
+  const { locale } = await params;
+  const messages = await getMessages();
+
   return (
-    <html lang="ja" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#3b82f6" />
         <meta name="msapplication-TileColor" content="#3b82f6" />
@@ -113,16 +120,18 @@ export default function RootLayout({
               '@context': 'https://schema.org',
               '@type': 'WebSite',
               name: 'QuickDevTools',
-              alternateName: '開発者ツール集',
+              alternateName:
+                locale === 'ja' ? '開発者ツール集' : 'Developer Tools Collection',
               url: 'https://quick-dev-tools.vercel.app',
               description:
-                'JSON整形、Base64エンコード、URLエンコード、ハッシュ生成など、開発効率を最大化する無料ツールコレクション。',
+                locale === 'ja'
+                  ? 'JSON整形、Base64エンコード、URLエンコード、ハッシュ生成など、開発効率を最大化する無料ツールコレクション。'
+                  : 'Free developer tools collection to maximize development efficiency including JSON formatter, Base64 encoder, URL encoder, hash generator, and more.',
               potentialAction: {
                 '@type': 'SearchAction',
                 target: {
                   '@type': 'EntryPoint',
-                  urlTemplate:
-                    'https://quick-dev-tools.vercel.app/search?q={search_term_string}',
+                  urlTemplate: `https://quick-dev-tools.vercel.app/${locale}/search?q={search_term_string}`,
                 },
                 'query-input': 'required name=search_term_string',
               },
@@ -133,21 +142,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-          storageKey="engineer-tools-theme"
-        >
-          <DefaultSkipLinks />
-          <Header />
-          <main id="main-content" className="flex-grow">
-            {children}
-          </main>
-          <Footer />
-          <PerformanceMonitor />
-        </ThemeProvider>
+        <NextIntlClientProvider messages={messages}>
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   );
