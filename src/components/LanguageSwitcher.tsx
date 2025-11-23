@@ -16,6 +16,7 @@ export function LanguageSwitcher() {
   const switchLanguage = (newLocale: 'ja' | 'en') => {
     startTransition(() => {
       router.replace(pathname, { locale: newLocale });
+      router.refresh();
     });
   };
 
