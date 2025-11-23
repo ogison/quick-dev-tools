@@ -1,6 +1,7 @@
 'use client';
 
 import { Check, Copy, Download, FileCode2, Trash2, ChevronDown, Info } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState, useEffect, useCallback } from 'react';
 
 import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
@@ -99,6 +100,7 @@ LIMIT 10;`,
 };
 
 export default function FormatTool() {
+  const t = useTranslations('formatTool');
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [error, setError] = useState('');
@@ -243,20 +245,20 @@ export default function FormatTool() {
   return (
     <TooltipProvider>
       <CommonLayoutWithHeader
-        title="なんでもフォーマッター"
-        description="JSON, YAML, SQL, XMLなどのフォーマットを整形します。"
+        title={t('title')}
+        description={t('description')}
         breadcrumbs={[
           { label: 'Home', href: '/' },
           { label: 'Tools', href: '/tools' },
-          { label: 'なんでもフォーマッター', isCurrentPage: true },
+          { label: t('title'), isCurrentPage: true },
         ]}
       >
         <Card className="border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
           <CardContent className="p-6">
             <Tabs defaultValue="formatter" className="w-full">
               <TabsList className="mx-auto mb-8 grid w-full max-w-md grid-cols-2 text-black dark:text-white">
-                <TabsTrigger value="formatter">Formatter</TabsTrigger>
-                <TabsTrigger value="settings">Settings</TabsTrigger>
+                <TabsTrigger value="formatter">{t('formatter')}</TabsTrigger>
+                <TabsTrigger value="settings">{t('settings')}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="formatter" className="space-y-6">
@@ -266,7 +268,7 @@ export default function FormatTool() {
                     <div className="flex min-h-[48px] items-start justify-between py-2">
                       <div className="flex items-center gap-3">
                         <label className="text-base font-semibold text-gray-700 dark:text-gray-300">
-                          入力
+                          {t('input')}
                         </label>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -276,7 +278,7 @@ export default function FormatTool() {
                               className="h-8 border-gray-300 text-sm hover:border-gray-400 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"
                             >
                               <FileCode2 className="mr-2 h-3 w-3" />
-                              サンプル
+                              {t('sample')}
                               <ChevronDown className="ml-1 h-3 w-3" />
                             </Button>
                           </DropdownMenuTrigger>
@@ -288,7 +290,7 @@ export default function FormatTool() {
                                 className="cursor-pointer"
                               >
                                 <FileCode2 className="mr-2 h-4 w-4" />
-                                {sample.name}
+                                {t(`samples.${key as keyof typeof SAMPLE_DATA}`)}
                               </DropdownMenuItem>
                             ))}
                           </DropdownMenuContent>
@@ -302,23 +304,23 @@ export default function FormatTool() {
                             className="h-8 w-8 p-0 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
                           >
                             <Info className="h-4 w-4" />
-                            <span className="sr-only">ショートカット情報</span>
+                            <span className="sr-only">{t('shortcutInfo')}</span>
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent side="left" className="max-w-xs">
                           <div className="space-y-1">
-                            <p className="font-semibold">キーボードショートカット</p>
+                            <p className="font-semibold">{t('shortcutInfo')}</p>
                             <p className="text-xs">
                               <kbd className="rounded bg-gray-100 px-1 text-gray-700 dark:bg-gray-700 dark:text-gray-300">
                                 Cmd/Ctrl + Enter
                               </kbd>{' '}
-                              - フォーマット実行
+                              {t('shortcutFormat')}
                             </p>
                             <p className="text-xs">
                               <kbd className="rounded bg-gray-100 px-1 text-gray-700 dark:bg-gray-700 dark:text-gray-300">
                                 Cmd/Ctrl + Z
                               </kbd>{' '}
-                              - 元に戻す
+                              {t('shortcutUndo')}
                             </p>
                           </div>
                         </TooltipContent>
@@ -327,7 +329,7 @@ export default function FormatTool() {
                     <textarea
                       value={input}
                       onChange={(e) => handleInputChange(e.target.value)}
-                      placeholder="フォーマットしたいコードをここに入力..."
+                      placeholder={t('placeholder')}
                       className="h-[450px] w-full rounded-lg border border-gray-300 bg-white p-4 font-mono text-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:placeholder-gray-500"
                       aria-label="Code input area"
                     />
@@ -339,7 +341,7 @@ export default function FormatTool() {
                         aria-label="Format code"
                       >
                         <FileCode2 className="mr-2 h-4 w-4" />
-                        Format
+                        {t('format')}
                       </Button>
                       <Button
                         onClick={handleClear}
@@ -348,7 +350,7 @@ export default function FormatTool() {
                         aria-label="Clear all"
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
-                        Clear
+                        {t('clear')}
                       </Button>
                     </div>
                   </div>
@@ -357,7 +359,7 @@ export default function FormatTool() {
                   <div className="space-y-3">
                     <div className="flex min-h-[48px] items-start justify-between py-2">
                       <label className="text-base font-semibold text-gray-700 dark:text-gray-300">
-                        出力
+                        {t('output')}
                       </label>
                       {output && !error && (
                         <span
@@ -368,7 +370,7 @@ export default function FormatTool() {
                           }`}
                         >
                           <Check className="h-3 w-3" />
-                          {isBasicFormatUsed ? '基本整形完了' : 'フォーマット完了'}
+                          {isBasicFormatUsed ? t('basicFormatComplete') : t('formatComplete')}
                         </span>
                       )}
                     </div>
@@ -386,7 +388,7 @@ export default function FormatTool() {
                         <textarea
                           value={output}
                           readOnly
-                          placeholder={error || 'フォーマット済みのコードがここに表示されます...'}
+                          placeholder={error || t('placeholder')}
                           className={`h-[450px] w-full rounded-lg border p-4 font-mono text-sm transition-colors ${
                             error
                               ? 'border-red-300 bg-red-50 text-red-800 placeholder-red-600 dark:border-red-700 dark:bg-red-900/20 dark:text-red-400 dark:placeholder-red-500'
@@ -407,12 +409,12 @@ export default function FormatTool() {
                         {copied ? (
                           <>
                             <Check className="mr-2 h-4 w-4 text-green-600" />
-                            コピーしました
+                            {t('copied')}
                           </>
                         ) : (
                           <>
                             <Copy className="mr-2 h-4 w-4" />
-                            Copy
+                            {t('copy')}
                           </>
                         )}
                       </Button>
@@ -424,7 +426,7 @@ export default function FormatTool() {
                         aria-label="Download formatted file"
                       >
                         <Download className="mr-2 h-4 w-4" />
-                        Download
+                        {t('download')}
                       </Button>
                     </div>
                     {error && (
@@ -432,7 +434,7 @@ export default function FormatTool() {
                     )}
                     {isBasicFormatUsed && !error && output && (
                       <div className="mt-2 text-sm text-yellow-600 dark:text-yellow-400">
-                        ⚠️ フォーマットタイプを検出できませんでしたが、基本的な整形を行いました
+                        ⚠️ {t('detectionFailed')}
                       </div>
                     )}
                   </div>

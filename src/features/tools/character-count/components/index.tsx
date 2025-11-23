@@ -1,6 +1,7 @@
 'use client';
 
 import { Check, Copy, Trash2, Info, Clock, Hash, Type, FileText } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState, useEffect } from 'react';
 
 import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
@@ -71,6 +72,7 @@ console.log(\`文字数: \${count}\`);`,
 ];
 
 export default function CharacterCountTool() {
+  const t = useTranslations('characterCountTool');
   const [input, setInput] = useState('');
   const [result, setResult] = useState<CharacterCountResult | null>(null);
   const [copied, setCopied] = useState(false);
@@ -116,20 +118,20 @@ export default function CharacterCountTool() {
   return (
     <TooltipProvider>
       <CommonLayoutWithHeader
-        title="文字数カウント"
-        description="テキストの文字数、単語数、バイト数を詳細にカウントします。"
+        title={t('title')}
+        description={t('description')}
         breadcrumbs={[
           { label: 'Home', href: '/' },
           { label: 'Tools', href: '/tools' },
-          { label: '文字数カウント', isCurrentPage: true },
+          { label: t('title'), isCurrentPage: true },
         ]}
       >
         <Card className="border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
           <CardContent className="p-6">
             <Tabs defaultValue="counter" className="w-full">
               <TabsList className="mx-auto mb-8 grid w-full max-w-md grid-cols-2 text-black dark:text-white">
-                <TabsTrigger value="counter">Counter</TabsTrigger>
-                <TabsTrigger value="details">Details</TabsTrigger>
+                <TabsTrigger value="counter">{t('counter')}</TabsTrigger>
+                <TabsTrigger value="details">{t('details')}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="counter" className="space-y-6">
@@ -139,7 +141,7 @@ export default function CharacterCountTool() {
                     <div className="flex min-h-[48px] items-start justify-between py-2">
                       <div className="flex items-center gap-3">
                         <label className="text-base font-semibold text-gray-700 dark:text-gray-300">
-                          テキスト入力
+                          {t('textInput')}
                         </label>
                         <div className="flex gap-2">
                           {SAMPLE_TEXTS.map((sample, index) => (
@@ -151,7 +153,7 @@ export default function CharacterCountTool() {
                               className="h-8 border-gray-300 text-xs hover:border-gray-400 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"
                             >
                               <FileText className="mr-1 h-3 w-3" />
-                              {sample.name}
+                              {t(index === 0 ? 'japaneseSample' : index === 1 ? 'englishSample' : 'codeSample')}
                             </Button>
                           ))}
                         </div>
@@ -164,21 +166,15 @@ export default function CharacterCountTool() {
                             className="h-8 w-8 p-0 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
                           >
                             <Info className="h-4 w-4" />
-                            <span className="sr-only">ツール情報</span>
+                            <span className="sr-only">{t('toolInfo')}</span>
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent side="left" className="max-w-xs">
                           <div className="space-y-1">
-                            <p className="font-semibold">文字数カウント機能</p>
-                            <p className="text-xs">
-                              • 日本語（ひらがな、カタカナ、漢字）を分別カウント
-                            </p>
-                            <p className="text-xs">
-                              • リアルタイムでカウント結果を表示
-                            </p>
-                            <p className="text-xs">
-                              • バイト数・読書時間も計算
-                            </p>
+                            <p className="font-semibold">{t('toolInfo')}</p>
+                            <p className="text-xs">{t('featureJapanese')}</p>
+                            <p className="text-xs">{t('featureRealtime')}</p>
+                            <p className="text-xs">{t('featureBytes')}</p>
                           </div>
                         </TooltipContent>
                       </Tooltip>
@@ -186,7 +182,7 @@ export default function CharacterCountTool() {
                     <textarea
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
-                      placeholder="カウントしたいテキストをここに入力または貼り付けてください..."
+                      placeholder={t('placeholder')}
                       className="h-[450px] w-full rounded-lg border border-gray-300 bg-white p-4 font-mono text-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:placeholder-gray-500"
                       aria-label="Text input area"
                     />
@@ -198,7 +194,7 @@ export default function CharacterCountTool() {
                         aria-label="Clear all"
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
-                        Clear
+                        {t('clear')}
                       </Button>
                       <Button
                         onClick={copyStats}
@@ -210,12 +206,12 @@ export default function CharacterCountTool() {
                         {copied ? (
                           <>
                             <Check className="mr-2 h-4 w-4 text-green-600" />
-                            コピーしました
+                            {t('copied')}
                           </>
                         ) : (
                           <>
                             <Copy className="mr-2 h-4 w-4" />
-                            統計をコピー
+                            {t('copyStats')}
                           </>
                         )}
                       </Button>
@@ -226,12 +222,12 @@ export default function CharacterCountTool() {
                   <div className="space-y-3">
                     <div className="flex min-h-[48px] items-center justify-between py-2">
                       <label className="text-base font-semibold text-gray-700 dark:text-gray-300">
-                        カウント結果
+                        {t('countResults')}
                       </label>
                       {result && result.characters > 0 && (
                         <span className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400">
                           <Check className="h-3 w-3" />
-                          リアルタイム更新
+                          {t('realtimeUpdate')}
                         </span>
                       )}
                     </div>
@@ -242,13 +238,13 @@ export default function CharacterCountTool() {
                           <CardContent className="p-4">
                             <div className="flex items-center gap-2 mb-2">
                               <Hash className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-                              <span className="text-sm font-medium text-purple-700 dark:text-purple-300">文字数</span>
+                              <span className="text-sm font-medium text-purple-700 dark:text-purple-300">{t('characters')}</span>
                             </div>
                             <div className="text-2xl font-bold text-purple-800 dark:text-purple-200">
                               {result ? formatNumber(result.characters) : '0'}
                             </div>
                             <div className="text-xs text-purple-600 dark:text-purple-400">
-                              (空白除く: {result ? formatNumber(result.charactersWithoutSpaces) : '0'})
+                              ({t('withoutSpaces')} {result ? formatNumber(result.charactersWithoutSpaces) : '0'})
                             </div>
                           </CardContent>
                         </Card>
@@ -256,13 +252,13 @@ export default function CharacterCountTool() {
                           <CardContent className="p-4">
                             <div className="flex items-center gap-2 mb-2">
                               <Type className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">単語数</span>
+                              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">{t('words')}</span>
                             </div>
                             <div className="text-2xl font-bold text-blue-800 dark:text-blue-200">
                               {result ? formatNumber(result.words) : '0'}
                             </div>
                             <div className="text-xs text-blue-600 dark:text-blue-400">
-                              行数: {result ? formatNumber(result.lines) : '0'}
+                              {t('lineCount')} {result ? formatNumber(result.lines) : '0'}
                             </div>
                           </CardContent>
                         </Card>

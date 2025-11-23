@@ -1,6 +1,7 @@
 'use client';
 
 import { Check, Copy, Download, RefreshCw, Trash2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState, useCallback } from 'react';
 
 import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
@@ -19,6 +20,7 @@ type UUIDVersion = 'v1' | 'v4' | 'nil';
 type UUIDCase = 'uppercase' | 'lowercase';
 
 export function UUIDGeneratorTool() {
+  const t = useTranslations('uuidGeneratorTool');
   const [uuids, setUuids] = useState<string[]>([]);
   const [version, setVersion] = useState<UUIDVersion>('v4');
   const [count, setCount] = useState<number>(1);
@@ -132,20 +134,20 @@ export function UUIDGeneratorTool() {
   return (
     <TooltipProvider>
       <CommonLayoutWithHeader
-        title="UUID生成ツール"
-        description="UUID（Universally Unique Identifier）を簡単に生成できるツールです。v1、v4、Nil UUIDに対応しています。"
+        title={t('title')}
+        description={t('description')}
         breadcrumbs={[
           { label: 'Home', href: '/' },
           { label: 'Tools', href: '/tools' },
-          { label: 'UUID生成ツール', isCurrentPage: true },
+          { label: t('title'), isCurrentPage: true },
         ]}
       >
         <Card className="border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
           <CardContent className="p-8">
             <Tabs defaultValue="generator" className="w-full">
               <TabsList className="mx-auto mb-8 grid w-full max-w-md grid-cols-2 text-black dark:text-white">
-                <TabsTrigger value="generator">ジェネレーター</TabsTrigger>
-                <TabsTrigger value="settings">設定</TabsTrigger>
+                <TabsTrigger value="generator">{t('generator')}</TabsTrigger>
+                <TabsTrigger value="settings">{t('settings')}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="generator" className="space-y-6">
@@ -157,7 +159,7 @@ export function UUIDGeneratorTool() {
                     className="flex-1 min-w-[150px]"
                   >
                     <RefreshCw className="mr-2 h-4 w-4" />
-                    UUID v4生成
+                    {t('generateV4')}
                   </Button>
                   <Button
                     onClick={() => handleQuickGenerate('v1')}
@@ -165,7 +167,7 @@ export function UUIDGeneratorTool() {
                     className="flex-1 min-w-[150px]"
                   >
                     <RefreshCw className="mr-2 h-4 w-4" />
-                    UUID v1生成
+                    {t('generateV1')}
                   </Button>
                   <Button
                     onClick={() => handleQuickGenerate('nil')}
@@ -173,7 +175,7 @@ export function UUIDGeneratorTool() {
                     className="flex-1 min-w-[150px]"
                   >
                     <RefreshCw className="mr-2 h-4 w-4" />
-                    Nil UUID生成
+                    {t('generateNil')}
                   </Button>
                 </div>
 
@@ -185,11 +187,11 @@ export function UUIDGeneratorTool() {
                     className="min-w-[200px]"
                   >
                     <RefreshCw className="mr-2 h-5 w-5" />
-                    生成
+                    {t('generate')}
                   </Button>
                   <div className="flex items-center gap-2">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      生成数:
+                      {t('generationCount')}
                     </label>
                     <input
                       type="number"
@@ -207,7 +209,7 @@ export function UUIDGeneratorTool() {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <label className="text-base font-semibold text-gray-700 dark:text-gray-300">
-                        生成されたUUID ({uuids.length}個)
+                        {t('generatedUUIDs')} ({uuids.length}{t('items')})
                       </label>
                       <div className="flex gap-2">
                         <Button
@@ -219,12 +221,12 @@ export function UUIDGeneratorTool() {
                           {allCopied ? (
                             <>
                               <Check className="mr-2 h-4 w-4 text-green-600" />
-                              コピーしました
+                              {t('copied')}
                             </>
                           ) : (
                             <>
                               <Copy className="mr-2 h-4 w-4" />
-                              全てコピー
+                              {t('copyAll')}
                             </>
                           )}
                         </Button>
@@ -235,7 +237,7 @@ export function UUIDGeneratorTool() {
                           className="border-gray-300 hover:border-gray-400 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"
                         >
                           <Download className="mr-2 h-4 w-4" />
-                          ダウンロード
+                          {t('download')}
                         </Button>
                         <Button
                           onClick={handleClear}
@@ -244,7 +246,7 @@ export function UUIDGeneratorTool() {
                           className="border-gray-300 hover:border-gray-400 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
-                          クリア
+                          {t('clear')}
                         </Button>
                       </div>
                     </div>
@@ -281,7 +283,7 @@ export function UUIDGeneratorTool() {
                 {uuids.length === 0 && (
                   <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center dark:border-gray-600 dark:bg-gray-900">
                     <p className="text-gray-500 dark:text-gray-400">
-                      上のボタンをクリックしてUUIDを生成してください
+                      {t('clickToGenerate')}
                     </p>
                   </div>
                 )}
@@ -291,7 +293,7 @@ export function UUIDGeneratorTool() {
                 <div className="space-y-6">
                   <div>
                     <label className="text-base font-semibold text-gray-700 dark:text-gray-300 mb-3 block">
-                      UUIDバージョン
+                      {t('uuidVersion')}
                     </label>
                     <div className="space-y-3">
                       <label className="flex items-center space-x-3 cursor-pointer">
@@ -304,9 +306,9 @@ export function UUIDGeneratorTool() {
                           className="h-4 w-4 text-blue-600"
                         />
                         <div>
-                          <div className="font-medium">UUID v4（推奨）</div>
+                          <div className="font-medium">{t('v4Recommended')}</div>
                           <div className="text-sm text-gray-600 dark:text-gray-400">
-                            ランダムに生成されるUUID。最も一般的に使用されます
+                            {t('v4Description')}
                           </div>
                         </div>
                       </label>
@@ -320,9 +322,9 @@ export function UUIDGeneratorTool() {
                           className="h-4 w-4 text-blue-600"
                         />
                         <div>
-                          <div className="font-medium">UUID v1</div>
+                          <div className="font-medium">{t('v1Title')}</div>
                           <div className="text-sm text-gray-600 dark:text-gray-400">
-                            タイムスタンプベースのUUID。時系列順に並べることができます
+                            {t('v1Description')}
                           </div>
                         </div>
                       </label>
@@ -336,9 +338,9 @@ export function UUIDGeneratorTool() {
                           className="h-4 w-4 text-blue-600"
                         />
                         <div>
-                          <div className="font-medium">Nil UUID</div>
+                          <div className="font-medium">{t('nilTitle')}</div>
                           <div className="text-sm text-gray-600 dark:text-gray-400">
-                            すべてゼロのUUID（00000000-0000-0000-0000-000000000000）
+                            {t('nilDescription')}
                           </div>
                         </div>
                       </label>
@@ -347,7 +349,7 @@ export function UUIDGeneratorTool() {
 
                   <div>
                     <label className="text-base font-semibold text-gray-700 dark:text-gray-300 mb-3 block">
-                      フォーマット設定
+                      {t('formatSettings')}
                     </label>
                     <div className="space-y-3">
                       <label className="flex items-center space-x-3 cursor-pointer">
@@ -358,16 +360,16 @@ export function UUIDGeneratorTool() {
                           className="h-4 w-4 text-blue-600"
                         />
                         <div>
-                          <div className="font-medium">ハイフンを含める</div>
+                          <div className="font-medium">{t('includeHyphens')}</div>
                           <div className="text-sm text-gray-600 dark:text-gray-400">
-                            標準的なUUID形式（8-4-4-4-12）
+                            {t('standardFormat')}
                           </div>
                         </div>
                       </label>
 
                       <div className="pl-7">
                         <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
-                          大文字/小文字
+                          {t('caseSettings')}
                         </label>
                         <div className="space-y-2">
                           <label className="flex items-center space-x-3 cursor-pointer">
@@ -379,7 +381,7 @@ export function UUIDGeneratorTool() {
                               onChange={(e) => setUuidCase(e.target.value as UUIDCase)}
                               className="h-4 w-4 text-blue-600"
                             />
-                            <span className="text-sm">小文字</span>
+                            <span className="text-sm">{t('lowercase')}</span>
                           </label>
                           <label className="flex items-center space-x-3 cursor-pointer">
                             <input
@@ -390,7 +392,7 @@ export function UUIDGeneratorTool() {
                               onChange={(e) => setUuidCase(e.target.value as UUIDCase)}
                               className="h-4 w-4 text-blue-600"
                             />
-                            <span className="text-sm">大文字</span>
+                            <span className="text-sm">{t('uppercase')}</span>
                           </label>
                         </div>
                       </div>
@@ -398,22 +400,22 @@ export function UUIDGeneratorTool() {
                   </div>
 
                   <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                    <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">UUIDとは？</h3>
+                    <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">{t('aboutUUID')}</h3>
                     <ul className="space-y-2 text-sm text-blue-800 dark:text-blue-200">
-                      <li>• UUIDは128ビットの識別子で、事実上一意な値を生成します</li>
-                      <li>• データベースのプライマリーキーやセッションIDなどに使用されます</li>
-                      <li>• v4は暗号学的に安全な乱数を使用して生成されます</li>
-                      <li>• v1はタイムスタンプとノード情報から生成されます</li>
+                      <li>{t('uuidInfo1')}</li>
+                      <li>{t('uuidInfo2')}</li>
+                      <li>{t('uuidInfo3')}</li>
+                      <li>{t('uuidInfo4')}</li>
                     </ul>
                   </div>
 
                   <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                    <h3 className="font-semibold text-green-900 dark:text-green-100 mb-2">使用例</h3>
+                    <h3 className="font-semibold text-green-900 dark:text-green-100 mb-2">{t('usageExamples')}</h3>
                     <ul className="space-y-2 text-sm text-green-800 dark:text-green-200">
-                      <li>• <strong>データベース:</strong> プライマリーキーとして使用</li>
-                      <li>• <strong>API:</strong> 一意なリクエストIDの生成</li>
-                      <li>• <strong>セッション:</strong> セッションIDの生成</li>
-                      <li>• <strong>ファイル:</strong> 一意なファイル名の生成</li>
+                      <li>• <strong>{t('usageDatabase')}</strong> {t('usageDatabaseDesc')}</li>
+                      <li>• <strong>{t('usageAPI')}</strong> {t('usageAPIDesc')}</li>
+                      <li>• <strong>{t('usageSession')}</strong> {t('usageSessionDesc')}</li>
+                      <li>• <strong>{t('usageFile')}</strong> {t('usageFileDesc')}</li>
                     </ul>
                   </div>
                 </div>
