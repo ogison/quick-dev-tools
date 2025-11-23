@@ -1,7 +1,8 @@
 'use client';
 
-import { Search } from 'lucide-react';
 import { useState } from 'react';
+
+import { Search } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
@@ -60,7 +61,9 @@ export default function ToolsDirectory() {
   // Get translated tool data
   const getToolTranslation = (toolId: string) => {
     const key = TOOL_TRANSLATION_KEYS[toolId as keyof typeof TOOL_TRANSLATION_KEYS];
-    if (!key) return null;
+    if (!key) {
+      return null;
+    }
     return {
       title: t(key.titleKey as 'title'),
       description: t(key.descriptionKey as 'description'),
@@ -116,7 +119,7 @@ export default function ToolsDirectory() {
           {filteredTools.length}{t('toolsFound')}
           {searchQuery && (
             <span className="ml-2">
-              {t('searchResults')} "<span className="font-medium">{searchQuery}</span>"
+              {t('searchResults')} &ldquo;<span className="font-medium">{searchQuery}</span>&rdquo;
             </span>
           )}
         </p>

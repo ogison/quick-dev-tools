@@ -1,7 +1,6 @@
 'use client';
 
 import { Check, Copy, Download, FileCode2, Trash2, ChevronDown, Info } from 'lucide-react';
-import { useTheme } from 'next-themes';
 import { useState, useEffect, useCallback } from 'react';
 
 import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
@@ -100,7 +99,6 @@ LIMIT 10;`,
 };
 
 export default function FormatTool() {
-  const { theme } = useTheme();
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [error, setError] = useState('');
