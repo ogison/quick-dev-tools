@@ -1,6 +1,7 @@
 'use client';
 
 import { Check, Mail, MessageSquare, Send, User, AlertCircle } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState, useCallback } from 'react';
 
 
@@ -23,6 +24,7 @@ interface FormErrors {
 }
 
 export default function ContactForm() {
+  const t = useTranslations('contact');
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -37,28 +39,28 @@ export default function ContactForm() {
     const newErrors: FormErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'お名前は必須項目です';
+      newErrors.name = t('nameRequired');
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'メールアドレスは必須項目です';
+      newErrors.email = t('emailRequired');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = '有効なメールアドレスを入力してください';
+      newErrors.email = t('emailInvalid');
     }
 
     if (!formData.subject.trim()) {
-      newErrors.subject = '件名は必須項目です';
+      newErrors.subject = t('subjectRequired');
     }
 
     if (!formData.message.trim()) {
-      newErrors.message = 'メッセージは必須項目です';
+      newErrors.message = t('messageRequired');
     } else if (formData.message.trim().length < 10) {
-      newErrors.message = 'メッセージは10文字以上で入力してください';
+      newErrors.message = t('messageMinLength');
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [formData.name, formData.email, formData.subject, formData.message]);
+  }, [formData.name, formData.email, formData.subject, formData.message, t]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -110,7 +112,7 @@ export default function ContactForm() {
 
   const handleClear = () => {
     const shouldClear = Object.values(formData).some((value) => value.trim())
-      ? window.confirm('フォームの内容をクリアします。よろしいですか？')
+      ? window.confirm(t('confirmClear'))
       : true;
 
     if (shouldClear) {
@@ -128,11 +130,11 @@ export default function ContactForm() {
   if (isSubmitted) {
     return (
       <CommonLayoutWithHeader
-        title="お問い合わせ"
-        description="ご質問やご意見がございましたら、お気軽にお問い合わせください。"
+        title={t('title')}
+        description={t('description')}
         breadcrumbs={[
           { label: 'Home', href: '/' },
-          { label: 'お問い合わせ', isCurrentPage: true },
+          { label: t('title'), isCurrentPage: true },
         ]}
       >
         <Card className="border-green-200 bg-green-50 shadow-lg dark:border-green-700 dark:bg-green-900/20">
@@ -141,13 +143,13 @@ export default function ContactForm() {
               <Check className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
             <h2 className="mb-4 text-2xl font-bold text-green-800 dark:text-green-300">
-              お問い合わせありがとうございます
+              {t('thankYou')}
             </h2>
             <Button
               onClick={() => setIsSubmitted(false)}
               className="bg-green-600 text-white hover:bg-green-700"
             >
-              新しいお問い合わせ
+              {t('newInquiry')}
             </Button>
           </CardContent>
         </Card>
@@ -157,11 +159,11 @@ export default function ContactForm() {
 
   return (
     <CommonLayoutWithHeader
-      title="お問い合わせ"
-      description="ご質問やご意見がございましたら、お気軽にお問い合わせください。"
+      title={t('title')}
+      description={t('description')}
       breadcrumbs={[
         { label: 'Home', href: '/' },
-        { label: 'お問い合わせ', isCurrentPage: true },
+        { label: t('title'), isCurrentPage: true },
       ]}
     >
 
@@ -172,7 +174,7 @@ export default function ContactForm() {
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                     <User className="h-4 w-4" />
-                    お名前 <span className="text-red-500">*</span>
+                    {t('name')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -183,7 +185,7 @@ export default function ContactForm() {
                         ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20 dark:border-red-700 dark:bg-red-900/20'
                         : 'border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-900'
                     } dark:text-gray-100`}
-                    placeholder="山田太郎"
+                    placeholder={t('namePlaceholder')}
                   />
                   {errors.name && (
                     <p className="flex items-center gap-1 text-sm text-red-600 dark:text-red-400">
@@ -196,7 +198,7 @@ export default function ContactForm() {
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                     <Mail className="h-4 w-4" />
-                    メールアドレス <span className="text-red-500">*</span>
+                    {t('email')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="email"
@@ -221,7 +223,7 @@ export default function ContactForm() {
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                   <MessageSquare className="h-4 w-4" />
-                  件名 <span className="text-red-500">*</span>
+                  {t('subject')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -232,7 +234,7 @@ export default function ContactForm() {
                       ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20 dark:border-red-700 dark:bg-red-900/20'
                       : 'border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-900'
                   } dark:text-gray-100`}
-                  placeholder="お問い合わせの件名をご入力ください"
+                  placeholder={t('subjectPlaceholder')}
                 />
                 {errors.subject && (
                   <p className="flex items-center gap-1 text-sm text-red-600 dark:text-red-400">
@@ -245,7 +247,7 @@ export default function ContactForm() {
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                   <MessageSquare className="h-4 w-4" />
-                  メッセージ <span className="text-red-500">*</span>
+                  {t('message')} <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   value={formData.message}
@@ -256,7 +258,7 @@ export default function ContactForm() {
                       ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20 dark:border-red-700 dark:bg-red-900/20'
                       : 'border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-900'
                   } dark:text-gray-100`}
-                  placeholder="お問い合わせ内容を詳しくご記入ください（10文字以上）"
+                  placeholder={t('messagePlaceholder')}
                 />
                 {errors.message && (
                   <p className="flex items-center gap-1 text-sm text-red-600 dark:text-red-400">
@@ -265,7 +267,7 @@ export default function ContactForm() {
                   </p>
                 )}
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  現在の文字数: {formData.message.length}文字
+                  {t('characterCount', { count: formData.message.length })}
                 </p>
               </div>
 
@@ -278,12 +280,12 @@ export default function ContactForm() {
                   {isSubmitting ? (
                     <>
                       <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                      送信中...
+                      {t('submitting')}
                     </>
                   ) : (
                     <>
                       <Send className="mr-2 h-4 w-4" />
-                      送信
+                      {t('submit')}
                     </>
                   )}
                 </Button>
@@ -293,7 +295,7 @@ export default function ContactForm() {
                   variant="outline"
                   className="border-gray-300 hover:border-gray-400 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"
                 >
-                  クリア
+                  {t('clear')}
                 </Button>
               </div>
             </form>
