@@ -10,6 +10,34 @@ export interface Tool {
   featured?: boolean;
 }
 
+// Translation keys for tools
+export const TOOL_TRANSLATION_KEYS = {
+  format: {
+    titleKey: 'tools.format.title',
+    descriptionKey: 'tools.format.description',
+  },
+  timestamp: {
+    titleKey: 'tools.timestamp.title',
+    descriptionKey: 'tools.timestamp.description',
+  },
+  'url-encoder': {
+    titleKey: 'tools.urlEncoder.title',
+    descriptionKey: 'tools.urlEncoder.description',
+  },
+  'character-count': {
+    titleKey: 'tools.characterCount.title',
+    descriptionKey: 'tools.characterCount.description',
+  },
+  'uuid-generator': {
+    titleKey: 'tools.uuidGenerator.title',
+    descriptionKey: 'tools.uuidGenerator.description',
+  },
+  'markdown-preview': {
+    titleKey: 'tools.markdownPreview.title',
+    descriptionKey: 'tools.markdownPreview.description',
+  },
+} as const;
+
 export const TOOLS: Tool[] = [
   {
     id: 'format',
@@ -234,13 +262,21 @@ export const TOOLS: Tool[] = [
   },
 ];
 
-// カテゴリ定義
+// カテゴリ定義 (with translation keys)
 export const TOOL_CATEGORIES = {
   format: 'フォーマッター',
   converter: 'コンバーター',
   encoder: 'エンコーダー',
   generator: 'ジェネレーター',
   utility: 'ユーティリティ',
+} as const;
+
+export const CATEGORY_TRANSLATION_KEYS = {
+  format: 'tools.categories.format',
+  converter: 'tools.categories.converter',
+  encoder: 'tools.categories.encoder',
+  generator: 'tools.categories.generator',
+  utility: 'tools.categories.utility',
 } as const;
 
 // フィーチャードツールを取得
