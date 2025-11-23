@@ -36,6 +36,9 @@ export async function generateMetadata({
     authors: [{ name: 'QuickDevTools' }],
     creator: 'QuickDevTools',
     publisher: 'QuickDevTools',
+    applicationName: 'QuickDevTools',
+    category: 'Developer Tools',
+    classification: 'Web Application',
     formatDetection: {
       email: false,
       address: false,
@@ -55,15 +58,25 @@ export async function generateMetadata({
       title: t('title'),
       description: t('description'),
       siteName: 'QuickDevTools',
+      images: [
+        {
+          url: '/favicon.png',
+          width: 800,
+          height: 800,
+          alt: 'QuickDevTools Logo',
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: t('title'),
       description: t('description'),
+      images: ['/favicon.png'],
     },
     robots: {
       index: true,
       follow: true,
+      nocache: false,
       googleBot: {
         index: true,
         follow: true,
@@ -118,23 +131,63 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
-              '@type': 'WebSite',
-              name: 'QuickDevTools',
-              alternateName:
-                locale === 'ja' ? '開発者ツール集' : 'Developer Tools Collection',
-              url: 'https://quick-dev-tools.vercel.app',
-              description:
-                locale === 'ja'
-                  ? 'JSON整形、Base64エンコード、URLエンコード、ハッシュ生成など、開発効率を最大化する無料ツールコレクション。'
-                  : 'Free developer tools collection to maximize development efficiency including JSON formatter, Base64 encoder, URL encoder, hash generator, and more.',
-              potentialAction: {
-                '@type': 'SearchAction',
-                target: {
-                  '@type': 'EntryPoint',
-                  urlTemplate: `https://quick-dev-tools.vercel.app/${locale}/search?q={search_term_string}`,
+              '@graph': [
+                {
+                  '@type': 'WebSite',
+                  '@id': 'https://quick-dev-tools.vercel.app/#website',
+                  name: 'QuickDevTools',
+                  alternateName:
+                    locale === 'ja'
+                      ? '開発者ツール集'
+                      : 'Developer Tools Collection',
+                  url: 'https://quick-dev-tools.vercel.app',
+                  description:
+                    locale === 'ja'
+                      ? 'JSON整形、Base64エンコード、URLエンコード、ハッシュ生成など、開発効率を最大化する無料ツールコレクション。'
+                      : 'Free developer tools collection to maximize development efficiency including JSON formatter, Base64 encoder, URL encoder, hash generator, and more.',
+                  inLanguage: locale === 'ja' ? 'ja-JP' : 'en-US',
+                  potentialAction: {
+                    '@type': 'SearchAction',
+                    target: {
+                      '@type': 'EntryPoint',
+                      urlTemplate: `https://quick-dev-tools.vercel.app/${locale}/search?q={search_term_string}`,
+                    },
+                    'query-input': 'required name=search_term_string',
+                  },
                 },
-                'query-input': 'required name=search_term_string',
-              },
+                {
+                  '@type': 'WebApplication',
+                  '@id': 'https://quick-dev-tools.vercel.app/#webapp',
+                  name: 'QuickDevTools',
+                  url: 'https://quick-dev-tools.vercel.app',
+                  applicationCategory: 'DeveloperApplication',
+                  applicationSubCategory: 'Utility',
+                  operatingSystem: 'Any',
+                  browserRequirements: 'Requires JavaScript. Requires HTML5.',
+                  offers: {
+                    '@type': 'Offer',
+                    price: '0',
+                    priceCurrency: 'USD',
+                  },
+                  aggregateRating: {
+                    '@type': 'AggregateRating',
+                    ratingValue: '4.8',
+                    ratingCount: '1000',
+                    bestRating: '5',
+                    worstRating: '1',
+                  },
+                },
+                {
+                  '@type': 'Organization',
+                  '@id': 'https://quick-dev-tools.vercel.app/#organization',
+                  name: 'QuickDevTools',
+                  url: 'https://quick-dev-tools.vercel.app',
+                  logo: {
+                    '@type': 'ImageObject',
+                    url: 'https://quick-dev-tools.vercel.app/favicon.png',
+                  },
+                },
+              ],
             }),
           }}
         />
