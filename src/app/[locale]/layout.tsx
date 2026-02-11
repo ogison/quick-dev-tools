@@ -1,10 +1,11 @@
 import { notFound } from 'next/navigation';
-import { routing } from '@/i18n/routing';
+
 import { DefaultSkipLinks } from '@/components/a11y/SkipLink';
 import { Footer } from '@/components/Footer';
 import Header from '@/components/Header';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { PerformanceMonitor } from '@/components/shared/PerformanceMonitor';
+import { routing } from '@/i18n/routing';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
