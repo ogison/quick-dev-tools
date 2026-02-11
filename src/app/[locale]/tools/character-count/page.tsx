@@ -17,9 +17,10 @@ export async function generateMetadata({
   return {
     title,
     description,
-    keywords: locale === 'ja'
-      ? '文字数カウント, 文字カウンター, ワードカウント, テキスト解析, オンラインツール'
-      : 'character count, word count, character counter, text analysis, online tool',
+    keywords:
+      locale === 'ja'
+        ? '文字数カウント, 文字カウンター, ワードカウント, テキスト解析, オンラインツール'
+        : 'character count, word count, character counter, text analysis, online tool',
     openGraph: {
       title,
       description,

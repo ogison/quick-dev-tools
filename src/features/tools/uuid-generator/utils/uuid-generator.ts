@@ -27,9 +27,7 @@ export function generateUUIDv1(): string {
   const timestamp = new Date().getTime();
   const timeLow = (timestamp & 0xffffffff).toString(16).padStart(8, '0');
   const timeMid = ((timestamp / 0x100000000) & 0xffff).toString(16).padStart(4, '0');
-  const timeHi = (((timestamp / 0x1000000000000) & 0x0fff) | 0x1000)
-    .toString(16)
-    .padStart(4, '0');
+  const timeHi = (((timestamp / 0x1000000000000) & 0x0fff) | 0x1000).toString(16).padStart(4, '0');
 
   const clockSeq = ((Math.random() * 0x3fff) | 0x8000).toString(16).padStart(4, '0');
 
@@ -53,8 +51,7 @@ export function generateNilUUID(): string {
  * Validate UUID format
  */
 export function isValidUUID(uuid: string): boolean {
-  const uuidRegex =
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   const nilUuidRegex = /^0{8}-0{4}-0{4}-0{4}-0{12}$/;
 
   return uuidRegex.test(uuid) || nilUuidRegex.test(uuid);

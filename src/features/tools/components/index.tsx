@@ -26,7 +26,7 @@ import {
   TOOL_TRANSLATION_KEYS,
   CATEGORY_TRANSLATION_KEYS,
   searchTools,
-  getToolsByCategory
+  getToolsByCategory,
 } from '@/constants/tools';
 import { Link } from '@/i18n/routing';
 
@@ -105,7 +105,11 @@ export default function ToolsDirectory() {
             <SelectItem value="all">{t('allCategories')}</SelectItem>
             {categories.map(([key]) => (
               <SelectItem key={key} value={key}>
-                {t(CATEGORY_TRANSLATION_KEYS[key as keyof typeof CATEGORY_TRANSLATION_KEYS] as 'title')}
+                {t(
+                  CATEGORY_TRANSLATION_KEYS[
+                    key as keyof typeof CATEGORY_TRANSLATION_KEYS
+                  ] as 'title'
+                )}
               </SelectItem>
             ))}
           </SelectContent>
@@ -115,7 +119,8 @@ export default function ToolsDirectory() {
       {/* 結果カウンター */}
       <div className="px-4 py-2">
         <p className="text-sm text-[#49749c]">
-          {filteredTools.length}{t('toolsFound')}
+          {filteredTools.length}
+          {t('toolsFound')}
           {searchQuery && (
             <span className="ml-2">
               {t('searchResults')} &ldquo;<span className="font-medium">{searchQuery}</span>&rdquo;
@@ -155,7 +160,11 @@ export default function ToolsDirectory() {
                         {tool.category && (
                           <button className="flex h-8 w-full max-w-[100px] min-w-[60px] cursor-pointer items-center justify-center overflow-hidden rounded-full bg-[#e7edf4] px-3 text-xs leading-normal font-medium text-[#0d151c]">
                             <span className="truncate">
-                              {t(CATEGORY_TRANSLATION_KEYS[tool.category as keyof typeof CATEGORY_TRANSLATION_KEYS] as 'title')}
+                              {t(
+                                CATEGORY_TRANSLATION_KEYS[
+                                  tool.category as keyof typeof CATEGORY_TRANSLATION_KEYS
+                                ] as 'title'
+                              )}
                             </span>
                           </button>
                         )}
@@ -176,12 +185,8 @@ export default function ToolsDirectory() {
         ) : (
           <div className="rounded-xl border border-[#cedce8] bg-white p-12 text-center">
             <Search className="mx-auto mb-4 h-12 w-12 text-[#49749c]" />
-            <h3 className="mb-2 text-lg font-semibold text-[#0d151c]">
-              {t('notFound')}
-            </h3>
-            <p className="text-[#49749c]">
-              {t('notFoundDescription')}
-            </p>
+            <h3 className="mb-2 text-lg font-semibold text-[#0d151c]">{t('notFound')}</h3>
+            <p className="text-[#49749c]">{t('notFoundDescription')}</p>
             <button
               onClick={() => {
                 setSearchQuery('');
@@ -199,9 +204,7 @@ export default function ToolsDirectory() {
       <div className="mt-8 px-4">
         <div className="rounded-xl border border-[#0b80ee]/20 bg-[#0b80ee]/5 p-6">
           <h3 className="mb-2 font-semibold text-[#0b80ee]">{t('newToolsTitle')}</h3>
-          <p className="text-[#49749c]">
-            {t('newToolsDescription')}
-          </p>
+          <p className="text-[#49749c]">{t('newToolsDescription')}</p>
         </div>
       </div>
     </CommonLayoutWithHeader>

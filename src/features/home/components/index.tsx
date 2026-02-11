@@ -29,9 +29,7 @@ export default function HomePage() {
       <section className="py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="mb-4 text-5xl font-bold">QuickDevTools</h1>
-          <p className="mx-auto max-w-2xl text-lg text-gray-600 dark:text-gray-400">
-            {t('hero')}
-          </p>
+          <p className="mx-auto max-w-2xl text-lg text-gray-600 dark:text-gray-400">{t('hero')}</p>
         </div>
       </section>
 
@@ -45,16 +43,16 @@ export default function HomePage() {
               const translated = getToolTranslation(tool.id);
               return (
                 <Link key={tool.id} href={tool.href} className="group">
-                  <Card className="h-[420px] cursor-pointer overflow-hidden border-gray-200 bg-white transition-all duration-200 hover:scale-105 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-gray-900/25 flex flex-col">
+                  <Card className="flex h-[420px] cursor-pointer flex-col overflow-hidden border-gray-200 bg-white transition-all duration-200 hover:scale-105 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-gray-900/25">
                     <div className="h-48 w-full flex-shrink-0">{tool.icon}</div>
-                    <CardContent className="p-6 flex flex-col flex-grow">
+                    <CardContent className="flex flex-grow flex-col p-6">
                       <h3 className="mb-2 text-xl font-semibold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
                         {translated?.title || tool.title}
                       </h3>
-                      <p className="mb-4 text-sm text-gray-600 dark:text-gray-400 flex-grow">
+                      <p className="mb-4 flex-grow text-sm text-gray-600 dark:text-gray-400">
                         {translated?.description || tool.description}
                       </p>
-                      <div className="text-sm font-medium text-blue-600 transition-colors group-hover:text-blue-700 dark:text-blue-400 dark:group-hover:text-blue-300 mt-auto">
+                      <div className="mt-auto text-sm font-medium text-blue-600 transition-colors group-hover:text-blue-700 dark:text-blue-400 dark:group-hover:text-blue-300">
                         Open →
                       </div>
                     </CardContent>

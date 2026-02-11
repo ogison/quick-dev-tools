@@ -1,6 +1,5 @@
 'use client';
 
-
 import { Languages } from 'lucide-react';
 import { useLocale } from 'next-intl';
 import { useTransition } from 'react';

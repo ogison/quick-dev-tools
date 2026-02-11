@@ -79,9 +79,7 @@ export async function generateMetadata(): Promise<Metadata> {
         { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
         { url: '/favicon.svg', type: 'image/svg+xml' },
       ],
-      apple: [
-        { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-      ],
+      apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
     },
     manifest: '/manifest.json',
   };
@@ -115,10 +113,7 @@ export default async function RootLayout({
                   '@type': 'WebSite',
                   '@id': 'https://quick-dev-tools.vercel.app/#website',
                   name: 'QuickDevTools',
-                  alternateName:
-                    locale === 'ja'
-                      ? '開発者ツール集'
-                      : 'Developer Tools Collection',
+                  alternateName: locale === 'ja' ? '開発者ツール集' : 'Developer Tools Collection',
                   url: 'https://quick-dev-tools.vercel.app',
                   description:
                     locale === 'ja'
@@ -174,9 +169,7 @@ export default async function RootLayout({
       <body
         className={`${GeistSans.variable} ${GeistMono.variable} flex min-h-screen flex-col antialiased`}
       >
-        <NextIntlClientProvider messages={messages}>
-          {children}
-        </NextIntlClientProvider>
+        <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
       </body>
     </html>
   );

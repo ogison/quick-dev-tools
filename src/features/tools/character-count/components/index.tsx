@@ -10,12 +10,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-import { 
-  countCharacters, 
-  formatNumber, 
-  calculateReadingTime, 
+import {
+  countCharacters,
+  formatNumber,
+  calculateReadingTime,
   getTextStatsSummary,
-  CharacterCountResult 
+  CharacterCountResult,
 } from '../utils/character-count';
 
 // サンプルテキスト
@@ -153,7 +153,13 @@ export default function CharacterCountTool() {
                               className="h-8 border-gray-300 text-xs hover:border-gray-400 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"
                             >
                               <FileText className="mr-1 h-3 w-3" />
-                              {t(index === 0 ? 'japaneseSample' : index === 1 ? 'englishSample' : 'codeSample')}
+                              {t(
+                                index === 0
+                                  ? 'japaneseSample'
+                                  : index === 1
+                                    ? 'englishSample'
+                                    : 'codeSample'
+                              )}
                             </Button>
                           ))}
                         </div>
@@ -236,23 +242,28 @@ export default function CharacterCountTool() {
                       <div className="grid grid-cols-2 gap-4">
                         <Card className="border-purple-200 bg-purple-50 dark:border-purple-700 dark:bg-purple-900/20">
                           <CardContent className="p-4">
-                            <div className="flex items-center gap-2 mb-2">
+                            <div className="mb-2 flex items-center gap-2">
                               <Hash className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-                              <span className="text-sm font-medium text-purple-700 dark:text-purple-300">{t('characters')}</span>
+                              <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                                {t('characters')}
+                              </span>
                             </div>
                             <div className="text-2xl font-bold text-purple-800 dark:text-purple-200">
                               {result ? formatNumber(result.characters) : '0'}
                             </div>
                             <div className="text-xs text-purple-600 dark:text-purple-400">
-                              ({t('withoutSpaces')} {result ? formatNumber(result.charactersWithoutSpaces) : '0'})
+                              ({t('withoutSpaces')}{' '}
+                              {result ? formatNumber(result.charactersWithoutSpaces) : '0'})
                             </div>
                           </CardContent>
                         </Card>
                         <Card className="border-blue-200 bg-blue-50 dark:border-blue-700 dark:bg-blue-900/20">
                           <CardContent className="p-4">
-                            <div className="flex items-center gap-2 mb-2">
+                            <div className="mb-2 flex items-center gap-2">
                               <Type className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">{t('words')}</span>
+                              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                                {t('words')}
+                              </span>
                             </div>
                             <div className="text-2xl font-bold text-blue-800 dark:text-blue-200">
                               {result ? formatNumber(result.words) : '0'}
@@ -269,13 +280,13 @@ export default function CharacterCountTool() {
                         <CardContent className="p-4">
                           <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
-                              <div className="flex justify-between mb-1">
+                              <div className="mb-1 flex justify-between">
                                 <span className="text-gray-600 dark:text-gray-400">バイト数:</span>
                                 <span className="font-mono text-gray-800 dark:text-gray-200">
                                   {result ? formatNumber(result.bytes) : '0'}
                                 </span>
                               </div>
-                              <div className="flex justify-between mb-1">
+                              <div className="mb-1 flex justify-between">
                                 <span className="text-gray-600 dark:text-gray-400">段落数:</span>
                                 <span className="font-mono text-gray-800 dark:text-gray-200">
                                   {result ? formatNumber(result.paragraphs) : '0'}
@@ -289,9 +300,11 @@ export default function CharacterCountTool() {
                               </div>
                             </div>
                             <div>
-                              <div className="flex items-center gap-1 mb-2">
+                              <div className="mb-2 flex items-center gap-1">
                                 <Clock className="h-3 w-3 text-gray-500" />
-                                <span className="text-gray-600 dark:text-gray-400 text-xs">読書時間目安</span>
+                                <span className="text-xs text-gray-600 dark:text-gray-400">
+                                  読書時間目安
+                                </span>
                               </div>
                               <div className="text-lg font-bold text-gray-800 dark:text-gray-200">
                                 {result ? calculateReadingTime(result.characters) : '-'}
@@ -307,27 +320,29 @@ export default function CharacterCountTool() {
 
               <TabsContent value="details" className="space-y-6">
                 <div className="mx-auto max-w-4xl">
-                  <h3 className="text-center text-lg font-semibold mb-6">詳細分析</h3>
-                  
+                  <h3 className="mb-6 text-center text-lg font-semibold">詳細分析</h3>
+
                   {/* Japanese Character Breakdown */}
-                  <Card className="border-gray-200 dark:border-gray-700 mb-6">
+                  <Card className="mb-6 border-gray-200 dark:border-gray-700">
                     <CardContent className="p-6">
-                      <h4 className="text-md font-semibold mb-4 text-gray-800 dark:text-gray-200">日本語文字分析</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="text-center p-4 rounded-lg bg-red-50 dark:bg-red-900/20">
-                          <div className="text-2xl font-bold text-red-600 dark:text-red-400 mb-1">
+                      <h4 className="text-md mb-4 font-semibold text-gray-800 dark:text-gray-200">
+                        日本語文字分析
+                      </h4>
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                        <div className="rounded-lg bg-red-50 p-4 text-center dark:bg-red-900/20">
+                          <div className="mb-1 text-2xl font-bold text-red-600 dark:text-red-400">
                             {result ? formatNumber(result.hiragana) : '0'}
                           </div>
                           <div className="text-sm text-red-700 dark:text-red-300">ひらがな</div>
                         </div>
-                        <div className="text-center p-4 rounded-lg bg-green-50 dark:bg-green-900/20">
-                          <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-1">
+                        <div className="rounded-lg bg-green-50 p-4 text-center dark:bg-green-900/20">
+                          <div className="mb-1 text-2xl font-bold text-green-600 dark:text-green-400">
                             {result ? formatNumber(result.katakana) : '0'}
                           </div>
                           <div className="text-sm text-green-700 dark:text-green-300">カタカナ</div>
                         </div>
-                        <div className="text-center p-4 rounded-lg bg-orange-50 dark:bg-orange-900/20">
-                          <div className="text-2xl font-bold text-orange-600 dark:text-orange-400 mb-1">
+                        <div className="rounded-lg bg-orange-50 p-4 text-center dark:bg-orange-900/20">
+                          <div className="mb-1 text-2xl font-bold text-orange-600 dark:text-orange-400">
                             {result ? formatNumber(result.kanji) : '0'}
                           </div>
                           <div className="text-sm text-orange-700 dark:text-orange-300">漢字</div>
@@ -339,22 +354,24 @@ export default function CharacterCountTool() {
                   {/* Other Character Types */}
                   <Card className="border-gray-200 dark:border-gray-700">
                     <CardContent className="p-6">
-                      <h4 className="text-md font-semibold mb-4 text-gray-800 dark:text-gray-200">その他の文字分析</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="text-center p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20">
-                          <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">
+                      <h4 className="text-md mb-4 font-semibold text-gray-800 dark:text-gray-200">
+                        その他の文字分析
+                      </h4>
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                        <div className="rounded-lg bg-blue-50 p-4 text-center dark:bg-blue-900/20">
+                          <div className="mb-1 text-2xl font-bold text-blue-600 dark:text-blue-400">
                             {result ? formatNumber(result.alphabetic) : '0'}
                           </div>
                           <div className="text-sm text-blue-700 dark:text-blue-300">英字</div>
                         </div>
-                        <div className="text-center p-4 rounded-lg bg-purple-50 dark:bg-purple-900/20">
-                          <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">
+                        <div className="rounded-lg bg-purple-50 p-4 text-center dark:bg-purple-900/20">
+                          <div className="mb-1 text-2xl font-bold text-purple-600 dark:text-purple-400">
                             {result ? formatNumber(result.numeric) : '0'}
                           </div>
                           <div className="text-sm text-purple-700 dark:text-purple-300">数字</div>
                         </div>
-                        <div className="text-center p-4 rounded-lg bg-gray-50 dark:bg-gray-900/20">
-                          <div className="text-2xl font-bold text-gray-600 dark:text-gray-400 mb-1">
+                        <div className="rounded-lg bg-gray-50 p-4 text-center dark:bg-gray-900/20">
+                          <div className="mb-1 text-2xl font-bold text-gray-600 dark:text-gray-400">
                             {result ? formatNumber(result.symbols) : '0'}
                           </div>
                           <div className="text-sm text-gray-700 dark:text-gray-300">記号</div>
@@ -364,12 +381,16 @@ export default function CharacterCountTool() {
                   </Card>
 
                   {/* Usage Guide */}
-                  <Card className="border-gray-200 dark:border-gray-700 mt-6">
+                  <Card className="mt-6 border-gray-200 dark:border-gray-700">
                     <CardContent className="p-6">
-                      <h4 className="text-md font-semibold mb-4 text-gray-800 dark:text-gray-200">使い方</h4>
+                      <h4 className="text-md mb-4 font-semibold text-gray-800 dark:text-gray-200">
+                        使い方
+                      </h4>
                       <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                         <li>• テキストを入力すると自動的にリアルタイムでカウントされます</li>
-                        <li>• 日本語（ひらがな、カタカナ、漢字）と英数字を分別してカウントできます</li>
+                        <li>
+                          • 日本語（ひらがな、カタカナ、漢字）と英数字を分別してカウントできます
+                        </li>
                         <li>• バイト数計算により、データ容量の目安が分かります</li>
                         <li>• 読書時間推定機能で、文章を読むのにかかる時間が分かります</li>
                         <li>• 統計情報をクリップボードにコピーしてレポートに活用できます</li>

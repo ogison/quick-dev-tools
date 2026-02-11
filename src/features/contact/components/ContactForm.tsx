@@ -4,7 +4,6 @@ import { Check, Mail, MessageSquare, Send, User, AlertCircle } from 'lucide-reac
 import { useTranslations } from 'next-intl';
 import { useState, useCallback } from 'react';
 
-
 import CommonLayoutWithHeader from '@/components/layout/CommonLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -166,141 +165,140 @@ export default function ContactForm() {
         { label: t('title'), isCurrentPage: true },
       ]}
     >
-
-        <Card className="border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
-          <CardContent className="p-8">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid gap-6 md:grid-cols-2">
-                <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                    <User className="h-4 w-4" />
-                    {t('name')} <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={handleChange('name')}
-                    className={`w-full rounded-lg border p-3 transition-colors focus:ring-2 focus:outline-none ${
-                      errors.name
-                        ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20 dark:border-red-700 dark:bg-red-900/20'
-                        : 'border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-900'
-                    } dark:text-gray-100`}
-                    placeholder={t('namePlaceholder')}
-                  />
-                  {errors.name && (
-                    <p className="flex items-center gap-1 text-sm text-red-600 dark:text-red-400">
-                      <AlertCircle className="h-3 w-3" />
-                      {errors.name}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                    <Mail className="h-4 w-4" />
-                    {t('email')} <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange('email')}
-                    className={`w-full rounded-lg border p-3 transition-colors focus:ring-2 focus:outline-none ${
-                      errors.email
-                        ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20 dark:border-red-700 dark:bg-red-900/20'
-                        : 'border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-900'
-                    } dark:text-gray-100`}
-                    placeholder="example@example.com"
-                  />
-                  {errors.email && (
-                    <p className="flex items-center gap-1 text-sm text-red-600 dark:text-red-400">
-                      <AlertCircle className="h-3 w-3" />
-                      {errors.email}
-                    </p>
-                  )}
-                </div>
-              </div>
-
+      <Card className="border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
+        <CardContent className="p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                  <MessageSquare className="h-4 w-4" />
-                  {t('subject')} <span className="text-red-500">*</span>
+                  <User className="h-4 w-4" />
+                  {t('name')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
-                  value={formData.subject}
-                  onChange={handleChange('subject')}
+                  value={formData.name}
+                  onChange={handleChange('name')}
                   className={`w-full rounded-lg border p-3 transition-colors focus:ring-2 focus:outline-none ${
-                    errors.subject
+                    errors.name
                       ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20 dark:border-red-700 dark:bg-red-900/20'
                       : 'border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-900'
                   } dark:text-gray-100`}
-                  placeholder={t('subjectPlaceholder')}
+                  placeholder={t('namePlaceholder')}
                 />
-                {errors.subject && (
+                {errors.name && (
                   <p className="flex items-center gap-1 text-sm text-red-600 dark:text-red-400">
                     <AlertCircle className="h-3 w-3" />
-                    {errors.subject}
+                    {errors.name}
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                  <MessageSquare className="h-4 w-4" />
-                  {t('message')} <span className="text-red-500">*</span>
+                  <Mail className="h-4 w-4" />
+                  {t('email')} <span className="text-red-500">*</span>
                 </label>
-                <textarea
-                  value={formData.message}
-                  onChange={handleChange('message')}
-                  rows={6}
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange('email')}
                   className={`w-full rounded-lg border p-3 transition-colors focus:ring-2 focus:outline-none ${
-                    errors.message
+                    errors.email
                       ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20 dark:border-red-700 dark:bg-red-900/20'
                       : 'border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-900'
                   } dark:text-gray-100`}
-                  placeholder={t('messagePlaceholder')}
+                  placeholder="example@example.com"
                 />
-                {errors.message && (
+                {errors.email && (
                   <p className="flex items-center gap-1 text-sm text-red-600 dark:text-red-400">
                     <AlertCircle className="h-3 w-3" />
-                    {errors.message}
+                    {errors.email}
                   </p>
                 )}
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {t('characterCount', { count: formData.message.length })}
-                </p>
               </div>
+            </div>
 
-              <div className="flex gap-4 pt-4">
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex-1 bg-blue-600 text-white shadow-md hover:bg-blue-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                      {t('submitting')}
-                    </>
-                  ) : (
-                    <>
-                      <Send className="mr-2 h-4 w-4" />
-                      {t('submit')}
-                    </>
-                  )}
-                </Button>
-                <Button
-                  type="button"
-                  onClick={handleClear}
-                  variant="outline"
-                  className="border-gray-300 hover:border-gray-400 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"
-                >
-                  {t('clear')}
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                <MessageSquare className="h-4 w-4" />
+                {t('subject')} <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={formData.subject}
+                onChange={handleChange('subject')}
+                className={`w-full rounded-lg border p-3 transition-colors focus:ring-2 focus:outline-none ${
+                  errors.subject
+                    ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20 dark:border-red-700 dark:bg-red-900/20'
+                    : 'border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-900'
+                } dark:text-gray-100`}
+                placeholder={t('subjectPlaceholder')}
+              />
+              {errors.subject && (
+                <p className="flex items-center gap-1 text-sm text-red-600 dark:text-red-400">
+                  <AlertCircle className="h-3 w-3" />
+                  {errors.subject}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                <MessageSquare className="h-4 w-4" />
+                {t('message')} <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                value={formData.message}
+                onChange={handleChange('message')}
+                rows={6}
+                className={`w-full rounded-lg border p-3 transition-colors focus:ring-2 focus:outline-none ${
+                  errors.message
+                    ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20 dark:border-red-700 dark:bg-red-900/20'
+                    : 'border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-900'
+                } dark:text-gray-100`}
+                placeholder={t('messagePlaceholder')}
+              />
+              {errors.message && (
+                <p className="flex items-center gap-1 text-sm text-red-600 dark:text-red-400">
+                  <AlertCircle className="h-3 w-3" />
+                  {errors.message}
+                </p>
+              )}
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {t('characterCount', { count: formData.message.length })}
+              </p>
+            </div>
+
+            <div className="flex gap-4 pt-4">
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="flex-1 bg-blue-600 text-white shadow-md hover:bg-blue-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    {t('submitting')}
+                  </>
+                ) : (
+                  <>
+                    <Send className="mr-2 h-4 w-4" />
+                    {t('submit')}
+                  </>
+                )}
+              </Button>
+              <Button
+                type="button"
+                onClick={handleClear}
+                variant="outline"
+                className="border-gray-300 hover:border-gray-400 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"
+              >
+                {t('clear')}
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </CommonLayoutWithHeader>
   );
 }

@@ -12,7 +12,9 @@ export function urlEncode(input: string, method: EncodingMethod = 'encodeURIComp
       return encodeURIComponent(input);
     }
   } catch (error) {
-    throw new Error(`Failed to encode URL: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to encode URL: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 }
 
@@ -43,8 +45,11 @@ export function isValidEncodedURL(input: string): boolean {
   }
 }
 
-export function getEncodingDifference(original: string, encoded: string): Array<{char: string, encoded: string}> {
-  const differences: Array<{char: string, encoded: string}> = [];
+export function getEncodingDifference(
+  original: string,
+  encoded: string
+): Array<{ char: string; encoded: string }> {
+  const differences: Array<{ char: string; encoded: string }> = [];
   let i = 0;
   let j = 0;
 
@@ -56,7 +61,7 @@ export function getEncodingDifference(original: string, encoded: string): Array<
       const encodedChar = encoded.substring(j, j + 3);
       differences.push({
         char: original[i],
-        encoded: encodedChar
+        encoded: encodedChar,
       });
       i++;
       j += 3;

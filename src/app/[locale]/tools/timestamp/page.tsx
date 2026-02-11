@@ -17,9 +17,10 @@ export async function generateMetadata({
   return {
     title,
     description,
-    keywords: locale === 'ja'
-      ? 'UNIX時間, タイムスタンプ変換, エポック時間, 日付変換, 時間変換ツール, オンラインツール'
-      : 'Unix timestamp, epoch time, timestamp converter, date converter, time conversion tool, online tool',
+    keywords:
+      locale === 'ja'
+        ? 'UNIX時間, タイムスタンプ変換, エポック時間, 日付変換, 時間変換ツール, オンラインツール'
+        : 'Unix timestamp, epoch time, timestamp converter, date converter, time conversion tool, online tool',
     openGraph: {
       title,
       description,

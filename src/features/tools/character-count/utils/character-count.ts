@@ -36,16 +36,22 @@ export function countCharacters(text: string): CharacterCountResult {
   const characters = text.length;
   const charactersWithoutSpaces = text.replace(/\s/g, '').length;
   const bytes = new TextEncoder().encode(text).length;
-  
+
   // Lines count
   const lines = text === '' ? 0 : text.split('\n').length;
-  
+
   // Paragraphs count (empty lines separate paragraphs)
-  const paragraphs = text.trim() === '' ? 0 : text.trim().split(/\n\s*\n/).filter(p => p.trim() !== '').length;
-  
+  const paragraphs =
+    text.trim() === ''
+      ? 0
+      : text
+          .trim()
+          .split(/\n\s*\n/)
+          .filter((p) => p.trim() !== '').length;
+
   // Words count (considering Japanese text)
   const words = countWords(text);
-  
+
   // Character type counts
   let hiragana = 0;
   let katakana = 0;
@@ -54,7 +60,7 @@ export function countCharacters(text: string): CharacterCountResult {
   let numeric = 0;
   let symbols = 0;
   let spaces = 0;
-  
+
   for (const char of text) {
     if (/[\u3040-\u309F]/.test(char)) {
       hiragana++;
@@ -91,15 +97,17 @@ export function countCharacters(text: string): CharacterCountResult {
 }
 
 function countWords(text: string): number {
-  if (!text.trim()) {return 0;}
-  
+  if (!text.trim()) {
+    return 0;
+  }
+
   // Japanese text handling
   const japaneseRegex = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/;
   let wordCount = 0;
-  
+
   // Split by whitespace and punctuation for basic word counting
-  const segments = text.split(/\s+/).filter(segment => segment.length > 0);
-  
+  const segments = text.split(/\s+/).filter((segment) => segment.length > 0);
+
   for (const segment of segments) {
     if (japaneseRegex.test(segment)) {
       // For Japanese text, count each character as a word unit
@@ -107,17 +115,17 @@ function countWords(text: string): number {
       const japaneseChars = segment.match(/[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/g);
       const englishWords = segment.match(/[a-zA-Z]+/g);
       const numbers = segment.match(/[0-9]+/g);
-      
-      wordCount += (japaneseChars?.length || 0);
-      wordCount += (englishWords?.length || 0);
-      wordCount += (numbers?.length || 0);
+
+      wordCount += japaneseChars?.length || 0;
+      wordCount += englishWords?.length || 0;
+      wordCount += numbers?.length || 0;
     } else {
       // For English text, split by word boundaries
       const words = segment.match(/\b\w+\b/g);
       wordCount += words?.length || 0;
     }
   }
-  
+
   return wordCount;
 }
 
@@ -130,7 +138,7 @@ export function calculateReadingTime(characterCount: number): string {
   // Using 400 characters per minute as average
   const avgCharsPerMinute = 400;
   const minutes = Math.ceil(characterCount / avgCharsPerMinute);
-  
+
   if (minutes < 1) {
     return '1分未満';
   } else if (minutes < 60) {
@@ -153,6 +161,6 @@ export function getTextStatsSummary(result: CharacterCountResult): string {
     `行数: ${formatNumber(result.lines)}`,
     `バイト数: ${formatNumber(result.bytes)}`,
   ];
-  
+
   return stats.join(' | ');
 }

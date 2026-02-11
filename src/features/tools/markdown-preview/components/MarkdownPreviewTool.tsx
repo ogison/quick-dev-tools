@@ -134,7 +134,7 @@ export default function MarkdownPreviewTool() {
                 placeholder="ここにMarkdownを入力してください..."
                 className="min-h-[500px] font-mono text-sm"
               />
-              <div className="absolute right-2 top-2">
+              <div className="absolute top-2 right-2">
                 <CopyButton text={markdown}>Markdownをコピー</CopyButton>
               </div>
             </div>
@@ -142,7 +142,7 @@ export default function MarkdownPreviewTool() {
 
           <TabsContent value="preview" className="space-y-4">
             <div className="min-h-[500px] rounded-lg border bg-white p-6 dark:bg-gray-900">
-              <div className="prose prose-sm max-w-none dark:prose-invert">
+              <div className="prose prose-sm dark:prose-invert max-w-none">
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   rehypePlugins={[rehypeRaw, rehypeSanitize]}
@@ -183,7 +183,7 @@ export default function MarkdownPreviewTool() {
                   placeholder="ここにMarkdownを入力してください..."
                   className="min-h-[500px] font-mono text-sm"
                 />
-                <div className="absolute right-2 top-8">
+                <div className="absolute top-8 right-2">
                   <CopyButton text={markdown}>Markdownをコピー</CopyButton>
                 </div>
               </div>
@@ -192,7 +192,7 @@ export default function MarkdownPreviewTool() {
               <div>
                 <div className="mb-2 text-sm font-medium">プレビュー</div>
                 <div className="min-h-[500px] rounded-lg border bg-white p-6 dark:bg-gray-900">
-                  <div className="prose prose-sm max-w-none dark:prose-invert">
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
                     <ReactMarkdown
                       remarkPlugins={[remarkGfm]}
                       rehypePlugins={[rehypeRaw, rehypeSanitize]}
@@ -226,26 +226,26 @@ export default function MarkdownPreviewTool() {
         </Tabs>
 
         {/* 統計情報 */}
-        <div className="rounded-lg border bg-muted/50 p-4">
+        <div className="bg-muted/50 rounded-lg border p-4">
           <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
             <div>
-              <div className="font-medium text-muted-foreground">文字数</div>
+              <div className="text-muted-foreground font-medium">文字数</div>
               <div className="text-2xl font-bold">{markdown.length.toLocaleString()}</div>
             </div>
             <div>
-              <div className="font-medium text-muted-foreground">行数</div>
+              <div className="text-muted-foreground font-medium">行数</div>
               <div className="text-2xl font-bold">
                 {markdown.split('\n').length.toLocaleString()}
               </div>
             </div>
             <div>
-              <div className="font-medium text-muted-foreground">単語数</div>
+              <div className="text-muted-foreground font-medium">単語数</div>
               <div className="text-2xl font-bold">
                 {markdown.split(/\s+/).filter(Boolean).length.toLocaleString()}
               </div>
             </div>
             <div>
-              <div className="font-medium text-muted-foreground">段落数</div>
+              <div className="text-muted-foreground font-medium">段落数</div>
               <div className="text-2xl font-bold">
                 {markdown.split(/\n\n+/).filter(Boolean).length.toLocaleString()}
               </div>

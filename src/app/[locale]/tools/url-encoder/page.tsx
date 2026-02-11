@@ -17,9 +17,10 @@ export async function generateMetadata({
   return {
     title,
     description,
-    keywords: locale === 'ja'
-      ? 'URLエンコード, URLデコード, パーセントエンコーディング, URL変換, オンラインツール'
-      : 'URL encode, URL decode, percent encoding, URL converter, online tool',
+    keywords:
+      locale === 'ja'
+        ? 'URLエンコード, URLデコード, パーセントエンコーディング, URL変換, オンラインツール'
+        : 'URL encode, URL decode, percent encoding, URL converter, online tool',
     openGraph: {
       title,
       description,

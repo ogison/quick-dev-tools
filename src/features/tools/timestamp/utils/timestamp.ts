@@ -1,6 +1,6 @@
 // タイムゾーン定義
 export const TIMEZONES = {
-  'UTC': 'UTC',
+  UTC: 'UTC',
   'Asia/Tokyo': 'Japan (JST)',
   'America/New_York': 'New York (EST/EDT)',
   'America/Los_Angeles': 'Los Angeles (PST/PDT)',
@@ -88,9 +88,9 @@ export function formatDate(date: Date, timezone?: string): string {
 
     const formatter = new Intl.DateTimeFormat('en-CA', options);
     const parts = formatter.formatToParts(date);
-    
+
     const dateParts: { [key: string]: string } = {};
-    parts.forEach(part => {
+    parts.forEach((part) => {
       dateParts[part.type] = part.value;
     });
 

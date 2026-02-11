@@ -18,9 +18,7 @@ test.describe('Language Switcher', () => {
     await expect(page).toHaveURL(/\/en/);
 
     // Verify content is in English by checking the hero text
-    await expect(
-      page.getByText('Tool Collection for Developers'),
-    ).toBeVisible();
+    await expect(page.getByText('Tool Collection for Developers')).toBeVisible();
 
     // Verify the English button is now active (bold)
     const enButton = page.getByRole('button', { name: 'en' });
@@ -44,18 +42,14 @@ test.describe('Language Switcher', () => {
     await expect(page).toHaveURL(/\/ja/);
 
     // Verify content is in Japanese by checking the hero text
-    await expect(
-      page.getByText('開発者のためのツールコレクション'),
-    ).toBeVisible();
+    await expect(page.getByText('開発者のためのツールコレクション')).toBeVisible();
 
     // Verify the Japanese button is now active (bold)
     const jaButton = page.getByRole('button', { name: 'ja' });
     await expect(jaButton).toHaveClass(/font-bold/);
   });
 
-  test('should maintain language preference across navigation', async ({
-    page,
-  }) => {
+  test('should maintain language preference across navigation', async ({ page }) => {
     // Start from Japanese
     await page.goto('/ja');
 
