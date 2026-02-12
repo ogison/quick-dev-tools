@@ -7,7 +7,13 @@ import { CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
 interface DateTimePickerProps {
@@ -18,7 +24,13 @@ interface DateTimePickerProps {
   hasError?: boolean;
 }
 
-export function DateTimePicker({ value, onChange, placeholder, className, hasError }: DateTimePickerProps) {
+export function DateTimePicker({
+  value,
+  onChange,
+  placeholder,
+  className,
+  hasError,
+}: DateTimePickerProps) {
   // 文字列から日付、時、分、秒を解析
   const parseDateTime = (dateTimeStr: string) => {
     const match = dateTimeStr.match(/^(\d{4}-\d{2}-\d{2})\s+(\d{2}):(\d{2}):(\d{2})$/);
@@ -33,7 +45,7 @@ export function DateTimePicker({ value, onChange, placeholder, className, hasErr
 
     const [, dateStr, hours, minutes, seconds] = match;
     const date = new Date(dateStr);
-    
+
     return {
       date: isNaN(date.getTime()) ? null : date,
       hours,
@@ -48,7 +60,7 @@ export function DateTimePicker({ value, onChange, placeholder, className, hasErr
     if (!newDate) {
       return;
     }
-    
+
     const dateStr = format(newDate, 'yyyy-MM-dd');
     const newValue = `${dateStr} ${hours}:${minutes}:${seconds}`;
     onChange(newValue);
@@ -96,13 +108,17 @@ export function DateTimePicker({ value, onChange, placeholder, className, hasErr
           <Button
             variant="outline"
             className={cn(
-              'justify-start text-left font-normal flex-1',
+              'flex-1 justify-start text-left font-normal',
               !date && 'text-muted-foreground',
               hasError && 'border-red-300 dark:border-red-700'
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {date ? format(date, 'yyyy年MM月dd日', { locale: ja }) : <span>{placeholder || '日付を選択'}</span>}
+            {date ? (
+              format(date, 'yyyy年MM月dd日', { locale: ja })
+            ) : (
+              <span>{placeholder || '日付を選択'}</span>
+            )}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
@@ -117,9 +133,11 @@ export function DateTimePicker({ value, onChange, placeholder, className, hasErr
       </Popover>
 
       {/* 時刻選択 */}
-      <div className="flex gap-1 items-center">
+      <div className="flex items-center gap-1">
         <Select value={hours} onValueChange={(value) => handleTimeChange('hours', value)}>
-          <SelectTrigger className={cn('w-[70px]', hasError && 'border-red-300 dark:border-red-700')}>
+          <SelectTrigger
+            className={cn('w-[70px]', hasError && 'border-red-300 dark:border-red-700')}
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -134,7 +152,9 @@ export function DateTimePicker({ value, onChange, placeholder, className, hasErr
         <span className="text-gray-500">:</span>
 
         <Select value={minutes} onValueChange={(value) => handleTimeChange('minutes', value)}>
-          <SelectTrigger className={cn('w-[70px]', hasError && 'border-red-300 dark:border-red-700')}>
+          <SelectTrigger
+            className={cn('w-[70px]', hasError && 'border-red-300 dark:border-red-700')}
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -149,7 +169,9 @@ export function DateTimePicker({ value, onChange, placeholder, className, hasErr
         <span className="text-gray-500">:</span>
 
         <Select value={seconds} onValueChange={(value) => handleTimeChange('seconds', value)}>
-          <SelectTrigger className={cn('w-[70px]', hasError && 'border-red-300 dark:border-red-700')}>
+          <SelectTrigger
+            className={cn('w-[70px]', hasError && 'border-red-300 dark:border-red-700')}
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

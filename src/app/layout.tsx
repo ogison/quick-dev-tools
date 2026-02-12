@@ -1,28 +1,13 @@
+import { GeistMono } from 'geist/font/mono';
+import { GeistSans } from 'geist/font/sans';
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, getTranslations } from 'next-intl/server';
-
-import { routing } from '@/i18n/routing';
+import { getLocale, getMessages, getTranslations } from 'next-intl/server';
 
 import './globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
   const t = await getTranslations({ locale, namespace: 'metadata' });
 
   return {
@@ -94,27 +79,19 @@ export async function generateMetadata({
         { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
         { url: '/favicon.svg', type: 'image/svg+xml' },
       ],
-      apple: [
-        { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-      ],
+      apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
     },
     manifest: '/manifest.json',
   };
 }
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
-
 export default async function RootLayout({
   children,
-  params,
 }: Readonly<{
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
 }>) {
-  const { locale } = await params;
-  const messages = await getMessages({ locale });
+  const locale = await getLocale();
+  const messages = await getMessages();
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -136,10 +113,7 @@ export default async function RootLayout({
                   '@type': 'WebSite',
                   '@id': 'https://quick-dev-tools.vercel.app/#website',
                   name: 'QuickDevTools',
-                  alternateName:
-                    locale === 'ja'
-                      ? '開発者ツール集'
-                      : 'Developer Tools Collection',
+                  alternateName: locale === 'ja' ? '開発者ツール集' : 'Developer Tools Collection',
                   url: 'https://quick-dev-tools.vercel.app',
                   description:
                     locale === 'ja'
@@ -193,11 +167,9 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
+        className={`${GeistSans.variable} ${GeistMono.variable} flex min-h-screen flex-col antialiased`}
       >
-        <NextIntlClientProvider messages={messages}>
-          {children}
-        </NextIntlClientProvider>
+        <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
       </body>
     </html>
   );

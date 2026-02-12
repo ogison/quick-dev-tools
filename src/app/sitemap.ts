@@ -13,13 +13,7 @@ const tools = [
 ];
 
 // その他の静的ページ
-const staticPages = [
-  '',
-  '/tools',
-  '/contact',
-  '/privacy',
-  '/terms',
-];
+const staticPages = ['', '/tools', '/contact', '/privacy', '/terms'];
 
 // サポートされているロケール
 const locales = ['ja', 'en'];

@@ -170,10 +170,10 @@ export const TOOLS: Tool[] = [
               </div>
             </div>
             {/* Floating numbers animation effect */}
-            <div className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-purple-400/70 flex items-center justify-center text-xs font-bold text-white">
+            <div className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-purple-400/70 text-xs font-bold text-white">
               3
             </div>
-            <div className="absolute -bottom-1 -left-1 h-4 w-4 rounded-full bg-indigo-400/60 flex items-center justify-center text-xs font-bold text-white">
+            <div className="absolute -bottom-1 -left-1 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-400/60 text-xs font-bold text-white">
               7
             </div>
           </div>
@@ -202,10 +202,10 @@ export const TOOLS: Tool[] = [
               </div>
             </div>
             {/* Decorative elements */}
-            <div className="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-blue-400/70 flex items-center justify-center text-xs font-bold text-white">
+            <div className="absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-blue-400/70 text-xs font-bold text-white">
               v4
             </div>
-            <div className="absolute -bottom-1 -left-1 h-6 w-6 rounded-full bg-teal-400/60 flex items-center justify-center text-xs font-bold text-white">
+            <div className="absolute -bottom-1 -left-1 flex h-6 w-6 items-center justify-center rounded-full bg-teal-400/60 text-xs font-bold text-white">
               v1
             </div>
           </div>
@@ -216,7 +216,8 @@ export const TOOLS: Tool[] = [
   {
     id: 'markdown-preview',
     title: 'Markdownプレビュー',
-    description: 'Markdownをリアルタイムでプレビュー。GitHub Flavored Markdown対応、HTMLエクスポート可能。',
+    description:
+      'Markdownをリアルタイムでプレビュー。GitHub Flavored Markdown対応、HTMLエクスポート可能。',
     href: '/tools/markdown-preview',
     category: 'format',
     featured: true,
@@ -249,10 +250,10 @@ export const TOOLS: Tool[] = [
               </div>
             </div>
             {/* Decorative elements */}
-            <div className="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-slate-500/70 flex items-center justify-center text-xs font-bold text-white">
+            <div className="absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-slate-500/70 text-xs font-bold text-white">
               MD
             </div>
-            <div className="absolute -bottom-1 -left-1 h-6 w-6 rounded-full bg-blue-500/60 flex items-center justify-center text-xs font-bold text-white">
+            <div className="absolute -bottom-1 -left-1 flex h-6 w-6 items-center justify-center rounded-full bg-blue-500/60 text-xs font-bold text-white">
               ⚡
             </div>
           </div>

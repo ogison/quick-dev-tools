@@ -271,7 +271,6 @@ export default function TermsPage() {
         { label: '利用規約', isCurrentPage: true },
       ]}
     >
-
       <Card className="border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
         <CardContent className="p-8">
           <Tabs defaultValue="terms" className="w-full">
@@ -281,96 +280,91 @@ export default function TermsPage() {
             </TabsList>
 
             <TabsContent value="terms" className="space-y-6">
-                <div className="mb-6 rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
-                  <p className="text-sm text-blue-800 dark:text-blue-200">
-                    <FileText className="mr-2 inline h-4 w-4" />
-                    最終更新日：2025年6月28日
-                  </p>
-                </div>
+              <div className="mb-6 rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
+                <p className="text-sm text-blue-800 dark:text-blue-200">
+                  <FileText className="mr-2 inline h-4 w-4" />
+                  最終更新日：2025年6月28日
+                </p>
+              </div>
 
-                <div className="mb-6 flex gap-2">
-                  <Button
-                    onClick={expandAllSections}
-                    variant="outline"
-                    size="sm"
-                    className="text-sm"
-                  >
-                    すべて展開
-                  </Button>
-                  <Button
-                    onClick={collapseAllSections}
-                    variant="outline"
-                    size="sm"
-                    className="text-sm"
-                  >
-                    すべて折りたたみ
-                  </Button>
-                </div>
+              <div className="mb-6 flex gap-2">
+                <Button onClick={expandAllSections} variant="outline" size="sm" className="text-sm">
+                  すべて展開
+                </Button>
+                <Button
+                  onClick={collapseAllSections}
+                  variant="outline"
+                  size="sm"
+                  className="text-sm"
+                >
+                  すべて折りたたみ
+                </Button>
+              </div>
 
-                <div className="mb-6">
-                  <p className="mb-4 text-gray-600 dark:text-gray-400">
-                    QuickDevTools（以下、「当サービス」）をご利用いただき、ありがとうございます。
-                    本利用規約は、当サービスの利用に関する条件を定めたものです。
-                    当サービスをご利用になる場合には、本利用規約に同意いただいたものとみなします。
-                  </p>
-                </div>
+              <div className="mb-6">
+                <p className="mb-4 text-gray-600 dark:text-gray-400">
+                  QuickDevTools（以下、「当サービス」）をご利用いただき、ありがとうございます。
+                  本利用規約は、当サービスの利用に関する条件を定めたものです。
+                  当サービスをご利用になる場合には、本利用規約に同意いただいたものとみなします。
+                </p>
+              </div>
 
-                <div className="space-y-4">
-                  {TERMS_SECTIONS.map((section) => (
-                    <CollapsibleSection
-                      key={section.id}
-                      section={section}
-                      isExpanded={expandedSections.has(section.id)}
-                      onToggle={() => toggleSection(section.id)}
-                    />
-                  ))}
-                </div>
+              <div className="space-y-4">
+                {TERMS_SECTIONS.map((section) => (
+                  <CollapsibleSection
+                    key={section.id}
+                    section={section}
+                    isExpanded={expandedSections.has(section.id)}
+                    onToggle={() => toggleSection(section.id)}
+                  />
+                ))}
+              </div>
 
-                <div className="mt-8 rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
-                  <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-                    本利用規約に関するご質問やご不明な点がございましたら、以下よりお問い合わせください：
-                  </p>
-                  <Link
-                    href="/contact"
-                    className="inline-block rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                  >
-                    お問い合わせフォーム
-                  </Link>
-                </div>
+              <div className="mt-8 rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
+                <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+                  本利用規約に関するご質問やご不明な点がございましたら、以下よりお問い合わせください：
+                </p>
+                <Link
+                  href="/contact"
+                  className="inline-block rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                >
+                  お問い合わせフォーム
+                </Link>
+              </div>
             </TabsContent>
 
             <TabsContent value="faq" className="space-y-6">
-                <div className="mb-6 flex gap-2">
-                  <Button onClick={expandAllFAQs} variant="outline" size="sm" className="text-sm">
-                    すべて展開
-                  </Button>
-                  <Button onClick={collapseAllFAQs} variant="outline" size="sm" className="text-sm">
-                    すべて折りたたみ
-                  </Button>
-                </div>
+              <div className="mb-6 flex gap-2">
+                <Button onClick={expandAllFAQs} variant="outline" size="sm" className="text-sm">
+                  すべて展開
+                </Button>
+                <Button onClick={collapseAllFAQs} variant="outline" size="sm" className="text-sm">
+                  すべて折りたたみ
+                </Button>
+              </div>
 
-                <div className="space-y-4">
-                  {FAQ_ITEMS.map((item) => (
-                    <CollapsibleFAQ
-                      key={item.id}
-                      item={item}
-                      isExpanded={expandedFAQs.has(item.id)}
-                      onToggle={() => toggleFAQ(item.id)}
-                    />
-                  ))}
-                </div>
+              <div className="space-y-4">
+                {FAQ_ITEMS.map((item) => (
+                  <CollapsibleFAQ
+                    key={item.id}
+                    item={item}
+                    isExpanded={expandedFAQs.has(item.id)}
+                    onToggle={() => toggleFAQ(item.id)}
+                  />
+                ))}
+              </div>
 
-                <div className="mt-8 rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
-                  <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-                    他にご質問がございましたら、お気軽にお問い合わせください：
-                  </p>
-                  <Link
-                    href="/contact"
-                    className="inline-block rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                  >
-                    お問い合わせフォーム
-                  </Link>
-                </div>
+              <div className="mt-8 rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
+                <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+                  他にご質問がございましたら、お気軽にお問い合わせください：
+                </p>
+                <Link
+                  href="/contact"
+                  className="inline-block rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                >
+                  お問い合わせフォーム
+                </Link>
+              </div>
             </TabsContent>
           </Tabs>
         </CardContent>

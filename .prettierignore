@@ -37,3 +37,6 @@ next-env.d.ts
 # generated files
 public/sw.js
 public/workbox-*.js
+
+# workflows (cannot be pushed due to GitHub App permissions)
+.github/workflows/codeql.yml

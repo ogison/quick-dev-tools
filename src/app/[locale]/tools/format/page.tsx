@@ -17,9 +17,10 @@ export async function generateMetadata({
   return {
     title,
     description,
-    keywords: locale === 'ja'
-      ? 'JSON整形, YAML整形, XML整形, SQL整形, フォーマッター, コード整形, オンラインツール, 無料ツール'
-      : 'JSON formatter, YAML formatter, XML formatter, SQL formatter, code formatter, online tool, free tool',
+    keywords:
+      locale === 'ja'
+        ? 'JSON整形, YAML整形, XML整形, SQL整形, フォーマッター, コード整形, オンラインツール, 無料ツール'
+        : 'JSON formatter, YAML formatter, XML formatter, SQL formatter, code formatter, online tool, free tool',
     openGraph: {
       title,
       description,

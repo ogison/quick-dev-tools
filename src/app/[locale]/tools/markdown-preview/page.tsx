@@ -17,9 +17,10 @@ export async function generateMetadata({
   return {
     title,
     description,
-    keywords: locale === 'ja'
-      ? 'Markdownプレビュー, マークダウンエディタ, GFM, GitHub Flavored Markdown, リアルタイムプレビュー, オンラインツール'
-      : 'Markdown preview, markdown editor, GFM, GitHub Flavored Markdown, real-time preview, online tool',
+    keywords:
+      locale === 'ja'
+        ? 'Markdownプレビュー, マークダウンエディタ, GFM, GitHub Flavored Markdown, リアルタイムプレビュー, オンラインツール'
+        : 'Markdown preview, markdown editor, GFM, GitHub Flavored Markdown, real-time preview, online tool',
     openGraph: {
       title,
       description,

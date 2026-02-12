@@ -17,9 +17,10 @@ export async function generateMetadata({
   return {
     title,
     description,
-    keywords: locale === 'ja'
-      ? '開発ツール, プログラミングツール, フォーマッター, コンバーター, エンコーダー, ジェネレーター, ユーティリティ, 無料ツール'
-      : 'developer tools, programming tools, formatter, converter, encoder, generator, utility, free tools',
+    keywords:
+      locale === 'ja'
+        ? '開発ツール, プログラミングツール, フォーマッター, コンバーター, エンコーダー, ジェネレーター, ユーティリティ, 無料ツール'
+        : 'developer tools, programming tools, formatter, converter, encoder, generator, utility, free tools',
     openGraph: {
       title,
       description,

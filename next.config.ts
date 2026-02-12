@@ -13,10 +13,6 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  eslint: {
-    // 開発時のESLintエラーを警告レベルに下げる
-    ignoreDuringBuilds: false,
-  },
   typescript: {
     // 開発時のTypeScriptエラーを無視
     ignoreBuildErrors: false,
@@ -33,9 +29,10 @@ const nextConfig: NextConfig = {
   },
 
   // Bundle analysis
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+  webpack: (config, { dev, isServer }) => {
     // Bundle analyzer in production
     if (!dev && !isServer && process.env.ANALYZE === 'true') {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
       config.plugins.push(
         new BundleAnalyzerPlugin({

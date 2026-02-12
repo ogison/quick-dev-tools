@@ -17,9 +17,10 @@ export async function generateMetadata({
   return {
     title,
     description,
-    keywords: locale === 'ja'
-      ? 'UUID生成, GUID生成, ユニークID, v1 UUID, v4 UUID, オンラインツール'
-      : 'UUID generator, GUID generator, unique ID, v1 UUID, v4 UUID, online tool',
+    keywords:
+      locale === 'ja'
+        ? 'UUID生成, GUID生成, ユニークID, v1 UUID, v4 UUID, オンラインツール'
+        : 'UUID generator, GUID generator, unique ID, v1 UUID, v4 UUID, online tool',
     openGraph: {
       title,
       description,

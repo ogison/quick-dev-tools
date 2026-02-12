@@ -10,11 +10,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
-import {
-  generateMultipleUUIDs,
-  formatUUID,
-  removeHyphens,
-} from '../utils/uuid-generator';
+import { generateMultipleUUIDs, formatUUID, removeHyphens } from '../utils/uuid-generator';
 
 type UUIDVersion = 'v1' | 'v4' | 'nil';
 type UUIDCase = 'uppercase' | 'lowercase';
@@ -152,11 +148,11 @@ export function UUIDGeneratorTool() {
 
               <TabsContent value="generator" className="space-y-6">
                 {/* Quick Generate Buttons */}
-                <div className="flex flex-wrap gap-3 justify-center">
+                <div className="flex flex-wrap justify-center gap-3">
                   <Button
                     onClick={() => handleQuickGenerate('v4')}
                     variant={version === 'v4' ? 'default' : 'outline'}
-                    className="flex-1 min-w-[150px]"
+                    className="min-w-[150px] flex-1"
                   >
                     <RefreshCw className="mr-2 h-4 w-4" />
                     {t('generateV4')}
@@ -164,7 +160,7 @@ export function UUIDGeneratorTool() {
                   <Button
                     onClick={() => handleQuickGenerate('v1')}
                     variant={version === 'v1' ? 'default' : 'outline'}
-                    className="flex-1 min-w-[150px]"
+                    className="min-w-[150px] flex-1"
                   >
                     <RefreshCw className="mr-2 h-4 w-4" />
                     {t('generateV1')}
@@ -172,7 +168,7 @@ export function UUIDGeneratorTool() {
                   <Button
                     onClick={() => handleQuickGenerate('nil')}
                     variant={version === 'nil' ? 'default' : 'outline'}
-                    className="flex-1 min-w-[150px]"
+                    className="min-w-[150px] flex-1"
                   >
                     <RefreshCw className="mr-2 h-4 w-4" />
                     {t('generateNil')}
@@ -180,12 +176,8 @@ export function UUIDGeneratorTool() {
                 </div>
 
                 {/* Generation Controls */}
-                <div className="flex gap-3 items-center justify-center">
-                  <Button
-                    onClick={handleGenerate}
-                    size="lg"
-                    className="min-w-[200px]"
-                  >
+                <div className="flex items-center justify-center gap-3">
+                  <Button onClick={handleGenerate} size="lg" className="min-w-[200px]">
                     <RefreshCw className="mr-2 h-5 w-5" />
                     {t('generate')}
                   </Button>
@@ -198,7 +190,9 @@ export function UUIDGeneratorTool() {
                       min="1"
                       max="100"
                       value={count}
-                      onChange={(e) => setCount(Math.max(1, Math.min(100, parseInt(e.target.value) || 1)))}
+                      onChange={(e) =>
+                        setCount(Math.max(1, Math.min(100, parseInt(e.target.value) || 1)))
+                      }
                       className="w-20 rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
                     />
                   </div>
@@ -209,7 +203,8 @@ export function UUIDGeneratorTool() {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <label className="text-base font-semibold text-gray-700 dark:text-gray-300">
-                        {t('generatedUUIDs')} ({uuids.length}{t('items')})
+                        {t('generatedUUIDs')} ({uuids.length}
+                        {t('items')})
                       </label>
                       <div className="flex gap-2">
                         <Button
@@ -282,9 +277,7 @@ export function UUIDGeneratorTool() {
 
                 {uuids.length === 0 && (
                   <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center dark:border-gray-600 dark:bg-gray-900">
-                    <p className="text-gray-500 dark:text-gray-400">
-                      {t('clickToGenerate')}
-                    </p>
+                    <p className="text-gray-500 dark:text-gray-400">{t('clickToGenerate')}</p>
                   </div>
                 )}
               </TabsContent>
@@ -292,11 +285,11 @@ export function UUIDGeneratorTool() {
               <TabsContent value="settings" className="space-y-6">
                 <div className="space-y-6">
                   <div>
-                    <label className="text-base font-semibold text-gray-700 dark:text-gray-300 mb-3 block">
+                    <label className="mb-3 block text-base font-semibold text-gray-700 dark:text-gray-300">
                       {t('uuidVersion')}
                     </label>
                     <div className="space-y-3">
-                      <label className="flex items-center space-x-3 cursor-pointer">
+                      <label className="flex cursor-pointer items-center space-x-3">
                         <input
                           type="radio"
                           name="version"
@@ -312,7 +305,7 @@ export function UUIDGeneratorTool() {
                           </div>
                         </div>
                       </label>
-                      <label className="flex items-center space-x-3 cursor-pointer">
+                      <label className="flex cursor-pointer items-center space-x-3">
                         <input
                           type="radio"
                           name="version"
@@ -328,7 +321,7 @@ export function UUIDGeneratorTool() {
                           </div>
                         </div>
                       </label>
-                      <label className="flex items-center space-x-3 cursor-pointer">
+                      <label className="flex cursor-pointer items-center space-x-3">
                         <input
                           type="radio"
                           name="version"
@@ -348,11 +341,11 @@ export function UUIDGeneratorTool() {
                   </div>
 
                   <div>
-                    <label className="text-base font-semibold text-gray-700 dark:text-gray-300 mb-3 block">
+                    <label className="mb-3 block text-base font-semibold text-gray-700 dark:text-gray-300">
                       {t('formatSettings')}
                     </label>
                     <div className="space-y-3">
-                      <label className="flex items-center space-x-3 cursor-pointer">
+                      <label className="flex cursor-pointer items-center space-x-3">
                         <input
                           type="checkbox"
                           checked={includeHyphens}
@@ -368,11 +361,11 @@ export function UUIDGeneratorTool() {
                       </label>
 
                       <div className="pl-7">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                        <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                           {t('caseSettings')}
                         </label>
                         <div className="space-y-2">
-                          <label className="flex items-center space-x-3 cursor-pointer">
+                          <label className="flex cursor-pointer items-center space-x-3">
                             <input
                               type="radio"
                               name="case"
@@ -383,7 +376,7 @@ export function UUIDGeneratorTool() {
                             />
                             <span className="text-sm">{t('lowercase')}</span>
                           </label>
-                          <label className="flex items-center space-x-3 cursor-pointer">
+                          <label className="flex cursor-pointer items-center space-x-3">
                             <input
                               type="radio"
                               name="case"
@@ -399,8 +392,10 @@ export function UUIDGeneratorTool() {
                     </div>
                   </div>
 
-                  <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                    <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">{t('aboutUUID')}</h3>
+                  <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
+                    <h3 className="mb-2 font-semibold text-blue-900 dark:text-blue-100">
+                      {t('aboutUUID')}
+                    </h3>
                     <ul className="space-y-2 text-sm text-blue-800 dark:text-blue-200">
                       <li>{t('uuidInfo1')}</li>
                       <li>{t('uuidInfo2')}</li>
@@ -409,13 +404,23 @@ export function UUIDGeneratorTool() {
                     </ul>
                   </div>
 
-                  <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                    <h3 className="font-semibold text-green-900 dark:text-green-100 mb-2">{t('usageExamples')}</h3>
+                  <div className="rounded-lg bg-green-50 p-4 dark:bg-green-900/20">
+                    <h3 className="mb-2 font-semibold text-green-900 dark:text-green-100">
+                      {t('usageExamples')}
+                    </h3>
                     <ul className="space-y-2 text-sm text-green-800 dark:text-green-200">
-                      <li>• <strong>{t('usageDatabase')}</strong> {t('usageDatabaseDesc')}</li>
-                      <li>• <strong>{t('usageAPI')}</strong> {t('usageAPIDesc')}</li>
-                      <li>• <strong>{t('usageSession')}</strong> {t('usageSessionDesc')}</li>
-                      <li>• <strong>{t('usageFile')}</strong> {t('usageFileDesc')}</li>
+                      <li>
+                        • <strong>{t('usageDatabase')}</strong> {t('usageDatabaseDesc')}
+                      </li>
+                      <li>
+                        • <strong>{t('usageAPI')}</strong> {t('usageAPIDesc')}
+                      </li>
+                      <li>
+                        • <strong>{t('usageSession')}</strong> {t('usageSessionDesc')}
+                      </li>
+                      <li>
+                        • <strong>{t('usageFile')}</strong> {t('usageFileDesc')}
+                      </li>
                     </ul>
                   </div>
                 </div>

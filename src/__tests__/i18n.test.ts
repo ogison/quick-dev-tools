@@ -47,19 +47,14 @@ describe('i18n Translation Files', () => {
 
   describe('Translation value validation', () => {
     it('should not have empty translation values in en.json', () => {
-      const checkEmptyValues = (
-        obj: Record<string, unknown>,
-        path = '',
-      ): string[] => {
+      const checkEmptyValues = (obj: Record<string, unknown>, path = ''): string[] => {
         const emptyKeys: string[] = [];
 
         for (const [key, value] of Object.entries(obj)) {
           const fullPath = path ? `${path}.${key}` : key;
 
           if (value && typeof value === 'object' && !Array.isArray(value)) {
-            emptyKeys.push(
-              ...checkEmptyValues(value as Record<string, unknown>, fullPath),
-            );
+            emptyKeys.push(...checkEmptyValues(value as Record<string, unknown>, fullPath));
           } else if (typeof value === 'string' && value.trim() === '') {
             emptyKeys.push(fullPath);
           }
@@ -73,19 +68,14 @@ describe('i18n Translation Files', () => {
     });
 
     it('should not have empty translation values in ja.json', () => {
-      const checkEmptyValues = (
-        obj: Record<string, unknown>,
-        path = '',
-      ): string[] => {
+      const checkEmptyValues = (obj: Record<string, unknown>, path = ''): string[] => {
         const emptyKeys: string[] = [];
 
         for (const [key, value] of Object.entries(obj)) {
           const fullPath = path ? `${path}.${key}` : key;
 
           if (value && typeof value === 'object' && !Array.isArray(value)) {
-            emptyKeys.push(
-              ...checkEmptyValues(value as Record<string, unknown>, fullPath),
-            );
+            emptyKeys.push(...checkEmptyValues(value as Record<string, unknown>, fullPath));
           } else if (typeof value === 'string' && value.trim() === '') {
             emptyKeys.push(fullPath);
           }
