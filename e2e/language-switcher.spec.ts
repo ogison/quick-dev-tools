@@ -2,11 +2,11 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Language Switcher', () => {
   test('should switch from Japanese to English', async ({ page }) => {
-    // Start from the home page (default is Japanese)
-    await page.goto('/');
+    // Start from the Japanese home page directly
+    await page.goto('/ja/home');
 
     // Check that we're on the Japanese page
-    await expect(page).toHaveURL(/\/ja/);
+    await expect(page).toHaveURL(/\/ja\/home/);
 
     // Find and click the English language button
     await page.getByRole('button', { name: 'en' }).click();
@@ -15,7 +15,7 @@ test.describe('Language Switcher', () => {
     await page.waitForURL(/\/en/, { timeout: 5000 });
 
     // Verify URL changed to English
-    await expect(page).toHaveURL(/\/en/);
+    await expect(page).toHaveURL(/\/en\/home/);
 
     // Verify content is in English by checking the hero text
     await expect(page.getByText('Tool Collection for Developers')).toBeVisible();
@@ -27,10 +27,10 @@ test.describe('Language Switcher', () => {
 
   test('should switch from English to Japanese', async ({ page }) => {
     // Start from the English home page
-    await page.goto('/en');
+    await page.goto('/en/home');
 
     // Check that we're on the English page
-    await expect(page).toHaveURL(/\/en/);
+    await expect(page).toHaveURL(/\/en\/home/);
 
     // Find and click the Japanese language button
     await page.getByRole('button', { name: 'ja' }).click();
@@ -39,7 +39,7 @@ test.describe('Language Switcher', () => {
     await page.waitForURL(/\/ja/, { timeout: 5000 });
 
     // Verify URL changed to Japanese
-    await expect(page).toHaveURL(/\/ja/);
+    await expect(page).toHaveURL(/\/ja\/home/);
 
     // Verify content is in Japanese by checking the hero text
     await expect(page.getByText('開発者のためのツールコレクション')).toBeVisible();
@@ -50,30 +50,30 @@ test.describe('Language Switcher', () => {
   });
 
   test('should maintain language preference across navigation', async ({ page }) => {
-    // Start from Japanese
-    await page.goto('/ja');
+    // Start from Japanese home page
+    await page.goto('/ja/home');
 
     // Switch to English
     await page.getByRole('button', { name: 'en' }).click();
     await page.waitForURL(/\/en/, { timeout: 5000 });
 
-    // Navigate to tools page
-    const toolsLink = page.getByRole('link', { name: 'Tools' });
-    await toolsLink.click();
+    // Navigate to contact page via header link
+    const contactLink = page.getByRole('link', { name: 'Contact' });
+    await contactLink.click();
 
     // Verify we're still in English
-    await expect(page).toHaveURL(/\/en\/tools/);
+    await expect(page).toHaveURL(/\/en\/contact/);
 
     // Switch back to Japanese
     await page.getByRole('button', { name: 'ja' }).click();
     await page.waitForURL(/\/ja/, { timeout: 5000 });
 
-    // Verify we're back to Japanese
-    await expect(page).toHaveURL(/\/ja/);
+    // Verify we're in Japanese
+    await expect(page).toHaveURL(/\/ja\/contact/);
   });
 
   test('should display language switcher on all pages', async ({ page }) => {
-    const pages = ['/', '/tools', '/privacy', '/terms', '/contact'];
+    const pages = ['/home', '/tools', '/privacy', '/terms', '/contact'];
 
     for (const path of pages) {
       await page.goto(`/ja${path}`);
@@ -86,23 +86,23 @@ test.describe('Language Switcher', () => {
 
   test('should show correct active language state', async ({ page }) => {
     // Test Japanese active state
-    await page.goto('/ja');
+    await page.goto('/ja/home');
     const jaButton = page.getByRole('button', { name: 'ja' });
     await expect(jaButton).toHaveClass(/font-bold/);
 
     // Test English active state
-    await page.goto('/en');
+    await page.goto('/en/home');
     const enButton = page.getByRole('button', { name: 'en' });
     await expect(enButton).toHaveClass(/font-bold/);
   });
 
   test('should translate page title and metadata', async ({ page }) => {
     // Check Japanese page title
-    await page.goto('/ja');
+    await page.goto('/ja/home');
     await expect(page).toHaveTitle(/開発者ツール集/);
 
     // Check English page title
-    await page.goto('/en');
+    await page.goto('/en/home');
     await expect(page).toHaveTitle(/Developer Tools/);
   });
 });
